@@ -1,5 +1,5 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v3';
+const CACHE = 'nihongo-gakkou-v4';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
   'js/data.js', 'js/data2.js', 'js/strokes.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
@@ -17,19 +17,22 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()));
 });
 
-// Ambil dari cache dulu (cepat & offline), lalu perbarui di belakang layar
+// File game: ambil versi terbaru dari internet dulu (offline → pakai simpanan).
+// Three.js & font: pakai simpanan dulu (jarang berubah, hemat kuota).
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   const font = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
   if (url.origin !== location.origin && !font) return;
+  const heavy = font || url.pathname.includes('/vendor/');
   e.respondWith(caches.open(CACHE).then(async cache => {
     const cached = await cache.match(req);
     const net = fetch(req).then(res => {
       if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
       return res;
-    }).catch(() => cached);
-    return cached || net;
+    });
+    if (heavy && cached) return cached;
+    try { return await net; } catch (err) { return cached || Response.error(); }
   }));
 });

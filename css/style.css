@@ -508,9 +508,10 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .hud-mini { pointer-events: auto; border: 2px solid var(--ink); border-radius: 6px; background: #fff4cf; font-size: 12px; padding: 2px 7px; box-shadow: 0 2px 0 rgba(0,0,0,.35); animation: nudge 1.4s steps(2) infinite; }
 .hud-onl { background: #cfe6ff; animation: none; }
 .badge { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 99px; background: var(--red); color: #fff; font-size: 12px; text-align: center; }
-.ach-banner { position: absolute; left: 50%; top: calc(150px + env(safe-area-inset-top)); z-index: 60; transform: translate(-50%, -140%); display: flex; gap: 10px; align-items: center;
-  background: var(--ink); color: #fff; border: 3px solid var(--gold); border-radius: 10px; padding: 8px 14px; min-width: 240px; transition: transform .35s cubic-bezier(.2,1.4,.4,1); pointer-events: none; }
-.ach-banner.on { transform: translate(-50%, 0); }
+.ach-banner { position: absolute; left: 50%; top: calc(150px + env(safe-area-inset-top)); z-index: 60; transform: translate(-50%, -24px); opacity: 0; visibility: hidden; display: flex; gap: 10px; align-items: center;
+  background: var(--ink); color: #fff; border: 3px solid var(--gold); border-radius: 10px; padding: 8px 14px; min-width: 240px; pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,1.4,.4,1), opacity .3s, visibility 0s .3s; }
+.ach-banner.on { transform: translate(-50%, 0); opacity: 1; visibility: visible; transition: transform .35s cubic-bezier(.2,1.4,.4,1), opacity .3s; }
 .ach-banner small { display: block; font-size: 11px; color: var(--gold); } .ach-banner b { display: block; font-size: 15px; } .ach-banner em { font-style: normal; font-size: 12px; color: #ffd0dc; }
 .ach-ic { flex: none; display: inline-flex; width: 42px; height: 42px; border-radius: 50%; align-items: center; justify-content: center; background: var(--gold); color: var(--ink); font-family: var(--jp); font-weight: 700; font-size: 22px; border: 2px solid var(--ink); }
 .ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

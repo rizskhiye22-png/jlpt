@@ -863,7 +863,7 @@ const Game = (() => {
     UI.showGame(false);
     Pix.setPlayer(S().look);
     World.load('town', 13, 12, 'down', npcsFor('town'));
-    World.setPhase('evening'); World.pause(true);
+    World.setPhase('morning'); World.pause(true);
     Music.play('title');
     const has = Save.hasGame();
     const d = DAYS[Math.min(S().day, DAYS.length) - 1];
