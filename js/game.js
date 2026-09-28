@@ -18,6 +18,7 @@ const Game = (() => {
   const S = () => Save.d;
   const q = id => S().quests[id] || {};
   const setQ = (id, v) => { S().quests[id] = Object.assign({}, q(id), v); Save.write(); };
+  const todayEvent = () => { const id = EVENT_BY_DAY[S().day]; return id && !(S().events || []).includes(S().day) ? id : null; };
   const questOpen = id => !q(id).state && Save.d.day >= QUESTS[id].from && (QUESTS[id].to ? Save.d.day <= QUESTS[id].to : true);
 
   function addPoints(n, why) { S().points = (S().points || 0) + n; Save.write(); UI.toast(`🌸 +${n} poin${why ? ' · ' + why : ''}`); }
@@ -31,6 +32,7 @@ const Game = (() => {
   function mood() {
     const st = S().step, m = World.map;
     const phase = st === 'wake' || st === 'commute' ? 'morning' : st === 'class1' || st === 'class2' ? 'day' : st === 'night' ? 'night' : 'evening';
+    World.setWeather && World.setWeather(day() ? weatherFor(S().day) : 'sun');
     World.setPhase(phase);
     let song = 'morning';
     if (m === 'home') song = st === 'night' ? 'night' : 'home';
@@ -44,8 +46,11 @@ const Game = (() => {
     const d = day(), st = S().step, SP = MAPS[mapId].spots || {}, list = [];
     const scripted = d && (st === 'commute' ? d.morning : st === 'after' ? d.brk : null);
     const inScript = id => scripted && (scripted.npc === id || scripted.with === id);
+    const evId = (st === 'after' || st === 'evening') ? todayEvent() : null;
+    const ev = evId ? EVENTS[evId] : null;
     if (mapId === 'town') {
-      const amb = (id, dir) => { if (!inScript(id) && SP[id]) list.push({ id, x: SP[id][0], y: SP[id][1], dir, marker: questMarker(id) }); };
+      const amb = (id, dir) => { if (!inScript(id) && SP[id] && !(ev && ev.npc === id)) list.push({ id, x: SP[id][0], y: SP[id][1], dir, marker: questMarker(id) }); };
+      if (ev && !(st === 'after' && inScript(ev.npc))) list.push({ id: ev.npc, key: 'ev', x: ev.at[0], y: ev.at[1], dir: 'down', marker: '★', event: evId, idle: true });
       amb('tenin', 'down'); amb('kid', 'down'); amb('ojii', 'left');
       if (q('mochi').state === 'active' && !q('mochi').found) list.push({ id: 'mochi', x: SP.mochi[0], y: SP.mochi[1], dir: 'left', marker: '?' });
       if (q('mochi').state === 'done') list.push({ id: 'mochi', x: 16, y: 21, dir: 'right' });
@@ -164,6 +169,7 @@ const Game = (() => {
       UI.toast(`Tugas selesai! ▶ ${objective().text}`);
       return;
     }
+    if (npc.event) return runEvent(npc.event);
     if (npc.id === 'sensei') return senseiTalk();
     if (npc.id === 'obaa') return obaaTalk();
     if (npc.id === 'kid' && (questOpen('sora') || q('sora').state === 'active')) return soraQuest();
@@ -179,6 +185,21 @@ const Game = (() => {
     if (npc.id === 'hana') return runLines([{ w: 'hana', e: 'happy', t: 'Semangat belajar, ya! Kalau bingung, tanya aku.' }], ['hana']);
     const pool = AMBIENT[npc.id];
     if (pool) return runLines(pool[(S().day - 1) % pool.length], [npc.id]);
+  }
+
+  // Kejadian Harian ★
+  async function runEvent(id) {
+    const E = EVENTS[id];
+    await UI.timecard('★ Kejadian Hari Ini', E.title);
+    await runLines(E.lines, [E.npc]);
+    UI.hideDialog();
+    if (E.game) {
+      await Games.run(E.game, { pool: S().kana, title: E.title });
+      await UI.say({ w: E.npc, e: 'happy', t: 'Seru sekali! Ayo main lagi lain kali.' });
+    }
+    S().events = S().events || []; S().events.push(S().day); Save.write();
+    addPoints(20, 'kejadian harian'); addStamp('ev_' + id, E.title);
+    World.setNpcs(npcsFor(World.map));
   }
 
   async function friendEvent(cast) {
@@ -197,6 +218,10 @@ const Game = (() => {
   async function obaaTalk() {
     const st = S().step, n = S().day;
     if (st === 'wake' && day()) {
+      const wx = weatherFor(n);
+      if (wx === 'rain') await UI.say({ w: 'obaa', jp: 'きょう は あめ だよ。かさ を もって いってね。', ro: 'kyou wa ame da yo. kasa o motte itte ne.', id: 'Hari ini hujan. Bawa payung, ya.' });
+      else if (wx === 'cloud') await UI.say({ w: 'obaa', jp: 'きょう は くもり ね。', ro: 'kyou wa kumori ne.', id: 'Hari ini mendung, ya.' });
+      else await UI.say({ w: 'obaa', e: 'happy', jp: 'きょう は いい てんき だね。', ro: 'kyou wa ii tenki da ne.', id: 'Hari ini cuacanya bagus, ya.' });
       await runLines(BREAKFAST[(n - 1) % BREAKFAST.length], ['obaa']);
       await offerHomeQuest();
       if (n <= 3 || n % 4 === 0) await runLines(LEAVE_HOME, ['obaa']);
@@ -320,8 +345,10 @@ const Game = (() => {
       d.kana.forEach(k => { if (!S().kana.includes(k)) S().kana.push(k); });
       Extras.learn(d.kana);
       Save.write(); UI.closePanel();
-      const g = CLASS_GAMES[(n - 1) % CLASS_GAMES.length];
-      await UI.say({ w: 'sensei', e: 'happy', t: `Sekarang kita main "${Games.NAMES[g]}" dengan huruf hari ini!` });
+      const acts = activitiesFor(n);
+      await UI.say({ w: 'sensei', e: 'happy', t: 'Bagus! Sekarang pilih cara latihan hari ini. Setiap hari pilihannya berbeda, lho!' });
+      const pickA = await menuChoice('Mau latihan dengan cara apa?', acts.map(x => `${Games.NAMES[x]} — ${Games.DESC[x]}`));
+      const g = acts[pickA];
       UI.hideDialog();
       const pool = [...new Set([...d.kana, ...shuffle(S().kana.filter(k => IS_KATA(k) === IS_KATA(d.kana[0]))).slice(0, 3)])];
       await Games.run(g, { pool, words: Games.wordsFor(new Set(S().kana)).filter(w => d.kana.some(k => w.jp.includes(k))) });
@@ -339,9 +366,20 @@ const Game = (() => {
 
   async function lunch() {
     const ch2 = chapter() >= 2;
-    const opts = ['Atap sekolah bersama Yuki', 'Makan di kelas bersama Kenta', ch2 ? 'Perpustakaan bersama Hana' : 'Perpustakaan (belajar sendiri)'];
+    const special = LUNCH_SPECIAL[(S().day - 1) % LUNCH_SPECIAL.length];
+    const opts = ['Atap sekolah bersama Yuki', 'Makan di kelas bersama Kenta', ch2 ? 'Perpustakaan bersama Hana' : 'Perpustakaan (belajar sendiri)', `★ ${special.label}`];
     const a = await menuChoice('Bel berbunyi! Makan siang di mana?', opts);
     UI.hideDialog();
+    if (a === 3) {
+      await UI.fade(() => { World.load('class', 5, 6, 'up', special.who ? [{ id: special.who, x: 5, y: 5, dir: 'down' }] : []); mood(); });
+      await runLines(special.lines, special.who ? [special.who] : []);
+      addPoints(8, 'makan siang spesial');
+      UI.hideDialog();
+      await UI.say({ n: 'Kin-kon-kan-kon… Bel masuk berbunyi.' });
+      UI.hideDialog();
+      await goTo('class', 5, 4, 'up');
+      return;
+    }
     const who = ['yuki', 'kenta', ch2 ? 'hana' : null][a];
     const map = ['roof', 'class', 'library'][a];
     const SPm = MAPS[map].spots;
@@ -362,7 +400,7 @@ const Game = (() => {
       else {
         await UI.say(who ? { w: who, e: 'happy', t: 'Ayo latihan sebentar sebelum bel masuk!' } : { n: 'Ayo latihan sebentar sebelum bel masuk!' });
         UI.hideDialog();
-        await Games.run(pickOne(['memory', 'builder']), { pool: S().kana });
+        await Games.run(pickOne(['builder', 'wordmatch', 'kanahunt']), { pool: S().kana });
       }
     }
     UI.hideDialog();
@@ -398,8 +436,9 @@ const Game = (() => {
   }
 
   async function club() {
-    const opts = [...CLUBS.filter(c => c.id !== 'hoka' || chapter() >= 2).map(c => `${c.name} — ${c.desc}`), 'Langsung pulang'];
+    const fav = featuredClub(S().day);
     const list = CLUBS.filter(c => c.id !== 'hoka' || chapter() >= 2);
+    const opts = [...list.map(c => `${c.id === fav ? '★ ' : ''}${c.name} — ${c.desc}${c.id === fav ? ' (unggulan hari ini: bonus poin!)' : ''}`), 'Langsung pulang'];
     const a = await menuChoice('Kegiatan klub sepulang sekolah?', opts);
     UI.hideDialog();
     if (a < list.length) {
@@ -409,6 +448,7 @@ const Game = (() => {
       UI.hideDialog();
       const r = await Games.run(c.game, { pool: S().kana });
       if (FRIENDS.includes(c.host) && r && r.stars >= 2) heart([c.host]);
+      if (c.id === fav) addPoints(20, 'klub unggulan');
       await UI.say({ w: c.host, e: 'happy', t: 'Kerja bagus hari ini! Sampai jumpa di klub lagi.' });
       UI.hideDialog();
     }
@@ -636,8 +676,8 @@ const Game = (() => {
 
   async function study() {
     if (S().kana.length < 4) return UI.say({ n: 'Belum cukup huruf untuk latihan bebas. Belajar dulu di sekolah, ya!' });
-    const names = ['review', 'quiz', 'karuta', 'catch', 'memory', 'builder', 'shodo', 'books'];
-    const labels = [`Ulasan harian (${Extras.due().length} huruf)`, 'Kuis campuran', 'Karuta (dengar & ambil)', 'Hujan Huruf', 'Kartu Memori', 'Susun Kata', 'Kaligrafi', 'Baca buku cerita'];
+    const names = ['review', 'quiz', 'karuta', 'catch', 'builder', 'speed', 'kanahunt', 'wordmatch', 'dictation', 'shodo', 'books'];
+    const labels = [`Ulasan harian (${Extras.due().length} huruf)`, 'Kuis campuran', 'Karuta (dengar & ambil)', 'Hujan Huruf', 'Susun Kata', 'Benar atau Salah Kilat', 'Cari Huruf', 'Pasangkan Kata', 'Dikte (tulis dari ingatan)', 'Kaligrafi', 'Baca buku cerita'];
     const m = UI.modal(`<div class="w-title">Latihan Bebas</div><p class="muted">Pilih cara belajar yang kamu suka:</p>
       <div class="menu-list">${labels.map((l, i) => `<button class="mi" data-i="${i}" type="button">${l}</button>`).join('')}<button class="mi ghost" data-i="-1" type="button">Batal</button></div>`);
     const i = await UI.wait(done => m.querySelectorAll('.mi').forEach(b => b.onclick = () => { Sound.blip(); done(+b.dataset.i); }));
@@ -808,6 +848,11 @@ const Game = (() => {
     const s = S().settings;
     const tog = (k, label, sub) => `<label class="set"><span>${label}<small>${sub}</small></span><input type="checkbox" data-k="${k}" ${s[k] ? 'checked' : ''}><i class="sw"></i></label>`;
     const seg = (k, label, opts) => `<div class="set col"><span>${label}</span><div class="seg">${opts.map(([v, l]) => `<button type="button" class="${s[k] === v ? 'on' : ''}" data-seg="${k}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
+    const vsel = (kind, label, sub) => {
+      const list = Sound.voices(kind), cur = Sound.voiceName(kind);
+      if (!list.length) return '';
+      return `<label class="set col"><span>${label}<small>${sub}</small></span><select class="vsel" data-v="${kind}"><option value="">Otomatis (terbaik)</option>${list.map(v => `<option value="${UI.esc(v.name)}" ${s[kind + 'Voice'] === v.name ? 'selected' : ''}>${UI.esc(v.name)}${v.name === cur && !s[kind + 'Voice'] ? ' ✓' : ''}</option>`).join('')}</select></label>`;
+    };
     const p = UI.panel(`
       <div class="win settings">
         <div class="w-title">Pengaturan</div>
@@ -820,6 +865,11 @@ const Game = (() => {
         <label class="set col"><span>Kecepatan suara<small>Lebih lambat = lebih jelas</small></span><input type="range" min="0.6" max="1.1" step="0.05" value="${s.rate}" data-r="rate"></label>
         <label class="set col"><span>Volume musik</span><input type="range" min="0" max="1" step="0.05" value="${s.music}" data-r="music"></label>
         ${tog('sfx', 'Efek suara', 'Bunyi saat memilih')}
+        ${tog('narr', 'Narasi video', 'Sensei menjelaskan dengan suara di video pelajaran')}
+        ${vsel('ja', 'Suara bahasa Jepang', 'Pilih yang paling alami (Natural / Google / Online biasanya terbaik)')}
+        ${vsel('id', 'Suara narasi sensei', 'Suara bahasa Indonesia untuk penjelasan video')}
+        <div class="row"><button class="btn ghost small" data-a="test" type="button">♪ Tes Jepang</button><button class="btn ghost small" data-a="testid" type="button">♪ Tes narasi</button></div>
+        ${Sound.hasJa() ? '' : '<p class="warn">Suara bahasa Jepang belum ditemukan. Di Android: Pengaturan → Text-to-Speech → Google → pasang data suara 日本語 (Jepang) & Bahasa Indonesia, lalu muat ulang game.</p>'}
         <div class="sec-h">Grafik</div>
         ${seg('quality', 'Kualitas 3D', [['low', 'Hemat'], ['normal', 'Normal'], ['high', 'Tinggi']])}
         ${tog('fx', 'Kelopak sakura', 'Efek kelopak berjatuhan di kota')}
@@ -828,9 +878,6 @@ const Game = (() => {
         <label class="set col"><span>Alamat server<small>Contoh: wss://nama-server.onrender.com — lihat server/README</small></span><input class="srv" type="text" autocomplete="off" placeholder="wss://..." value="${UI.esc(s.server || '')}"></label>
         <div class="row"><button class="btn ghost small" data-a="conn" type="button">${Online.status === 'on' ? 'Putuskan' : 'Sambungkan'}</button></div>
         <p class="muted small online-st">Status: ${{ on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]}${World.online ? '' : ' (online hanya di mode 3D)'}</p>
-        ${tog('narr', 'Narasi video', 'Sensei membacakan penjelasan (bila suara bahasa Indonesia tersedia)')}
-        ${Sound.hasJa() ? '' : '<p class="warn">Suara bahasa Jepang tidak ditemukan di perangkat ini. Soal "dengarkan" dilewati. Tambahkan suara Jepang di pengaturan Text-to-Speech perangkatmu.</p>'}
-        <button class="btn ghost small" data-a="test" type="button">♪ Tes suara: こんにちは</button>
         <button class="btn danger small" data-a="reset" type="button">Hapus semua progres</button>
         <button class="btn block" data-a="close" type="button">Simpan</button>
       </div>`, 'scroll');
@@ -846,7 +893,12 @@ const Game = (() => {
         p.querySelectorAll(`[data-seg="${b.dataset.seg}"]`).forEach(x => x.classList.toggle('on', x === b));
         if (b.dataset.seg === 'quality') World.setQuality(b.dataset.v);
       });
-      p.querySelector('[data-a=test]').onclick = () => Sound.speak('こんにちは');
+      p.querySelector('[data-a=test]').onclick = () => Sound.speak('こんにちは。わたしは たなか です。');
+      p.querySelector('[data-a=testid]').onclick = async () => { if (!(await Sound.speakLang('Halo! Ini suara sensei. Yuk, belajar hiragana bareng.'))) UI.toast('Suara bahasa Indonesia tidak ada di perangkat ini.'); };
+      p.querySelectorAll('.vsel').forEach(sel => sel.onchange = () => {
+        s[sel.dataset.v + 'Voice'] = sel.value; Save.write(); Sound.pickVoice();
+        if (sel.dataset.v === 'ja') Sound.speak('こんにちは'); else Sound.speakLang('Halo, apa kabar?');
+      });
       p.querySelector('[data-a=conn]').onclick = () => {
         if (Online.status === 'on' || Online.status === 'connecting') { s.online = false; Save.write(); Online.disconnect(); }
         else { s.server = p.querySelector('.srv').value.trim(); s.online = !!s.server; Save.write(); if (!s.server) { UI.toast('Isi alamat server dulu.'); return; } Online.connect(s.server); }

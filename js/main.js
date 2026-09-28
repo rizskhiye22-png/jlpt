@@ -28,12 +28,13 @@
   function press(btn) {
     if (UI.modalOpen()) {
       if (UI.input(btn)) return;
-      if ((btn === 'b' || btn === 'menu') && Game._menuClose) Game._menuClose();
+      if (btn === 'b' || btn === 'menu') { if (!UI.back() && Game._menuClose) Game._menuClose(); }
       return;
     }
     if (UI.panelOpen()) {
       if (Lesson._keys && Lesson._keys(btn)) return;
-      UI.input(btn);
+      if (UI.input(btn)) return;
+      if (btn === 'b' || btn === 'menu') UI.back();
       return;
     }
     if (UI.input(btn)) return;

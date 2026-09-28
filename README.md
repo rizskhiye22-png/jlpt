@@ -12,15 +12,16 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 **Belajar**
 - **Bab 1 Hiragana** (11 hari) & **Bab 2 Katakana** (11 hari): 92 huruf, ulangan, dan ujian.
-- **Video pelajaran animasi** dari sensei: urutan goresan asli, subtitle, narasi suara, putar/jeda/ulang/kecepatan.
+- **Video pelajaran animasi** dari sensei: urutan goresan asli, subtitle, narasi suara sensei yang santai, putar/jeda/ulang/kecepatan.
 - **Latihan menulis bertahap** per goresan (langkah 1 → 1+2 → …), dinilai otomatis dengan stempel hanko.
 - **Ulasan Harian** (spaced repetition): huruf muncul lagi tepat sebelum lupa.
-- Mini-game: **Karuta, Hujan Huruf, Kartu Memori, Susun Kata, Kaligrafi, Belanja Konbini**.
+- Setelah video, **pilihan latihan berganti setiap hari**: Karuta, Hujan Huruf, Susun Kata, Benar/Salah Kilat, Cari Huruf, Pasangkan Kata, Dikte (+ Kaligrafi & Belanja Konbini).
 - Percakapan sehari-hari dalam cerita: sarapan (いただきます), berangkat (いってきます), pulang (ただいま), belanja (いくら ですか).
 - Suara bahasa Jepang, romaji & arti, **mode santai** tanpa batas waktu. Salah tidak pernah dihukum.
 
 **Bermain & bersantai**
-- Hari penuh dengan pilihan: makan siang di atap/kelas/perpustakaan, klub (kaligrafi, karuta, memasak, sains).
+- Hari penuh dengan pilihan: makan siang di atap/kelas/perpustakaan (+ menu spesial harian), klub (kaligrafi, karuta, memasak, sains) dengan klub unggulan ★.
+- **Kejadian harian ★** yang berbeda tiap hari (anak hilang, turis tersesat, payung saat hujan, kembang api, dompet jatuh…) & cuaca cerah/berawan/hujan.
 - 🎣 Memancing (baca huruf untuk menarik pancing) + Buku Ikan.
 - 🐱 Hewan peliharaan yang mengikutimu, 🪑 duduk di taman, 📚 buku cerita di perpustakaan.
 - 🍡 Jidouhanbaiki, warung yatai, & konbini: beli jajanan Jepang (おにぎり, だんご, たいやき, ラムネ…), makan, atau beri hadiah ke teman.
@@ -33,6 +34,12 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 - Mode 2D klasik otomatis untuk HP yang tidak mendukung WebGL.
 - Musik latar dibuat langsung oleh browser (tanpa file MP3). Grafis dari kode, tanpa gambar besar.
 - PWA: bisa dipasang di layar utama HP & dimainkan offline.
+
+## Suara di HP
+Suara memakai Text-to-Speech bawaan perangkat. Jika video sensei tidak bersuara:
+- **Android**: Pengaturan → Aksesibilitas/Sistem → *Text-to-Speech* → mesin **Google** → pasang data suara **日本語 (Jepang)** dan **Bahasa Indonesia**.
+- **iPhone**: Pengaturan → Aksesibilitas → Konten Lisan → Suara → unduh suara Jepang (mis. Kyoko/O-ren) & Indonesia (Damayanti).
+- Matikan mode senyap, lalu di game buka **Menu → Pengaturan → Suara** untuk memilih suara paling alami dan tekan *Tes*.
 
 ## Cara main
 - **HP**: ketuk layar untuk berjalan (atau tombol arah). Ketuk orang/benda atau tekan **A** untuk bicara. **B/MENU** membuka menu.
@@ -62,6 +69,7 @@ index.html              halaman utama
 css/style.css           tampilan (jendela retro, papan tulis, video, mini-game)
 js/data.js              ★ materi Bab 1 (hiragana), tokoh, kosakata
 js/data2.js             ★ materi Bab 2 (katakana), sarapan/makan siang/makan malam, klub, misi, event
+js/data3.js             ★ variasi harian: kejadian, cuaca, makan siang spesial, rotasi latihan
 js/extras.js            ★ jajanan, pencapaian, streak, ulasan harian (SRS)
 js/relax.js             ★ memancing, hewan peliharaan, bangku taman, buku cerita
 js/strokes.js           data urutan goresan (KanjiVG, CC BY-SA 3.0)

@@ -29,12 +29,15 @@ Status tiap poin: ✅ sudah ada · 🚧 dikerjakan di pembaruan ini · 🔜 beri
 - Dunia **3D gaya HD-2D** (Three.js) + mode 2D cadangan untuk HP lama.
 - **Bab 1 Hiragana** & **Bab 2 Katakana**: 22 hari sekolah, 92 huruf, ulangan & ujian.
 - Satu hari penuh: sarapan → sapa teman → pelajaran 1 → makan siang (pilih tempat) → pelajaran 2 → klub (pilih) → sore di kota → makan malam → tidur & buku harian.
-- **Video pelajaran animasi** dari sensei: urutan goresan asli (KanjiVG), subtitle, narasi suara, putar/jeda/ulang/kecepatan.
+- **Setiap hari berbeda**: setelah video, pilihan latihan berganti tiap hari (3 dari 7 permainan), ada **kejadian harian** (anak hilang, turis, payung saat hujan, kembang api, dompet jatuh, dll.), **cuaca** (cerah/berawan/hujan), makan siang spesial, dan klub unggulan ★.
+- **Video pelajaran animasi** dari sensei: urutan goresan asli (KanjiVG), subtitle, narasi suara sensei yang santai (bahasa Indonesia + sapaan Jepang), putar/jeda/ulang/kecepatan.
 - **Latihan menulis bertahap per goresan** (langkah 1 → 1+2 → …) dengan penilaian otomatis & stempel hanko.
-- Mini-game: **Karuta, Hujan Huruf, Kartu Memori, Susun Kata, Kaligrafi, Belanja Konbini**.
+- Mini-game: **Karuta, Hujan Huruf, Susun Kata, Kaligrafi, Belanja Konbini, Benar/Salah Kilat, Cari Huruf, Pasangkan Kata, Dikte**.
+- Setiap kegiatan punya tombol **✕ keluar** dan tombol B/Esc selalu bisa menutup menu (tidak ada lagi layar macet).
 - Karakter pixel art buatan kode, potret berekspresi, **kustomisasi pemain** + lemari.
 - Misi sampingan, event persahabatan, omikuji di kuil, stempel, poin sakura.
-- Musik latar generatif bernuansa Jepang, efek suara 8-bit, TTS bahasa Jepang.
+- Musik latar generatif bernuansa Jepang (otomatis mengecil saat sensei bicara), efek suara 8-bit.
+- Suara TTS: otomatis memilih suara paling alami di perangkat (Natural/Google/Online), bisa dipilih manual di Pengaturan, aman untuk HP Android/iOS.
 - PWA offline, simpan otomatis, pengaturan lengkap (romaji, mode santai, kualitas grafis, dll.).
 
 ---
@@ -104,7 +107,7 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 
 ### 4.6 Dunia yang hidup — 🔜
 - Musim (sakura → musim panas & kembang api → momiji → salju) berganti tiap bab.
-- Cuaca (hujan, gerimis) memunculkan dialog baru (あめ, かさ).
+- ✅ Cuaca (cerah, berawan, hujan) + kejadian payung (あめ, かさ). 🔜 Salju & angin musiman.
 - NPC berjalan dengan rutinitas harian, kucing Mochi berkeliaran.
 - Event musiman: Tanabata (menulis permohonan dalam hiragana), Obon, Tahun Baru (omikuji spesial).
 

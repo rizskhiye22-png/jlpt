@@ -120,13 +120,17 @@ const Music = (() => {
       bus = ctx.createGain(); bus.gain.value = 1; bus.connect(master);
       song = Object.assign(compose(THEMES[name]), { th: THEMES[name] });
       step = 0; nextTime = ctx.currentTime + 0.1;
-      fadeTo(vol() * 0.9, 1.2);
+      fadeTo(level(), 1.2);
       if (!timer) timer = setInterval(schedule, 90);
     };
     if (song) { fadeTo(0.0001, 0.6); setTimeout(() => { if (current === name) start(); }, 620); } else start();
   }
   function stop() { current = null; if (ctx) fadeTo(0.0001, .5); setTimeout(() => { if (!current) { song = null; clearInterval(timer); timer = null; } }, 600); }
-  function setVolume() { if (ctx && song) fadeTo(vol() * 0.9, .3); }
+  let ducked = false;
+  const level = () => vol() * 0.9 * (ducked ? 0.3 : 1);
+  function setVolume() { if (ctx && song) fadeTo(level(), .3); }
+  // Kecilkan musik saat sensei bicara, agar penjelasan terdengar jelas di HP
+  function duck(on) { if (ducked === !!on) return; ducked = !!on; setVolume(); }
   function unlock() { if (ensure() && ctx.state === 'suspended') ctx.resume(); }
 
   document.addEventListener('visibilitychange', () => {
@@ -134,5 +138,5 @@ const Music = (() => {
     if (document.hidden) ctx.suspend(); else ctx.resume();
   });
 
-  return { play, stop, setVolume, unlock, get current() { return current; } };
+  return { play, stop, setVolume, duck, unlock, get current() { return current; } };
 })();

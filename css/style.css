@@ -423,11 +423,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .bubble.bad { background: var(--bad); animation: shake .3s steps(4) !important; }
 @keyframes rise { from { transform: translateY(0); } to { transform: translateY(calc(-1 * min(52vh, 380px) - 90px)); } }
 @keyframes popb { to { transform: scale(1.6); opacity: 0; } }
-.m-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.mcard { aspect-ratio: 3 / 4; border: 3px solid var(--ink); border-radius: 6px; background: #5a7ac0; color: #fff; font-size: 26px; position: relative; box-shadow: 0 3px 0 rgba(0,0,0,.35); }
-.mcard .m-face { display: none; color: var(--ink); } .mcard .m-face.jp { font-family: var(--jp); font-weight: 700; font-size: 32px; }
-.mcard.open, .mcard.done { background: var(--paper); } .mcard.open .m-face, .mcard.done .m-face { display: inline; } .mcard.open .m-back, .mcard.done .m-back { display: none; }
-.mcard.done { background: var(--ok); }
 .b-card { background: var(--paper); border: 3px solid var(--ink); border-radius: 8px; padding: 14px; display: flex; justify-content: center; align-items: center; gap: 12px; }
 .b-mean { font-size: 24px; }
 .slots, .tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -502,6 +497,29 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .seg button.on { background: var(--gold); box-shadow: 0 2px 0 var(--ink); }
 .settings .sec-h { margin-top: 14px; }
 .tbl tr.ch td { font-weight: 700; background: var(--paper2); padding-left: 8px; }
+
+/* ================= Tombol keluar & mini-game baru ================= */
+.exit-x { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 10px; z-index: 5; width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid var(--paper); background: rgba(20,12,24,.75); color: var(--paper); font-size: 18px; }
+.exit-x:active { transform: scale(.92); }
+.sp-card { background: var(--paper); border: 3px solid var(--ink); border-radius: 10px; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 4px 0 rgba(0,0,0,.45); }
+.sp-card.pop { animation: pop .18s steps(3); } .sp-card.good { background: var(--ok); } .sp-card.bad { background: var(--bad); animation: shake .3s steps(4); }
+.sp-kana { font-size: 72px; } .sp-eq { font-size: 36px; color: var(--muted); } .sp-ro { font-size: 48px; color: #a8304a; }
+.sp-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sp-b { min-height: 72px; border: 3px solid var(--ink); border-radius: 10px; font-size: 20px; box-shadow: 0 4px 0 var(--ink); }
+.sp-b.yes { background: #bfe8cf; } .sp-b.no { background: #f6c1c1; }
+.sp-b:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.hunt-k { font-size: 30px; }
+.hunt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.hc { aspect-ratio: 1; border: 3px solid var(--ink); border-radius: 8px; background: #fffdf5; font-size: 34px; box-shadow: 0 3px 0 rgba(0,0,0,.35); }
+.hc.got { background: var(--ok); transform: scale(.94); } .hc.wrong { background: var(--bad); animation: shake .3s steps(4); }
+.wm { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wm-col { display: flex; flex-direction: column; gap: 8px; }
+.wm-b { min-height: 52px; border: 3px solid var(--ink); border-radius: 8px; background: #fffdf5; font-size: 15px; padding: 4px; box-shadow: 0 3px 0 rgba(0,0,0,.35); }
+.wm-b.jp { font-size: 22px; }
+.wm-b.sel { background: #fff4cf; box-shadow: 0 0 0 3px var(--gold); } .wm-b.done { background: var(--ok); opacity: .75; } .wm-b.wrong { background: var(--bad); animation: shake .3s steps(4); }
+.dict-say { display: flex; gap: 10px; align-items: center; justify-content: center; font-size: 14px; margin: 6px 0; }
+.steps.hide { display: none; }
 
 /* ================= Fase 1: fitur tambahan ================= */
 .hud-row { display: flex; gap: 4px; align-items: center; }
@@ -578,10 +596,12 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .phrase b { font-size: 15px; } .phrase small { font-size: 11px; color: var(--muted); }
 .modal.phrases { max-height: 88vh; overflow-y: auto; }
 .srv { width: 100%; margin-top: 6px; padding: 10px; font: inherit; font-size: 14px; border: 2px solid var(--ink); border-radius: 6px; -webkit-user-select: text; user-select: text; }
+.vsel { width: 100%; margin-top: 6px; padding: 9px; font: inherit; font-size: 13px; border: 2px solid var(--ink); border-radius: 6px; background: #fffaf0; color: var(--ink); max-width: 100%; }
 
 /* mode 2D: suasana waktu lewat warna */
 body[data-phase="evening"] #game { filter: sepia(.25) saturate(1.1) hue-rotate(-10deg); }
 body[data-phase="night"] #game { filter: brightness(.62) saturate(.8) hue-rotate(10deg); }
+body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 
 /* layar pendek (HP kecil / landscape) */
 @media (max-height: 640px) {

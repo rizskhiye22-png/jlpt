@@ -174,10 +174,39 @@ const UI = (() => {
   const dialogOpen = () => !!(advanceFn || choice);
 
   /* ---------- panel (pelajaran, menu, dsb.) ---------- */
+  // Kegiatan (kuis, mini-game, video, pelajaran) selalu punya tombol keluar
+  const ACTIVITY = /\b(quizp|gamep|videop|lesson)\b/;
   function panel(html, cls = '') {
-    els.panels.innerHTML = `<div class="panel ${cls}">${html}</div>`;
+    const exit = ACTIVITY.test(cls) ? '<button class="exit-x" type="button" aria-label="Keluar">✕</button>' : '';
+    els.panels.innerHTML = `<div class="panel ${cls}">${exit}${html}</div>`;
     els.panels.classList.add('on');
-    return els.panels.firstElementChild;
+    const p = els.panels.firstElementChild;
+    const x = p.querySelector('.exit-x'); if (x) x.onclick = exitActivity;
+    return p;
+  }
+  // Keluar dari kegiatan yang sedang berjalan (kembali ke dunia)
+  function exitActivity() {
+    if (!confirm('Keluar dari kegiatan ini? Progres kegiatan ini tidak disimpan.')) return;
+    Sound.stop(); closePanel(); closeModal(); hideDialog();
+    abortAll();
+    toast('Keluar. Kamu bisa mengulanginya kapan saja.');
+  }
+  // Tombol B / ketuk di luar: tutup layar yang sedang terbuka
+  const CLOSE_TXT = /^\s*(Tutup|Selesai|Batal|Simpan|Tidak jadi)\b/;
+  const closeBtn = root => root.querySelector('[data-a=close], .mi.ghost, [data-i="-1"], [data-a=no]')
+    || [...root.querySelectorAll('button')].find(b => CLOSE_TXT.test(b.textContent));
+  function back() {
+    if (modalOpen()) {
+      const c = closeBtn(els.modals);
+      if (c) { c.click(); return true; }
+      return false;
+    }
+    if (panelOpen()) {
+      const c = closeBtn(els.panels);
+      if (c) { c.click(); return true; }
+      if (els.panels.querySelector('.exit-x')) { exitActivity(); return true; }
+    }
+    return false;
   }
   function closePanel() { els.panels.innerHTML = ''; els.panels.classList.remove('on'); }
   const panelOpen = () => els.panels.classList.contains('on');
@@ -185,6 +214,7 @@ const UI = (() => {
   function modal(html, cls = '') {
     els.modals.innerHTML = `<div class="modal-bg"></div><div class="modal ${cls}">${html}</div>`;
     els.modals.classList.add('on');
+    els.modals.querySelector('.modal-bg').onclick = () => { if (!back() && window.Game && Game._menuClose) Game._menuClose(); };
     return els.modals.querySelector('.modal');
   }
   function closeModal() { els.modals.innerHTML = ''; els.modals.classList.remove('on'); }
@@ -229,7 +259,7 @@ const UI = (() => {
   return {
     init, wait, abortAll, sleep, esc, fmt,
     say, choose, hideDialog, advance, input, dialogOpen,
-    panel, closePanel, panelOpen, modal, closeModal, modalOpen,
+    panel, closePanel, panelOpen, modal, closeModal, modalOpen, back, exitActivity,
     toast, fade, timecard, setObjective, setDay, setPoints, setReview, setOnline, showGame,
     get els() { return els; }, set canvas(c) { els.canvas = c; },
   };

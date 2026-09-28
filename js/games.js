@@ -2,7 +2,10 @@
    MINI-GAME BELAJAR
    karuta   : dengarkan huruf, ambil kartu yang benar secepatnya
    catch    : "Hujan Huruf", tangkap gelembung huruf yang cocok
-   memory   : kartu memori, pasangkan huruf dengan bacaannya
+   speed    : benar atau salah kilat
+   kanahunt : cari semua huruf yang sama di antara huruf mirip
+   wordmatch: pasangkan kata Jepang dengan artinya
+   dictation: dikte, dengar bunyi lalu tulis hurufnya tanpa contoh
    builder  : susun huruf menjadi kata
    shodo    : kaligrafi dengan kuas, tulisan dinilai otomatis
    shop     : belanja di konbini sesuai daftar katakana
@@ -81,7 +84,7 @@ const Games = (() => {
         };
         if (!relax()) {
           const bar = p.querySelector('.timer i'); const T0 = Date.now(), LIM = 7000;
-          const tick = () => { if (finished) return; const f = 1 - (Date.now() - T0) / LIM; bar.style.width = Math.max(0, f * 100) + '%'; if (f <= 0) { Sound.bad(); end(false); } else tmr = setTimeout(tick, 100); };
+          const tick = () => { if (finished || !p.isConnected) return; const f = 1 - (Date.now() - T0) / LIM; bar.style.width = Math.max(0, f * 100) + '%'; if (f <= 0) { Sound.bad(); end(false); } else tmr = setTimeout(tick, 100); };
           tick();
         }
         p.querySelectorAll('.kcard').forEach(b => b.onclick = () => {
@@ -117,7 +120,7 @@ const Games = (() => {
       p.querySelector('.say').onclick = () => Sound.speak(target);
       const finish = () => { if (over) return; over = true; clearTimeout(spawnT); clearTimeout(tmr); field.innerHTML = ''; done({ score, miss }); };
       const spawn = () => {
-        if (over) return;
+        if (over || !field.isConnected) return;
         const isT = Math.random() < .42;
         const k = isT ? target : pick(distractors(target, pool, 4).concat(pool.filter(x => x !== target)));
         const b = document.createElement('button');
@@ -136,7 +139,7 @@ const Games = (() => {
       spawn();
       if (!relax()) {
         const bar = p.querySelector('.timer i'), T0 = Date.now(), LIM = 40000;
-        const tick = () => { if (over) return; const f = 1 - (Date.now() - T0) / LIM; bar.style.width = Math.max(0, f * 100) + '%'; if (f <= 0) finish(); else tmr = setTimeout(tick, 200); };
+        const tick = () => { if (over || !p.isConnected) return; const f = 1 - (Date.now() - T0) / LIM; bar.style.width = Math.max(0, f * 100) + '%'; if (f <= 0) finish(); else tmr = setTimeout(tick, 200); };
         tick();
       }
     });
@@ -144,43 +147,131 @@ const Games = (() => {
     return result('Hujan Huruf', res.score, goal, res.miss ? `Salah tangkap: ${res.miss} kali` : 'Tanpa salah sama sekali!');
   }
 
-  /* ---------- 3. KARTU MEMORI ---------- */
-  async function memory({ pool, pairs = 6, title = 'Kartu Memori' }) {
+  /* ---------- 3. BENAR ATAU SALAH KILAT ---------- */
+  async function speed({ pool, goal = 12, title = 'Benar atau Salah?' }) {
     pool = pool && pool.length ? pool : Save.d.kana;
     Music.play('game');
-    const ks = shuffle(pool).slice(0, Math.min(pairs, pool.length));
-    const cards = shuffle(ks.flatMap(k => [{ k, face: k, jp: true }, { k, face: KANA[k].ro }]));
-    const moves = await UI.wait(done => {
+    const res = await UI.wait(done => {
       const p = UI.panel(`
-        <div class="game memory">
-          ${header(title, `<span class="g-info">Langkah: <b class="m-moves">0</b></span>`)}
-          <div class="m-grid">${cards.map((c, i) => `<button class="mcard" type="button" data-i="${i}"><span class="m-back">?</span><span class="m-face ${c.jp ? 'jp' : ''}">${c.face}</span></button>`).join('')}</div>
-          <p class="g-hint">Balik dua kartu. Pasangkan huruf dengan cara bacanya.</p>
+        <div class="game speed">
+          ${header(title, '<span class="g-info">★ <b class="sp-s">0</b> · <b class="sp-n">0</b>/' + goal + '</span>')}
+          ${relax() ? '' : '<div class="timer"><i></i></div>'}
+          <div class="sp-card"><div class="sp-kana jp"></div><div class="sp-eq">=</div><div class="sp-ro"></div></div>
+          <div class="sp-btns"><button class="sp-b yes" type="button">⭕ Benar</button><button class="sp-b no" type="button">❌ Salah</button></div>
+          <p class="g-hint">Apakah huruf dan cara bacanya cocok? Jawab secepat mungkin!</p>
         </div>`, 'gamep');
-      const btns = [...p.querySelectorAll('.mcard')];
-      let open = [], moves = 0, found = 0, lock = false;
-      btns.forEach(b => b.onclick = () => {
-        const i = +b.dataset.i;
-        if (lock || b.classList.contains('open') || b.classList.contains('done')) return;
-        b.classList.add('open'); Sound.blip();
-        if (cards[i].jp) Sound.speak(cards[i].k);
-        open.push(i);
-        if (open.length < 2) return;
-        moves++; p.querySelector('.m-moves').textContent = moves;
-        const [a, c] = open; open = [];
-        if (cards[a].k === cards[c].k) {
-          Sound.ok(); stat(cards[a].k, true);
-          [a, c].forEach(j => btns[j].classList.add('done')); found++;
-          if (found === ks.length) setTimeout(() => done(moves), 600);
-        } else {
-          lock = true; Sound.bad();
-          setTimeout(() => { [a, c].forEach(j => btns[j].classList.remove('open')); lock = false; }, 800);
-        }
+      const kEl = p.querySelector('.sp-kana'), rEl = p.querySelector('.sp-ro'), card = p.querySelector('.sp-card');
+      let n = 0, score = 0, cur = null, over = false, tmr = null;
+      const next = () => {
+        if (n >= goal) return finish();
+        const k = pick(pool), truth = Math.random() < .5;
+        const other = distractors(k, pool, 3)[0] || k;
+        cur = { k, truth: truth || other === k };
+        kEl.textContent = k; rEl.textContent = cur.truth ? KANA[k].ro : KANA[other].ro;
+        card.className = 'sp-card pop';
+      };
+      const finish = () => { if (over) return; over = true; clearTimeout(tmr); done({ score, n }); };
+      const answer = yes => {
+        if (over || !cur) return;
+        const ok = yes === cur.truth; n++;
+        stat(cur.k, ok);
+        if (ok) { score++; Sound.ok(); card.className = 'sp-card good'; } else { Sound.bad(); card.className = 'sp-card bad'; UI.toast(`${cur.k} dibaca "${KANA[cur.k].ro}"`); }
+        p.querySelector('.sp-s').textContent = score; p.querySelector('.sp-n').textContent = n;
+        cur = null; setTimeout(next, ok ? 350 : 900);
+      };
+      p.querySelector('.yes').onclick = () => answer(true);
+      p.querySelector('.no').onclick = () => answer(false);
+      next();
+      if (!relax()) {
+        const bar = p.querySelector('.timer i'), T0 = Date.now(), LIM = 45000;
+        const tick = () => { if (over || !p.isConnected) return; const f = 1 - (Date.now() - T0) / LIM; bar.style.width = Math.max(0, f * 100) + '%'; if (f <= 0) finish(); else tmr = setTimeout(tick, 200); };
+        tick();
+      }
+    });
+    Save.write();
+    return result('Benar atau Salah', res.score, Math.max(res.n, 1), 'Kecepatan membaca adalah kunci!');
+  }
+
+  /* ---------- 3b. CARI HURUF ---------- */
+  async function kanahunt({ pool, rounds = 3, title = 'Cari Huruf' }) {
+    pool = pool && pool.length ? pool : Save.d.kana;
+    Music.play('game');
+    let score = 0, total = 0;
+    const targets = shuffle(pool).slice(0, rounds);
+    for (let r = 0; r < targets.length; r++) {
+      const k = targets[r], count = 3 + (Math.random() * 3 | 0);
+      const others = distractors(k, pool, 6);
+      const cells = shuffle([...Array(count).fill(k), ...Array.from({ length: 16 - count }, () => pick(others.length ? others : [k]))]);
+      total += count;
+      const found = await UI.wait(done => {
+        const p = UI.panel(`
+          <div class="game hunt">
+            ${header(title, `<span class="g-info">${r + 1}/${targets.length}</span>`)}
+            <div class="c-target">Temukan semua: <b class="jp hunt-k">${k}</b> <span class="muted">(${KANA[k].ro})</span> <button class="say" type="button">♪</button></div>
+            <div class="hunt-grid">${cells.map((c, i) => `<button class="hc jp" type="button" data-i="${i}">${c}</button>`).join('')}</div>
+            <p class="g-hint">Masih ada <b class="left">${count}</b> lagi. Hati-hati dengan huruf yang mirip!</p>
+          </div>`, 'gamep');
+        p.querySelector('.say').onclick = () => Sound.speak(k);
+        let left = count, miss = 0;
+        p.querySelectorAll('.hc').forEach(b => b.onclick = () => {
+          if (b.classList.contains('got')) return;
+          if (cells[+b.dataset.i] === k) {
+            Sound.ok(); b.classList.add('got'); left--; p.querySelector('.left').textContent = left;
+            if (!left) { stat(k, miss === 0); setTimeout(() => done(Math.max(0, count - miss)), 600); }
+          } else { Sound.bad(); miss++; b.classList.add('wrong'); UI.toast(`Itu ${cells[+b.dataset.i]} (${KANA[cells[+b.dataset.i]].ro})`); setTimeout(() => b.classList.remove('wrong'), 350); }
+        });
+      });
+      score += found;
+    }
+    Save.write();
+    return result('Cari Huruf', score, total, 'Mata yang teliti membuat membaca jadi cepat.');
+  }
+
+  /* ---------- 3c. PASANGKAN KATA ---------- */
+  async function wordmatch({ words, count = 5, title = 'Pasangkan Kata' }) {
+    let list = words && words.length >= 3 ? words : wordsFor(learnedSet());
+    if (list.length < 3) return karuta({ pool: Save.d.kana, title });
+    list = shuffle(list).slice(0, count);
+    Music.play('game');
+    const res = await UI.wait(done => {
+      const right = shuffle(list);
+      const p = UI.panel(`
+        <div class="game match">
+          ${header(title, '<span class="g-info">✓ <b class="m-ok">0</b>/' + list.length + '</span>')}
+          <div class="wm">
+            <div class="wm-col">${list.map((w, i) => `<button class="wm-b jp" data-l="${i}" type="button">${w.jp}</button>`).join('')}</div>
+            <div class="wm-col">${right.map((w, i) => `<button class="wm-b" data-r="${i}" type="button">${w.id}</button>`).join('')}</div>
+          </div>
+          <p class="g-hint">Ketuk kata Jepang, lalu ketuk artinya.</p>
+        </div>`, 'gamep');
+      let sel = null, ok = 0, miss = 0;
+      p.querySelectorAll('[data-l]').forEach(b => b.onclick = () => {
+        if (b.classList.contains('done')) return;
+        p.querySelectorAll('[data-l]').forEach(x => x.classList.remove('sel'));
+        b.classList.add('sel'); sel = list[+b.dataset.l]; sel._btn = b; Sound.speak(sel.jp);
+      });
+      p.querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
+        if (!sel || b.classList.contains('done')) return;
+        if (right[+b.dataset.r] === sel) {
+          Sound.ok(); ok++; b.classList.add('done'); sel._btn.classList.add('done'); sel._btn.classList.remove('sel'); sel = null;
+          p.querySelector('.m-ok').textContent = ok;
+          if (ok === list.length) setTimeout(() => done({ ok, miss }), 600);
+        } else { Sound.bad(); miss++; b.classList.add('wrong'); UI.toast(`${sel.jp} (${sel.ro}) = ${sel.id}`); setTimeout(() => b.classList.remove('wrong'), 350); }
       });
     });
     Save.write();
-    const best = ks.length, score = Math.max(0, Math.min(best, best * 2 - moves + 2));
-    return result('Kartu Memori', score, best, `Selesai dalam ${moves} langkah.`);
+    return result('Pasangkan Kata', Math.max(0, res.ok - res.miss), res.ok, res.miss ? `Salah pasang: ${res.miss} kali` : 'Semua benar!');
+  }
+
+  /* ---------- 3d. DIKTE ---------- */
+  async function dictation({ pool, count = 3, title = 'Dikte' }) {
+    pool = pool && pool.length ? pool : Save.d.kana;
+    Music.play('home');
+    const ks = shuffle(pool).slice(0, count);
+    let score = 0;
+    for (let i = 0; i < ks.length; i++) score += await shodoCard(ks[i], { title, info: `${i + 1}/${ks.length}`, blind: true });
+    Save.write();
+    return result('Dikte', score, ks.length * 3, 'Menulis dari ingatan = hafal sungguhan!');
   }
 
   /* ---------- 4. SUSUN KATA ---------- */
@@ -188,7 +279,7 @@ const Games = (() => {
   async function builder({ words, count = 4, title = 'Susun Kata' }) {
     const known = learnedSet();
     let list = words && words.length ? words : wordsFor(known);
-    if (list.length < 2) return memory({ pool: Save.d.kana, title });
+    if (list.length < 2) return karuta({ pool: Save.d.kana, title });
     list = shuffle(list).slice(0, count);
     Music.play('game');
     let score = 0;
@@ -256,17 +347,19 @@ const Games = (() => {
   function shodoCard(k, opt = {}) {
     const strokes = (typeof STROKES !== 'undefined' && STROKES[k]) || [];
     const n = strokes.length;
+    let blind = !!opt.blind;   // mode dikte: contoh huruf disembunyikan
     const p = UI.panel(`
       <div class="game shodo">
         ${header(opt.title || 'Kaligrafi', `<span class="g-info">${opt.info || ''}</span>`)}
         <div class="washi">
-          <div class="w-top"><b>${k}</b> <span>${KANA[k].ro}</span> <em class="w-step"></em></div>
-          ${n ? `<div class="steps">${strokes.map((_, i) => `<canvas class="stp" data-i="${i}" width="88" height="88"></canvas>`).join('')}</div>` : ''}
+          <div class="w-top"><b class="w-k">${blind ? '？' : k}</b> <span>${KANA[k].ro}</span> <em class="w-step"></em></div>
+          ${blind ? `<div class="dict-say"><button class="say" type="button">♪</button> Dengarkan, lalu tulis hurufnya dari ingatan!</div>` : ''}
+          ${n ? `<div class="steps ${blind ? 'hide' : ''}">${strokes.map((_, i) => `<canvas class="stp" data-i="${i}" width="88" height="88"></canvas>`).join('')}</div>` : ''}
           <div class="trace-wrap"><canvas class="trace"></canvas><div class="hanko"></div></div>
         </div>
         <p class="g-hint">Ikuti goresan yang <b style="color:#d8455d">berwarna</b> dari titik bernomor. Setelah satu goresan, lanjut ke goresan berikutnya.</p>
         <div class="row three">
-          <button class="btn ghost" data-a="demo" type="button">▶ Contoh</button>
+          <button class="btn ghost" data-a="demo" type="button">${blind ? '💡 Petunjuk' : '▶ Contoh'}</button>
           <button class="btn ghost" data-a="clear" type="button">Hapus</button>
           <button class="btn" data-a="done" type="button">Nilai ✓</button>
         </div>
@@ -298,7 +391,8 @@ const Games = (() => {
       ctx.clearRect(0, 0, size, size);
       ctx.strokeStyle = 'rgba(160,60,60,.18)'; ctx.setLineDash([5, 6]); ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(size / 2, 0); ctx.lineTo(size / 2, size); ctx.moveTo(0, size / 2); ctx.lineTo(size, size / 2); ctx.stroke(); ctx.setLineDash([]);
-      if (n) {
+      if (n && blind) { /* dikte: tanpa contoh */ }
+      else if (n) {
         const pad = size * .06, S2 = size - pad * 2;
         ctx.save(); ctx.translate(pad, pad);
         strokePaths(ctx, k, S2, n, i => i === step && demoProg == null ? { color: 'rgba(216,69,93,.35)', width: 9 } : { color: 'rgba(40,30,50,.12)', width: 8 });
@@ -318,12 +412,12 @@ const Games = (() => {
           });
         }
         ctx.restore();
-      } else {
+      } else if (!blind) {
         ctx.fillStyle = 'rgba(40,30,50,.13)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.font = font(Math.round(size * .78)); ctx.fillText(k, size / 2, size / 2 + size * .03);
       }
       if (demoProg == null) ctx.drawImage(inkFull, 0, 0, size, size);
-      stepEl.textContent = n ? (step < n ? `Goresan ${step + 1} dari ${n}` : 'Semua goresan selesai!') : '';
+      stepEl.textContent = blind ? `${n} goresan` : n ? (step < n ? `Goresan ${step + 1} dari ${n}` : 'Semua goresan selesai!') : '';
       p.querySelectorAll('.stp').forEach(c => c.classList.toggle('on', +c.dataset.i === step));
     }
     function clearAll() {
@@ -338,7 +432,9 @@ const Games = (() => {
       const tick = now => { const f = (now - T0) / DUR; if (f >= 1) { demo = null; redraw(); return; } redraw(f); demo = requestAnimationFrame(tick); };
       demo = requestAnimationFrame(tick);
     }
-    setTimeout(playDemo, 300);
+    const reveal = () => { blind = false; p.querySelector('.w-k').textContent = k; const st = p.querySelector('.steps'); if (st) st.classList.remove('hide'); redraw(); };
+    if (blind) { const say = () => Sound.speak(k); setTimeout(say, 300); p.querySelector('.dict-say .say').onclick = say; }
+    else setTimeout(playDemo, 300);
 
     const pos = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * size / r.width, y: (e.clientY - r.top) * size / r.height }; };
     cv.onpointerdown = e => { e.preventDefault(); if (demo) { cancelAnimationFrame(demo); demo = null; redraw(); } cv.setPointerCapture(e.pointerId); last = pos(e); lastT = performance.now(); strokeInk = 0; };
@@ -405,12 +501,13 @@ const Games = (() => {
       let graded = null;
       const toDraw = () => { graded = null; clearAll(); clearBtn.textContent = 'Hapus'; doneBtn.textContent = 'Nilai ✓'; };
       clearBtn.onclick = toDraw;
-      p.querySelector('[data-a=demo]').onclick = () => { if (graded !== null) toDraw(); playDemo(); };
+      p.querySelector('[data-a=demo]').onclick = () => { if (graded !== null) toDraw(); if (blind) { reveal(); UI.toast('Petunjuk dibuka. Coba tulis lagi!'); } playDemo(); };
       doneBtn.onclick = () => {
         if (graded !== null) { Sound.blip(); cancelAnimationFrame(demo); done(graded); return; }
         if (!drawn) { UI.toast('Tulis hurufnya dulu, ya!'); return; }
         const s = grade(); window.__lastShodo = s;
         graded = s >= .86 ? 3 : s >= .72 ? 2 : s >= .6 ? 1 : 0;
+        if (blind) { reveal(); Sound.speak(k); }
         hanko.className = 'hanko on s' + graded;
         hanko.textContent = ['もう一度', 'よし', 'よい', 'すごい'][graded];
         (graded ? Sound.ok : Sound.bad)();
@@ -467,9 +564,10 @@ const Games = (() => {
     return result('Belanja Selesai', Math.max(0, count - res.miss), count, `Total belanja: ${res.total} えん (yen)`);
   }
 
-  const RUN = { karuta, catch: catchGame, memory, builder, shodo, shop };
-  function run(name, opts) { return (RUN[name] || memory)(opts || {}); }
-  const NAMES = { karuta: 'Karuta', catch: 'Hujan Huruf', memory: 'Kartu Memori', builder: 'Susun Kata', shodo: 'Kaligrafi', shop: 'Belanja' };
+  const RUN = { karuta, catch: catchGame, builder, shodo, shop, speed, kanahunt, wordmatch, dictation };
+  function run(name, opts) { return (RUN[name] || karuta)(opts || {}); }
+  const NAMES = { karuta: 'Karuta', catch: 'Hujan Huruf', builder: 'Susun Kata', shodo: 'Kaligrafi', shop: 'Belanja', speed: 'Benar atau Salah Kilat', kanahunt: 'Cari Huruf', wordmatch: 'Pasangkan Kata', dictation: 'Dikte' };
+  const DESC = { karuta: 'dengar lalu ambil kartu tercepat', catch: 'tangkap gelembung huruf', builder: 'susun huruf menjadi kata', shodo: 'menulis rapi dengan kuas', speed: 'benar atau salah secepat kilat', kanahunt: 'temukan huruf di antara yang mirip', wordmatch: 'pasangkan kata dengan artinya', dictation: 'dengar bunyinya, tulis tanpa contoh' };
 
-  return { run, karuta, catchGame, memory, builder, shodo, shodoCard, shop, NAMES, wordsFor };
+  return { run, karuta, catchGame, builder, shodo, shodoCard, shop, speed, kanahunt, wordmatch, dictation, NAMES, DESC, wordsFor };
 })();

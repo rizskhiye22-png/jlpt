@@ -612,8 +612,6 @@ const SHOP = [
   { kind: 'uniformColor', v: '#4a4a55', price: 30 },
 ];
 
-// Permainan belajar di kelas (bergiliran setiap hari)
-const CLASS_GAMES = ['memory', 'catch', 'builder', 'karuta'];
 
 // Warga kota tambahan
 AMBIENT.tenin.push(

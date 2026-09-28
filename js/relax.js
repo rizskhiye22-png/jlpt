@@ -198,32 +198,33 @@ const Relax = (() => {
 
   /* ---------- HEWAN PELIHARAAN ---------- */
   function activePet() { ensure(); const id = S().petActive; return id && S().pets.includes(id) ? PETS.find(p => p.id === id) : null; }
-  function petShop() {
+  async function petShop() {
     ensure();
-    const p = UI.panel(`<div class="win"><div class="w-title">Hewan Peliharaan <span class="pts-badge">🌸 <b class="pts-n">${S().points || 0}</b></span></div>
-      <p class="muted">Hewan peliharaan akan mengikutimu ke mana pun. Elus setiap hari untuk bonus poin!</p>
-      <div class="pet-grid">${PETS.map(pt => {
-        const own = S().pets.includes(pt.id), on = S().petActive === pt.id;
-        return `<div class="petcard ${on ? 'on' : ''}"><canvas width="16" height="16" data-pet="${pt.id}"></canvas><b class="jp">${pt.jp}</b><small>${pt.pet} · ${pt.name}</small>
-          <button class="btn small ${own ? 'ghost' : ''}" data-id="${pt.id}" type="button">${on ? 'Bersamamu ✓' : own ? 'Ajak jalan' : `Adopsi 🌸${pt.price}`}</button></div>`;
-      }).join('')}</div>
-      <button class="btn block" data-a="close" type="button">Tutup</button></div>`, 'scroll');
-    p.querySelectorAll('canvas[data-pet]').forEach(c => c.getContext('2d').drawImage(Pix.sprite(c.dataset.pet, 'down', 0), 0, 0));
-    return UI.wait(done => {
-      p.querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
-        const pt = PETS.find(x => x.id === b.dataset.id);
-        if (!S().pets.includes(pt.id)) {
-          if ((S().points || 0) < pt.price) { Sound.bad(); UI.toast(`Butuh 🌸${pt.price}. Kumpulkan poin dari mini-game, memancing, dan misi!`); return; }
-          if (!confirm(`Adopsi ${pt.pet} si ${pt.name} seharga 🌸${pt.price}?`)) return;
-          S().points -= pt.price; S().pets.push(pt.id); Sound.star();
-        }
-        S().petActive = S().petActive === pt.id ? null : pt.id; Save.write();
-        World.setPet && World.setPet(activePet() ? activePet().id : null);
-        Extras.checkAch();
-        UI.closePanel(); done(); petShop();
+    for (;;) {
+      const p = UI.panel(`<div class="win"><div class="w-title">Hewan Peliharaan <span class="pts-badge">🌸 <b class="pts-n">${S().points || 0}</b></span></div>
+        <p class="muted">Hewan peliharaan akan mengikutimu ke mana pun. Elus setiap hari untuk bonus poin!</p>
+        <div class="pet-grid">${PETS.map(pt => {
+          const own = S().pets.includes(pt.id), on = S().petActive === pt.id;
+          return `<div class="petcard ${on ? 'on' : ''}"><canvas width="16" height="16" data-pet="${pt.id}"></canvas><b class="jp">${pt.jp}</b><small>${pt.pet} · ${pt.name}</small>
+            <button class="btn small ${own ? 'ghost' : ''}" data-id="${pt.id}" type="button">${on ? 'Bersamamu ✓' : own ? 'Ajak jalan' : `Adopsi 🌸${pt.price}`}</button></div>`;
+        }).join('')}</div>
+        <button class="btn block" data-a="close" type="button">Tutup</button></div>`, 'scroll');
+      p.querySelectorAll('canvas[data-pet]').forEach(c => c.getContext('2d').drawImage(Pix.sprite(c.dataset.pet, 'down', 0), 0, 0));
+      const id = await UI.wait(done => {
+        p.querySelectorAll('[data-id]').forEach(b => b.onclick = () => done(b.dataset.id));
+        p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); done(null); };
       });
-      p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); };
-    });
+      if (!id) { UI.closePanel(); return; }
+      const pt = PETS.find(x => x.id === id);
+      if (!S().pets.includes(pt.id)) {
+        if ((S().points || 0) < pt.price) { Sound.bad(); UI.toast(`Butuh 🌸${pt.price}. Kumpulkan poin dari mini-game, memancing, dan misi!`); continue; }
+        if (!confirm(`Adopsi ${pt.pet} si ${pt.name} seharga 🌸${pt.price}?`)) continue;
+        S().points -= pt.price; S().pets.push(pt.id); Sound.star();
+      }
+      S().petActive = S().petActive === pt.id ? null : pt.id; Save.write();
+      World.setPet && World.setPet(activePet() ? activePet().id : null);
+      Extras.checkAch();
+    }
   }
   async function petPet() {
     const pt = activePet(); if (!pt) return;

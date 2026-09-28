@@ -31,6 +31,11 @@ const Pix = (() => {
     kid:    { h: '#3b2a22', H: '#21160f', e: '#2a2a3a', E: '#5a5f8f', I: '#9aa2d6', o: '#ec8a42', O: '#bd6427', a: '#fff1c4', A: '#e0c98a', p: '#3f6fb0', b: '#2a2a2a', c: '#fff1c4' },
     ojii:   { h: '#bdbdc6', H: '#83838e', e: '#3a3030', E: '#6a6060', I: '#a09494', o: '#7e9b72', O: '#5a7550', a: '#e8dcc0', A: '#b7a986', p: '#5a4a3a', b: '#2a2a2a', c: '#efe6d2' },
     hana:   { h: '#1f2a44', H: '#121a2e', e: '#1d2233', E: '#3f7a8c', I: '#88c8d4', o: '#f7f3ea', O: '#d3c7b3', a: '#5bb3a0', A: '#3b8a78', p: '#34497e', b: '#2a2a2a', c: '#2f4378' },
+    mai:     { h: '#4a2f24', H: '#2e1c15', e: '#3a2418', E: '#8a5a3a', I: '#c9956a', o: '#f7b6c8', O: '#e08aa5', a: '#f6d44a', A: '#c9a526', p: '#3f6fb0', b: '#d8455d', c: '#fff' },
+    emma:    { h: '#e6c16a', H: '#b8913a', e: '#2a4a6a', E: '#4f8fc8', I: '#9fd0ee', o: '#6fb3a0', O: '#4a8a78', a: '#f7f3ea', A: '#d9cfbc', p: '#3a3f55', b: '#2a2a2a', c: '#f7f3ea' },
+    omawari: { h: '#2d2b3b', H: '#16151d', e: '#2b2b44', E: '#4f5690', I: '#8d95d8', o: '#3a4f86', O: '#28396a', a: '#2a3560', A: '#1c2446', p: '#28396a', b: '#1d1d24', c: '#e9eef8' },
+    ryo:     { h: '#8a4a78', H: '#5a2e4f', e: '#2a1f2d', E: '#7a4a6a', I: '#c98ab8', o: '#3a3440', O: '#231f28', a: '#e0475f', A: '#a82f45', p: '#3a3f55', b: '#2a2a2a', c: '#f7f3ea' },
+    imoya:   { h: '#5a4a3a', H: '#3a2e22', e: '#3a3030', E: '#6a6060', I: '#a09494', o: '#c97a35', O: '#9a5a22', a: '#f7f3ea', A: '#d9cfbc', p: '#4a3f35', b: '#2a2a2a', c: '#f7f3ea' },
     mochi:  { h: '#f4f0ea', H: '#d9c9b4', e: '#2a1f2d', o: '#f0a45a', O: '#c97a35', a: '#f28c8c' },
   };
 
@@ -45,6 +50,11 @@ const Pix = (() => {
     kid:    { hair: 'short', kid: true, uniform: 'tee' },
     ojii:   { hair: 'bald', old: true, beard: true, uniform: 'cardigan' },
     hana:   { hair: 'twin', uniform: 'sailor', flower: true },
+    mai:     { hair: 'twin', kid: true, uniform: 'tee', ribbon: true },
+    emma:    { hair: 'long', uniform: 'tee' },
+    omawari: { hair: 'short', uniform: 'blazer', cap: true },
+    ryo:     { hair: 'spiky', uniform: 'tee' },
+    imoya:   { hair: 'short', old: true, uniform: 'apron', headband: true },
   };
 
   /* ---------- Kustomisasi pemain ---------- */

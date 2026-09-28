@@ -16,7 +16,7 @@ const World3D = (() => {
   const actors = new Map();           // key → { group, plane, mat, shadow, marker, id }
   const player = { x: 0, y: 0, fx: 0, fy: 0, dir: 'down', moving: null, frame: 0 };
   let held = null, route = [], routeGoal = null, paused = false, handlers = {};
-  let phase = 'morning', quality = 'normal';
+  let phase = 'morning', quality = 'normal', weather = 'sun', rain = null;
   let dyn = { water: null, petals: null, lamps: [], windows: [], emissive: [] };
   let hemi, sun, camDist = 16, camTarget, raycaster, groundPlane, tmpV;
   let running = false, lastT = 0, lastRender = 0, clockT = 0;
@@ -390,9 +390,10 @@ const World3D = (() => {
     const key = 'marker:' + kind;
     if (!texCache.has(key)) texCache.set(key, pixelTex(makeCanvas(12, 14, (c) => {
       c.fillStyle = '#2a1f2d'; c.fillRect(2, 0, 8, 11); c.fillRect(0, 2, 12, 7); c.fillRect(4, 11, 4, 2); c.fillRect(5, 13, 2, 1);
-      c.fillStyle = kind === '?' ? '#6fd3e6' : '#ffd24a'; c.fillRect(3, 1, 6, 9); c.fillRect(1, 3, 10, 5); c.fillRect(5, 10, 2, 2);
+      c.fillStyle = kind === '?' ? '#6fd3e6' : kind === '★' ? '#ff9fc0' : '#ffd24a'; c.fillRect(3, 1, 6, 9); c.fillRect(1, 3, 10, 5); c.fillRect(5, 10, 2, 2);
       c.fillStyle = '#2a1f2d';
-      if (kind === '?') { c.fillRect(4, 2, 4, 1); c.fillRect(7, 3, 1, 2); c.fillRect(5, 5, 2, 1); c.fillRect(5, 6, 1, 1); c.fillRect(5, 8, 1, 1); }
+      if (kind === '★') { c.fillRect(5, 2, 2, 2); c.fillRect(3, 4, 6, 2); c.fillRect(4, 6, 4, 1); c.fillRect(3, 7, 2, 2); c.fillRect(7, 7, 2, 2); }
+      else if (kind === '?') { c.fillRect(4, 2, 4, 1); c.fillRect(7, 3, 1, 2); c.fillRect(5, 5, 2, 1); c.fillRect(5, 6, 1, 1); c.fillRect(5, 8, 1, 1); }
       else { c.fillRect(5, 2, 2, 4); c.fillRect(5, 7, 2, 2); }
     })));
     return texCache.get(key);
@@ -442,15 +443,16 @@ const World3D = (() => {
     setNpcs(list || []);
     syncOthers();
     handlers.moved && handlers.moved(mapId, player.x, player.y, player.dir);
+    rain = null; buildRain();
     fitCamera(); applyPhase(); updateCamera(0, true);
     kick();
   }
 
   function setNpcs(list) {
     npcs = list.map(n => ({ ...n, dir: n.dir || 'down' }));
-    [...actors.keys()].forEach(k => { if (k !== 'player' && !npcs.some(n => 'npc:' + n.id === k)) { const a = actors.get(k); root.remove(a.group); actors.delete(k); } });
+    [...actors.keys()].forEach(k => { if (k !== 'player' && !npcs.some(n => 'npc:' + (n.key || n.id) === k)) { const a = actors.get(k); root.remove(a.group); actors.delete(k); } });
     npcs.forEach(n => {
-      const a = actors.get('npc:' + n.id) || makeActor('npc:' + n.id, n.id);
+      const a = actors.get('npc:' + (n.key || n.id)) || makeActor('npc:' + (n.key || n.id), n.id);
       a.group.position.set(n.x + .5, 0, n.y + .5);
       setActorFrame(a, n.dir, 0);
       setMarker(a, n.marker === true ? '!' : n.marker || null);
@@ -470,6 +472,10 @@ const World3D = (() => {
   function applyPhase() {
     if (!scene) return;
     let P = PHASES[phase] || PHASES.day;
+    if (outdoor && weather !== 'sun') {
+      const k = weather === 'rain' ? .45 : .7;
+      P = Object.assign({}, P, { sky: weather === 'rain' ? (phase === 'night' ? 0x10131f : 0x8a96a8) : (phase === 'night' ? P.sky : 0xb8c4d0), si: P.si * k, hi: P.hi * (weather === 'rain' ? .85 : .95), tint: weather === 'rain' && phase !== 'night' ? 0xdde2ec : P.tint });
+    }
     if (!outdoor) P = Object.assign({}, P, { sky: 0x1f1823, hs: 0xfff4e0, hg: 0x8a7a6a, hi: phase === 'night' ? .85 : 1.05, sc: phase === 'night' ? 0xd8c8ff : 0xfff0dd, si: phase === 'night' ? .6 : 1.1, sp: [-4, 10, 6], tint: phase === 'night' ? 0xe6e0ff : 0xffffff, night: 0 });
     scene.background = new T.Color(P.sky);
     scene.fog = outdoor ? new T.Fog(P.sky, camDist + 8, camDist + 30) : null;
@@ -483,6 +489,17 @@ const World3D = (() => {
   }
   function applyTint(a) { const P = outdoor ? (PHASES[phase] || PHASES.day) : { tint: phase === 'night' ? 0xe6e0ff : 0xffffff }; a.mat.color.setHex(P.tint); }
   function setPhase(p) { phase = p; applyPhase(); }
+  // Cuaca: 'sun' | 'cloud' | 'rain'
+  function setWeather(w) { weather = w || 'sun'; buildRain(); applyPhase(); }
+  function buildRain() {
+    if (rain) { rain.parent && rain.parent.remove(rain); rain.geometry.dispose(); rain.material.dispose(); rain = null; }
+    if (weather !== 'rain' || !outdoor || !root || quality === 'low') return;
+    const N = 260, pos = new Float32Array(N * 6);
+    for (let i = 0; i < N; i++) { const x = Math.random() * 22 - 11, y = Math.random() * 7, z = Math.random() * 20 - 12; pos.set([x, y, z, x - .04, y - .45, z + .04], i * 6); }
+    const g = new T.BufferGeometry(); g.setAttribute('position', new T.BufferAttribute(pos, 3));
+    rain = new T.LineSegments(g, new T.LineBasicMaterial({ color: 0xcfe0f5, transparent: true, opacity: .55 }));
+    root.add(rain);
+  }
 
   /* ---------- gerakan ---------- */
   function tryStep(dir) {
@@ -617,12 +634,20 @@ const World3D = (() => {
     }
     // NPC bernapas & penanda melayang
     npcs.forEach(n => {
-      const a = actors.get('npc:' + n.id); if (!a) return;
+      const a = actors.get('npc:' + (n.key || n.id)); if (!a) return;
       setActorFrame(a, n.dir, 0);
       a.plane.scale.y = 1 + Math.sin(clockT / 520 + a.phase) * .02;
       if (a.marker) a.marker.position.y = 1.95 + Math.sin(clockT / 260) * .06;
     });
     updatePet(dt); updateOthers(dt);
+    if (rain) {
+      const a = rain.geometry.attributes.position.array;
+      for (let i = 0; i < a.length; i += 6) {
+        const d = dt * .018; a[i + 1] -= d; a[i + 4] -= d;
+        if (a[i + 4] < 0) { const x = camTarget.x + Math.random() * 22 - 11, y = 6 + Math.random() * 2, z = camTarget.z + Math.random() * 20 - 12; a[i] = x; a[i + 1] = y; a[i + 2] = z; a[i + 3] = x - .04; a[i + 4] = y - .45; a[i + 5] = z + .04; }
+      }
+      rain.geometry.attributes.position.needsUpdate = true;
+    }
     if (dyn.water) dyn.water.offset.x = (clockT / 9000) % 1;
     if (dyn.petals) {
       const p = dyn.petals.geometry.attributes.position, arr = p.array;
@@ -740,11 +765,11 @@ const World3D = (() => {
     // ketuk karakter langsung
     const petA = actors.get('pet');
     if (petA && raycaster.intersectObject(petA.plane, false)[0] && Math.abs(pet.x - player.x) + Math.abs(pet.y - player.y) <= 2) { handlers.interact({ type: 'pet' }); return; }
-    const planes = npcs.map(n => actors.get('npc:' + n.id)).filter(Boolean).map(a => a.plane);
+    const planes = npcs.map(n => actors.get('npc:' + (n.key || n.id))).filter(Boolean).map(a => a.plane);
     const hit = raycaster.intersectObjects(planes, false)[0];
     if (hit) {
       const a = [...actors.values()].find(a => a.plane === hit.object);
-      const n = npcs.find(n => 'npc:' + n.id === a.key);
+      const n = npcs.find(n => 'npc:' + (n.key || n.id) === a.key);
       if (n && walkTo(n.x, n.y)) return;
     }
     const pt = raycaster.ray.intersectPlane(groundPlane, tmpV);
@@ -763,7 +788,7 @@ const World3D = (() => {
 
   return {
     init, load, setNpcs, hold, release, action, walkTo, pause, refresh, resize, setPhase, setQuality, refreshLook,
-    setPet, setOthers, sayOther, online: true,
+    setPet, setOthers, sayOther, setWeather, online: true,
     get map() { return mapId; }, get player() { return player; }, get npcs() { return npcs; }, is3D: true,
   };
 })();
