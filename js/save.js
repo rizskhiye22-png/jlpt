@@ -20,7 +20,9 @@ const Save = (() => {
     stamps: [],          // stempel koleksi
     lunch: { yuki: 0, kenta: 0, hana: 0 },
     omikuji: 0,          // hari terakhir menarik omikuji
-    settings: { romaji: true, voice: true, sfx: true, rate: 0.85, music: 0.5, relax: false, quality: 'normal', fx: true, text: 'fast', force2d: false, narr: true },
+    bag: {}, tried: [], ach: [], stats: {}, streak: { last: '', count: 0 }, srs: {},   // fitur tambahan
+    fish: {}, pets: [], petActive: null, books: [], daily: {},
+    settings: { romaji: true, voice: true, sfx: true, rate: 0.85, music: 0.5, relax: false, quality: 'normal', fx: true, text: 'fast', force2d: false, narr: true, server: '', online: false },
   });
 
   let d = fresh();

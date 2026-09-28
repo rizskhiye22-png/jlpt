@@ -10,7 +10,7 @@
   function boot(use3D) {
     if (booted) return; booted = true;
     window.World = use3D ? World3D : World2D;
-    try { World.init(UI.els.canvas, { interact: Game.interact, warp: Game.warp, blocked: Game.blocked }); }
+    try { World.init(UI.els.canvas, { interact: Game.interact, warp: Game.warp, blocked: Game.blocked, moved: (m, x, y, d) => Online.moved(m, x, y, d) }); }
     catch (e) { console.warn('3D gagal, pakai 2D', e); if (use3D) { booted = false; const c = UI.els.canvas, n = c.cloneNode(); c.replaceWith(n); UI.els.canvas = n; return boot(false); } throw e; }
     if (use3D) World.setQuality(Save.d.settings.quality || 'normal');
     Game.title();

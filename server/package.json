@@ -1,0 +1,16 @@
+{
+  "name": "nihongo-gakkou-server",
+  "version": "1.0.0",
+  "description": "Server online (WebSocket) untuk game Nihongo Gakkou",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

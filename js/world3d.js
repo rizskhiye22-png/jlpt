@@ -20,6 +20,8 @@ const World3D = (() => {
   let dyn = { water: null, petals: null, lamps: [], windows: [], emissive: [] };
   let hemi, sun, camDist = 16, camTarget, raycaster, groundPlane, tmpV;
   let running = false, lastT = 0, lastRender = 0, clockT = 0;
+  let petId = null, pet = { x: 0, y: 0, fx: 0, fy: 0, dir: 'down', trail: [] };
+  let others = new Map();   // pemain lain (online): id → { name, x, y, fx, fy, dir, bubble, bubbleT }
 
   /* ---------- tekstur ---------- */
   const texCache = new Map();
@@ -435,7 +437,11 @@ const World3D = (() => {
     player.x = x; player.y = y; player.fx = x + .5; player.fy = y + .5; player.dir = dir || 'down';
     player.moving = null; route = []; routeGoal = null; held = null;
     makeActor('player', 'player');
+    pet.trail = []; placePet();
+    others.forEach(o => { o.actor = null; });
     setNpcs(list || []);
+    syncOthers();
+    handlers.moved && handlers.moved(mapId, player.x, player.y, player.dir);
     fitCamera(); applyPhase(); updateCamera(0, true);
     kick();
   }
@@ -490,8 +496,92 @@ const World3D = (() => {
       return false;
     }
     player.moving = { fx: player.x, fy: player.y, tx: nx, ty: ny, t: 0 };
+    pet.trail.push([player.x, player.y, dir]); if (pet.trail.length > 3) pet.trail.shift();
     player.x = nx; player.y = ny;
+    handlers.moved && handlers.moved(mapId, nx, ny, dir);
     return true;
+  }
+
+  /* ---------- hewan peliharaan ---------- */
+  function placePet() {
+    const a = actors.get('pet'); if (a) { root.remove(a.group); actors.delete('pet'); }
+    if (!petId) return;
+    let px = player.x, py = player.y + 1;
+    if (!Maps.walkable(mapId, px, py)) { const alt = [[1, 0], [-1, 0], [0, -1]].map(([dx, dy]) => [player.x + dx, player.y + dy]).find(([x, y]) => Maps.walkable(mapId, x, y)); if (alt) [px, py] = alt; else [px, py] = [player.x, player.y]; }
+    Object.assign(pet, { x: px, y: py, fx: px + .5, fy: py + .5, dir: 'down' });
+    const pa = makeActor('pet', petId); pa.plane.scale.set(.8, .8, .8);
+  }
+  function setPet(id) { petId = id; if (root) placePet(); kick(); }
+  function updatePet(dt) {
+    const a = actors.get('pet'); if (!a) return;
+    if (pet.trail.length) {
+      const [tx, ty] = pet.trail[0];
+      const dx = tx + .5 - pet.fx, dy = ty + .5 - pet.fy, d = Math.hypot(dx, dy);
+      if (d > .02) {
+        const sp = Math.min(d, dt / STEP_MS);
+        pet.fx += dx / d * sp; pet.fy += dy / d * sp;
+        pet.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+      } else if (pet.trail.length > 1 || !player.moving) pet.trail.shift();
+    }
+    const moving = pet.trail.length > 0;
+    setActorFrame(a, pet.dir === 'left' ? 'left' : pet.dir === 'right' ? 'right' : 'down', moving ? (Math.floor(clockT / 160) % 2) : 0);
+    a.group.position.set(pet.fx, moving ? Math.abs(Math.sin(clockT / 90)) * .05 : 0, pet.fy);
+  }
+
+  /* ---------- pemain lain (online) ---------- */
+  function nameTag(text, bubble) {
+    const cv = makeCanvas(bubble ? 512 : 256, 64, (c, w, h) => {
+      c.font = bubble ? '700 28px "Zen Maru Gothic","Noto Sans JP",sans-serif' : '700 20px "DotGothic16",sans-serif';
+      const tw = Math.min(w - 8, c.measureText(text).width + 24);
+      c.fillStyle = bubble ? '#fffaf0' : 'rgba(42,31,45,.8)'; c.strokeStyle = '#2a1f2d'; c.lineWidth = 4;
+      const x = (w - tw) / 2, y = bubble ? 6 : 18, hh = bubble ? 44 : 30;
+      c.beginPath(); c.roundRect ? c.roundRect(x, y, tw, hh, 10) : c.rect(x, y, tw, hh); c.fill(); if (bubble) c.stroke();
+      c.fillStyle = bubble ? '#2a1f2d' : '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, w / 2, y + hh / 2 + 1);
+    });
+    const t = new T.CanvasTexture(cv); t.colorSpace = T.SRGBColorSpace;
+    const s = new T.Sprite(new T.SpriteMaterial({ map: t, depthTest: false, transparent: true }));
+    s.scale.set(2, .5, 1); s.renderOrder = 11; return s;
+  }
+  function setOthers(list) {
+    const seen = new Set();
+    list.forEach(o => {
+      seen.add(o.id);
+      const cur = others.get(o.id) || { fx: o.x + .5, fy: o.y + .5 };
+      Object.assign(cur, o); others.set(o.id, cur);
+    });
+    [...others.keys()].forEach(id => { if (!seen.has(id)) { const o = others.get(id); if (o.actor) { root && root.remove(o.actor.group); actors.delete('o:' + id); } others.delete(id); } });
+    syncOthers();
+  }
+  function syncOthers() {
+    if (!root) return;
+    others.forEach((o, id) => {
+      const here = o.map === mapId;
+      if (!here) { if (o.actor) { root.remove(o.actor.group); actors.delete('o:' + id); o.actor = null; } return; }
+      if (!o.actor) {
+        o.actor = makeActor('o:' + id, o.sprite);
+        const tag = nameTag(o.name || '???'); tag.position.set(0, 1.85, 0); o.actor.group.add(tag);
+        o.fx = o.x + .5; o.fy = o.y + .5;
+      }
+    });
+  }
+  function sayOther(id, text) {
+    const o = id === 'me' ? { actor: actors.get('player') } : others.get(id);
+    if (!o || !o.actor) return;
+    if (o.bubbleSprite) o.actor.group.remove(o.bubbleSprite);
+    const b = nameTag(text, true); b.scale.set(4.4, .55, 1); b.position.set(0, 2.35, 0);
+    o.actor.group.add(b); o.bubbleSprite = b;
+    clearTimeout(o.bubbleT); o.bubbleT = setTimeout(() => { o.actor && o.actor.group.remove(b); }, 4500);
+    kick();
+  }
+  function updateOthers(dt) {
+    others.forEach(o => {
+      if (!o.actor) return;
+      const dx = o.x + .5 - o.fx, dy = o.y + .5 - o.fy, d = Math.hypot(dx, dy);
+      if (d > 3) { o.fx = o.x + .5; o.fy = o.y + .5; }
+      else if (d > .01) { const sp = Math.min(d, dt / STEP_MS); o.fx += dx / d * sp; o.fy += dy / d * sp; }
+      setActorFrame(o.actor, o.dir || 'down', d > .05 ? (Math.floor(clockT / 150) % 2 ? 1 : 2) : 0);
+      o.actor.group.position.set(o.fx, d > .05 ? Math.abs(Math.sin(clockT / 70)) * .06 : 0, o.fy);
+    });
   }
 
   function update(dt) {
@@ -532,6 +622,7 @@ const World3D = (() => {
       a.plane.scale.y = 1 + Math.sin(clockT / 520 + a.phase) * .02;
       if (a.marker) a.marker.position.y = 1.95 + Math.sin(clockT / 260) * .06;
     });
+    updatePet(dt); updateOthers(dt);
     if (dyn.water) dyn.water.offset.x = (clockT / 9000) % 1;
     if (dyn.petals) {
       const p = dyn.petals.geometry.attributes.position, arr = p.array;
@@ -647,6 +738,8 @@ const World3D = (() => {
     const ndc = new T.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     raycaster.setFromCamera(ndc, camera);
     // ketuk karakter langsung
+    const petA = actors.get('pet');
+    if (petA && raycaster.intersectObject(petA.plane, false)[0] && Math.abs(pet.x - player.x) + Math.abs(pet.y - player.y) <= 2) { handlers.interact({ type: 'pet' }); return; }
     const planes = npcs.map(n => actors.get('npc:' + n.id)).filter(Boolean).map(a => a.plane);
     const hit = raycaster.intersectObjects(planes, false)[0];
     if (hit) {
@@ -666,10 +759,11 @@ const World3D = (() => {
 
   function pause(on) { paused = on; if (on) { held = null; route = []; routeGoal = null; } kick(); }
   function refresh() { kick(); }
-  function refreshLook() { [...texCache.keys()].forEach(k => { if (k.startsWith('player:')) { texCache.get(k).dispose(); texCache.delete(k); } }); const a = actors.get('player'); if (a) { a.dir = null; } }
+  function refreshLook(prefix = 'player:') { [...texCache.keys()].forEach(k => { if (k.startsWith(prefix)) { texCache.get(k).dispose(); texCache.delete(k); } }); const a = actors.get('player'); if (a) { a.dir = null; } }
 
   return {
     init, load, setNpcs, hold, release, action, walkTo, pause, refresh, resize, setPhase, setQuality, refreshLook,
+    setPet, setOthers, sayOther, online: true,
     get map() { return mapId; }, get player() { return player; }, get npcs() { return npcs; }, is3D: true,
   };
 })();

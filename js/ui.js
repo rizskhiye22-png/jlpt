@@ -20,7 +20,8 @@ const UI = (() => {
         <div class="tapcatch"></div>
         <div class="hud">
           <button class="hud-obj" type="button"><span class="pin">▶</span><span class="obj-text"></span></button>
-          <div class="hud-right"><div class="hud-day"></div><div class="hud-pts">🌸 <b>0</b></div></div>
+          <div class="hud-right"><div class="hud-day"></div>
+            <div class="hud-row"><button class="hud-mini hud-rev" type="button" style="display:none">📝 <b>0</b></button><button class="hud-mini hud-onl" type="button" style="display:none">💬 <b>0</b></button><div class="hud-pts">🌸 <b>0</b></div></div></div>
         </div>
         <div class="dlg-area">
           <div class="choices" role="listbox"></div>
@@ -54,6 +55,7 @@ const UI = (() => {
       obj: app.querySelector('.hud-obj'), objText: app.querySelector('.obj-text'), day: app.querySelector('.hud-day'), pts: app.querySelector('.hud-pts b'),
       choices: app.querySelector('.choices'), dialog: app.querySelector('.dialog'),
       panels: app.querySelector('.panels'), modals: app.querySelector('.modals'),
+      rev: app.querySelector('.hud-rev'), onl: app.querySelector('.hud-onl'),
       toast: app.querySelector('.toast'), fade: app.querySelector('.fade'), pad: app.querySelector('.pad'),
     };
     els.dialog.addEventListener('click', e => { if (e.target.closest('button')) return; advance(); });
@@ -220,13 +222,15 @@ const UI = (() => {
   }
   function setDay(text) { els.day.textContent = text || ''; }
   function setPoints(n) { if (els.pts) els.pts.textContent = n; }
+  function setReview(n, onTap) { els.rev.style.display = n ? '' : 'none'; els.rev.querySelector('b').textContent = n; els.rev.onclick = onTap; els.rev.title = `${n} huruf perlu diulas hari ini`; }
+  function setOnline(n, status) { els.onl.style.display = status === 'on' || status === 'connecting' ? '' : 'none'; els.onl.querySelector('b').textContent = status === 'on' ? n : '…'; els.onl.onclick = () => window.Online && Online.palette(); }
   function showGame(on) { els.app.classList.toggle('in-game', on); }
 
   return {
     init, wait, abortAll, sleep, esc, fmt,
     say, choose, hideDialog, advance, input, dialogOpen,
     panel, closePanel, panelOpen, modal, closeModal, modalOpen,
-    toast, fade, timecard, setObjective, setDay, setPoints, showGame,
+    toast, fade, timecard, setObjective, setDay, setPoints, setReview, setOnline, showGame,
     get els() { return els; }, set canvas(c) { els.canvas = c; },
   };
 })();

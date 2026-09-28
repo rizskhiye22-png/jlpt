@@ -122,8 +122,9 @@ const Lesson = (() => {
     return pool[pool.length - 1];
   }
 
-  function makeQuestions(focus, count, poolKind) {
+  function makeQuestions(focus, count, poolKind, only) {
     let pool = Save.d.kana.length ? Save.d.kana.slice() : focus.slice();
+    if (only) pool = focus.slice();
     if (poolKind === 'kata') pool = pool.filter(IS_KATA);
     if (poolKind === 'hira') pool = pool.filter(k => !IS_KATA(k));
     if (!pool.length) pool = focus.slice();
@@ -203,7 +204,7 @@ const Lesson = (() => {
         if (answered) return; answered = true;
         const ok = opts[j].value === answer;
         btns.forEach((b, x) => { b.disabled = true; if (opts[x].value === answer) b.classList.add('right'); });
-        if (q.kana) { const s = stat(q.kana); ok ? s.c++ : s.w++; }
+        if (q.kana) { const s = stat(q.kana); ok ? s.c++ : s.w++; if (Lesson._onAnswer) Lesson._onAnswer(q.kana, ok); }
         if (Save.d.settings.voice && sayAfter) Sound.speak(sayAfter);
         if (ok) { Sound.ok(); setTimeout(() => done(true), 750); return; }
         btns[j].classList.add('wrong'); Sound.bad();
@@ -216,12 +217,13 @@ const Lesson = (() => {
     });
   }
 
-  async function quiz({ focus = [], count = 10, title = 'Latihan', pool }) {
+  async function quiz({ focus = [], count = 10, title = 'Latihan', pool, only, onAnswer }) {
     Music.play('school');
-    const qs = makeQuestions(focus, count, pool);
+    Lesson._onAnswer = onAnswer || null;
+    const qs = makeQuestions(focus, count, pool, only);
     let correct = 0;
     for (let i = 0; i < qs.length; i++) if (await ask(qs[i], i, qs.length, title)) correct++;
-    Lesson._keys = null;
+    Lesson._keys = null; Lesson._onAnswer = null;
     Save.write();
     return { correct, total: qs.length };
   }

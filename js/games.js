@@ -93,6 +93,7 @@ const Games = (() => {
       void ok;
     }
     Save.write();
+    if (score === order.length && window.Extras) Extras.bump('karutaPerfect');
     return result('Karuta', score, order.length, score === order.length ? 'Sempurna! Kamu juara karuta!' : 'Karuta melatih telinga dan kecepatan membaca.');
   }
 
@@ -414,6 +415,7 @@ const Games = (() => {
         hanko.textContent = ['もう一度', 'よし', 'よい', 'すごい'][graded];
         (graded ? Sound.ok : Sound.bad)();
         stat(k, graded >= 2);
+        if (graded === 3 && window.Extras) Extras.bump('shodo3');
         clearBtn.textContent = 'Ulangi'; doneBtn.textContent = 'Lanjut ▶';
       };
     });

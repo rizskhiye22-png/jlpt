@@ -1,89 +1,85 @@
 # にほんごがっこう · Nihongo Gakkou
 
-Game RPG *pixel art* 2D untuk **belajar bahasa Jepang dari nol**, terinspirasi dari game seperti *Wagotabi*.
-Kamu menjadi murid pindahan dari Indonesia di sebuah kota kecil di Jepang: jalan-jalan keliling kota,
-mengobrol dengan teman dan warga, lalu belajar hiragana di sekolah bersama Tanaka-sensei.
+Game **3D** untuk **belajar bahasa Jepang dari nol**: hiragana, katakana, dan percakapan sehari-hari.
+Kamu adalah murid pindahan dari Indonesia yang tinggal bersama Nenek Sato di sebuah kota kecil di Jepang.
+Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lancar membaca huruf Jepang.
 
-**Tanpa sistem bertarung.** Semua latihan terjadi di kelas, seperti di sekolah sungguhan.
+**Tanpa pertarungan.** Belajar terasa seperti di sekolah sungguhan: guru, video pelajaran, latihan menulis, kuis, dan teman sekelas.
 
-## Isi Bab 1: Hiragana (11 hari sekolah)
+> Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**.
 
-| Hari | Pelajaran | Percakapan sehari-hari |
-|---|---|---|
-| 1 | あ い う え お | おはよう, はじめまして, よろしく |
-| 2 | か き く け こ | げんき？, ありがとう, どういたしまして |
-| 3 | さ し す せ そ | 〜さん, どこから きましたか |
-| 4 | た ち つ て と | すみません, だいじょうぶ |
-| 5 | **Ulangan 1** | がんばって, また あした |
-| 6 | な に ぬ ね の | いただきます, ごちそうさまでした |
-| 7 | は ひ ふ へ ほ | これ / それ, なんですか |
-| 8 | ま み む め も | すき, おいしい |
-| 9 | や ゆ よ ら り る れ ろ | いま なんじ？, いいよ |
-| 10 | わ を ん | たのしい, わかりません |
-| 11 | **Ujian Akhir** | おめでとう |
+## Fitur utama
 
-### Satu hari di game
-1. **Pagi**: sapa teman di kota (pilih jawaban bahasa Jepang yang tepat).
-2. **Sekolah**: kenalan huruf baru (suara + cara mengingat + contoh kata), menulis huruf dengan jari, lalu latihan soal.
-3. **Sore**: ngobrol dengan teman memakai kalimat sehari-hari.
-4. **Malam**: pulang, tidur, dan baca **Buku Harian** (rangkuman hari itu).
+**Belajar**
+- **Bab 1 Hiragana** (11 hari) & **Bab 2 Katakana** (11 hari): 92 huruf, ulangan, dan ujian.
+- **Video pelajaran animasi** dari sensei: urutan goresan asli, subtitle, narasi suara, putar/jeda/ulang/kecepatan.
+- **Latihan menulis bertahap** per goresan (langkah 1 → 1+2 → …), dinilai otomatis dengan stempel hanko.
+- **Ulasan Harian** (spaced repetition): huruf muncul lagi tepat sebelum lupa.
+- Mini-game: **Karuta, Hujan Huruf, Kartu Memori, Susun Kata, Kaligrafi, Belanja Konbini**.
+- Percakapan sehari-hari dalam cerita: sarapan (いただきます), berangkat (いってきます), pulang (ただいま), belanja (いくら ですか).
+- Suara bahasa Jepang, romaji & arti, **mode santai** tanpa batas waktu. Salah tidak pernah dihukum.
 
-### Fitur belajar
-- Setiap kalimat Jepang **bisa didengar** (memakai suara bawaan HP/browser).
-- **Romaji** dan arti bahasa Indonesia, romaji bisa dimatikan setelah lancar.
-- **Salah tidak dihukum**: selalu ada penjelasan, dan pilihan yang salah dihapus sampai kamu menemukan jawabannya.
-- Huruf yang sering salah **lebih sering muncul** lagi di latihan.
-- **Papan nama di kota** bisa dibaca sedikit demi sedikit. Huruf yang belum dipelajari tampil sebagai `?`.
-- **Buku Catatan** (tabel hiragana, kosakata, kalimat), **Rapor**, dan **Latihan Bebas**.
-- Pertemanan ♥ dengan Yuki dan Kenta naik saat kamu menjawab benar pada percobaan pertama.
+**Bermain & bersantai**
+- Hari penuh dengan pilihan: makan siang di atap/kelas/perpustakaan, klub (kaligrafi, karuta, memasak, sains).
+- 🎣 Memancing (baca huruf untuk menarik pancing) + Buku Ikan.
+- 🐱 Hewan peliharaan yang mengikutimu, 🪑 duduk di taman, 📚 buku cerita di perpustakaan.
+- 🍡 Jidouhanbaiki, warung yatai, & konbini: beli jajanan Jepang (おにぎり, だんご, たいやき, ラムネ…), makan, atau beri hadiah ke teman.
+- Misi sampingan, event persahabatan, omikuji di kuil, stempel, **24 pencapaian**, streak harian.
+- Kustomisasi karakter (rambut, warna, seragam, aksesori) + lemari.
+- 🌐 **Online (opsional)**: bertemu pemain lain di kota & saling menyapa dengan stempel frasa Jepang.
+
+**Teknis**
+- Dunia 3D gaya HD-2D (Three.js): bangunan low-poly + karakter pixel art, cahaya pagi/sore/malam, kelopak sakura.
+- Mode 2D klasik otomatis untuk HP yang tidak mendukung WebGL.
+- Musik latar dibuat langsung oleh browser (tanpa file MP3). Grafis dari kode, tanpa gambar besar.
+- PWA: bisa dipasang di layar utama HP & dimainkan offline.
 
 ## Cara main
-- **HP**: ketuk layar untuk berjalan, atau pakai tombol arah. Ketuk orang atau tekan **A** untuk bicara. **B/MENU** membuka menu.
+- **HP**: ketuk layar untuk berjalan (atau tombol arah). Ketuk orang/benda atau tekan **A** untuk bicara. **B/MENU** membuka menu.
 - **Tugas** selalu tertulis di kiri atas. **Ketuk tulisan itu** untuk berjalan otomatis ke tujuan.
-- **Keyboard**: panah/WASD untuk berjalan, Spasi/Enter/Z = A, X/Esc = B, angka 1–4 untuk memilih jawaban.
+- 📝 di kanan atas = huruf yang perlu diulas hari ini. 🌸 = poin sakura.
+- **Keyboard**: panah/WASD, Spasi/Enter/Z = A, X/Esc = B, angka 1–4 untuk memilih jawaban.
 
 ## Menjalankan
-Tanpa instalasi dan tanpa build. Cukup HTML, CSS, dan JavaScript biasa.
+
+Tanpa build. Cukup HTML, CSS, JavaScript.
 
 ```bash
-# dari folder proyek
 python3 -m http.server 8000
-# lalu buka http://localhost:8000 di browser (atau di HP dengan IP komputermu)
+# buka http://localhost:8000
 ```
 
-File `index.html` juga bisa langsung dibuka di browser. Mode offline baru aktif jika dibuka lewat server (http/https).
+> Mode 3D butuh server (http/https). Jika `index.html` dibuka langsung dari file, game otomatis memakai mode 2D.
 
-### Online gratis dengan GitHub Pages
-Repo → **Settings → Pages** → Source: *Deploy from a branch* → pilih branch dan folder `/ (root)`.
-Setelah itu game bisa dibuka di HP lewat link, lalu **"Tambahkan ke layar utama"** agar bisa dimainkan seperti aplikasi, bahkan tanpa internet.
+**GitHub Pages**: Settings → Pages → *Deploy from a branch* → pilih branch & folder `/ (root)`.
+
+**Online bersama**: lihat [server/README.md](server/README.md).
 
 ## Struktur kode
 
 ```
-index.html          halaman utama
-css/style.css       tampilan retro (jendela dialog, tombol, papan tulis)
-js/data.js          ★ MATERI: huruf, kosakata, 11 hari sekolah, dialog warga
-js/pixel.js         pixel art karakter (sprite jalan 16x16 + potret wajah 32x32)
-js/maps.js          peta kota, kelas, kamar + gambar ubin/bangunan
-js/world.js         mesin dunia: berjalan, kamera, tabrakan, cari jalur saat diketuk
-js/game.js          alur hari sekolah, tugas, menu, buku catatan, rapor
-js/lesson.js        pelajaran: kenalan huruf, latihan menulis, soal
-js/ui.js            kotak dialog, pilihan, panel, notifikasi
-js/audio.js         suara bahasa Jepang (Text-to-Speech) + efek suara 8-bit
-js/save.js          simpan progres di browser (localStorage)
-sw.js, manifest     mode offline & bisa dipasang di HP
+index.html              halaman utama
+css/style.css           tampilan (jendela retro, papan tulis, video, mini-game)
+js/data.js              ★ materi Bab 1 (hiragana), tokoh, kosakata
+js/data2.js             ★ materi Bab 2 (katakana), sarapan/makan siang/makan malam, klub, misi, event
+js/extras.js            ★ jajanan, pencapaian, streak, ulasan harian (SRS)
+js/relax.js             ★ memancing, hewan peliharaan, bangku taman, buku cerita
+js/strokes.js           data urutan goresan (KanjiVG, CC BY-SA 3.0)
+js/portrait.js          potret karakter 48x48 (ekspresi)
+js/pixel.js             sprite karakter & hewan, kustomisasi
+js/maps.js              peta & ubin (kota, rumah, kelas, atap, perpustakaan, klub)
+js/world3d.js           dunia 3D (Three.js)
+js/world.js             dunia 2D (cadangan)
+js/game.js              alur hari, dialog, menu, lemari, pengaturan
+js/lesson.js            pelajaran & kuis
+js/video.js             video pelajaran animasi
+js/games.js             mini-game belajar
+js/music.js / audio.js  musik latar, suara Jepang (TTS), efek suara
+js/online.js            klien online (stempel frasa)
+js/ui.js / save.js      antarmuka & simpan progres
+server/                 server online (Node.js + WebSocket)
 ```
 
-### Menambah materi
-Semua materi ada di `js/data.js`. Untuk menambah hari baru, salin satu objek di `DAYS` lalu ubah:
-huruf (`kana`), dialog pagi (`morning`), dialog kelas (`cls`), dialog sore (`brk`), dan `phrases`.
-
-### Mengganti gambar karakter
-Karakter digambar dari kode di `js/pixel.js` (palet warna `PAL` dan gaya `STYLE`).
-Ubah warna rambut/baju di `PAL` untuk membuat karakter baru. Kalau nanti ingin memakai gambar buatan sendiri
-(misalnya dari Aseprite atau Piskel), cukup ganti fungsi `sprite()` dan `portrait()` agar memuat file PNG.
-
-## Rencana berikutnya
-- Bab 2: Katakana & belanja di konbini (angka, harga)
-- Bab 3: Stasiun & bepergian ke kota lain (waktu, arah)
-- Musik latar chiptune
+## Lisensi data
+- Data urutan goresan: **KanjiVG** © Ulrich Apel, CC BY-SA 3.0 (http://kanjivg.tagaini.net). File `js/strokes.js` dibagikan dengan lisensi yang sama.
+- Three.js: lisensi MIT (`js/vendor/three.LICENSE`).

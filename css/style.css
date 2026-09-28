@@ -503,6 +503,81 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .settings .sec-h { margin-top: 14px; }
 .tbl tr.ch td { font-weight: 700; background: var(--paper2); padding-left: 8px; }
 
+/* ================= Fase 1: fitur tambahan ================= */
+.hud-row { display: flex; gap: 4px; align-items: center; }
+.hud-mini { pointer-events: auto; border: 2px solid var(--ink); border-radius: 6px; background: #fff4cf; font-size: 12px; padding: 2px 7px; box-shadow: 0 2px 0 rgba(0,0,0,.35); animation: nudge 1.4s steps(2) infinite; }
+.hud-onl { background: #cfe6ff; animation: none; }
+.badge { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 99px; background: var(--red); color: #fff; font-size: 12px; text-align: center; }
+.ach-banner { position: absolute; left: 50%; top: calc(150px + env(safe-area-inset-top)); z-index: 60; transform: translate(-50%, -140%); display: flex; gap: 10px; align-items: center;
+  background: var(--ink); color: #fff; border: 3px solid var(--gold); border-radius: 10px; padding: 8px 14px; min-width: 240px; transition: transform .35s cubic-bezier(.2,1.4,.4,1); pointer-events: none; }
+.ach-banner.on { transform: translate(-50%, 0); }
+.ach-banner small { display: block; font-size: 11px; color: var(--gold); } .ach-banner b { display: block; font-size: 15px; } .ach-banner em { font-style: normal; font-size: 12px; color: #ffd0dc; }
+.ach-ic { flex: none; display: inline-flex; width: 42px; height: 42px; border-radius: 50%; align-items: center; justify-content: center; background: var(--gold); color: var(--ink); font-family: var(--jp); font-weight: 700; font-size: 22px; border: 2px solid var(--ink); }
+.ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ach { background: #eee7dc; border: 2px dashed #c9bba6; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; opacity: .7; }
+.ach.on { background: #fff; border: 2px solid var(--ink); opacity: 1; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+.ach:not(.on) .ach-ic { background: #d8cdb8; color: #fff; }
+.ach b { font-size: 13px; } .ach small { font-size: 11px; color: var(--muted); line-height: 1.3; } .ach em { font-style: normal; font-size: 11px; color: #c0395a; }
+.snack-ic { image-rendering: pixelated; }
+.snack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.snack { position: relative; background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.snack b { font-size: 16px; } .snack small { font-size: 11px; color: var(--muted); }
+.snack .own { position: absolute; top: 4px; right: 6px; font-style: normal; font-size: 12px; color: #c0395a; }
+.snack-row { display: flex; gap: 4px; margin-top: 4px; }
+.snack .say { width: 30px; height: 30px; font-size: 13px; }
+.buy { border: 2px solid var(--ink); border-radius: 6px; background: var(--gold); font-size: 12px; padding: 0 8px; box-shadow: 0 2px 0 var(--ink); }
+.snack.bought { animation: pop .3s steps(3); background: var(--ok); }
+.snack.pickable:active { transform: translateY(2px); }
+.tried { display: flex; flex-wrap: wrap; gap: 4px; }
+.tried span { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 2px dashed #c9bba6; border-radius: 6px; color: #b3a590; }
+.tried span.on { border: 2px solid var(--ink); background: #fff; }
+/* memancing */
+.pondview { position: relative; height: min(40vh, 280px); border: 3px solid var(--ink); border-radius: 10px; overflow: hidden;
+  background: repeating-linear-gradient(170deg, #5aa6de 0 14px, #62ade3 14px 18px); }
+.pondview.pond { background: repeating-linear-gradient(170deg, #4f9ac7 0 14px, #58a3d0 14px 18px); }
+.bobber { position: absolute; left: 50%; top: 50%; width: 22px; height: 30px; margin: -15px 0 0 -11px; border: 3px solid var(--ink); border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(#e0475f 50%, #fff 50%); animation: bob 1.6s ease-in-out infinite; }
+.ripple { position: absolute; left: 50%; top: 50%; width: 80px; height: 26px; margin: 0 0 0 -40px; border: 2px solid rgba(255,255,255,.6); border-radius: 50%; animation: rip 2s ease-out infinite; }
+.bite { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); font-size: 40px; color: #ffd24a; -webkit-text-stroke: 2px var(--ink); display: none; }
+.pondview.biting .bobber { animation: tug .18s steps(2) infinite; } .pondview.biting .bite { display: block; animation: pop .2s steps(2); }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+@keyframes tug { 50% { transform: translateY(8px); } }
+@keyframes rip { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
+.f-q { min-height: 120px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.f-kana { font-size: 56px; color: #fff; text-shadow: 0 3px 0 var(--ink); }
+.f-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.big-reel { font-size: 22px; padding: 16px 40px; }
+.catch-card .fish-ic { image-rendering: pixelated; }
+.rarity { color: var(--gold); font-size: 22px; -webkit-text-stroke: 1px var(--ink); }
+.fish-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.fishcard { background: #eee7dc; border: 2px dashed #c9bba6; border-radius: 8px; padding: 6px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.fishcard.on { background: #eaf6ff; border: 2px solid var(--ink); }
+.fishcard .fish-ic { image-rendering: pixelated; } .fishcard b { font-size: 15px; } .fishcard small { font-size: 11px; color: var(--muted); }
+.fishcard .unk { font-size: 30px; color: #c9bba6; height: 48px; display: flex; align-items: center; }
+/* hewan peliharaan */
+.pet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.petcard { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.petcard.on { background: #fff4cf; box-shadow: 0 0 0 3px var(--gold); }
+.petcard canvas { width: 64px; height: 64px; image-rendering: pixelated; } .petcard b { font-size: 18px; } .petcard small { font-size: 12px; color: var(--muted); }
+.petcard .btn.small { margin-top: 4px; }
+/* buku cerita */
+.books { display: flex; flex-direction: column; gap: 8px; }
+.bookcard { position: relative; text-align: left; background: #fff; border: 2px solid var(--ink); border-left: 10px solid #c9574f; border-radius: 6px; padding: 10px 12px; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.bookcard:nth-child(2n) { border-left-color: #3f6fb0; } .bookcard:nth-child(3n) { border-left-color: #3f8f58; }
+.bookcard b { display: block; font-size: 20px; } .bookcard small { color: var(--muted); font-size: 12px; }
+.bookcard.lock { opacity: .5; } .bookcard em { position: absolute; right: 10px; top: 10px; font-style: normal; font-size: 12px; color: #3f9e6a; }
+.reader-book .page { background: #fffdf5; border: 2px solid #e3d5b8; border-radius: 6px; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 18px;
+  background-image: repeating-linear-gradient(transparent 0 30px, #efe3c9 30px 31px); }
+.pg-jp { font-family: var(--jp); font-weight: 700; font-size: clamp(26px, 8vw, 38px); text-align: center; line-height: 1.5; }
+.pg-ro { color: #a8304a; font-size: 16px; } .pg-id { color: var(--muted); font-size: 15px; }
+.reader-book .btn.on { background: var(--gold); }
+/* stempel frasa online */
+.phrase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 52vh; overflow-y: auto; margin-bottom: 4px; }
+.phrase { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.phrase b { font-size: 15px; } .phrase small { font-size: 11px; color: var(--muted); }
+.modal.phrases { max-height: 88vh; overflow-y: auto; }
+.srv { width: 100%; margin-top: 6px; padding: 10px; font: inherit; font-size: 14px; border: 2px solid var(--ink); border-radius: 6px; -webkit-user-select: text; user-select: text; }
+
 /* mode 2D: suasana waktu lewat warna */
 body[data-phase="evening"] #game { filter: sepia(.25) saturate(1.1) hue-rotate(-10deg); }
 body[data-phase="night"] #game { filter: brightness(.62) saturate(.8) hue-rotate(10deg); }

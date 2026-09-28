@@ -1,0 +1,199 @@
+# ROADMAP — Nihongo Gakkou
+
+Dokumen ini berisi rencana pengembangan **Nihongo Gakkou** supaya menjadi game belajar bahasa Jepang yang:
+
+- **sangat ramah pemula**: mulai dari nol, tanpa rasa takut salah;
+- **seru dan menyenangkan**: terasa seperti bermain game, bukan mengerjakan soal;
+- **tampil hidup, tidak kaku**: dunia yang bergerak, karakter yang punya kepribadian;
+- **membuat pemain ingin kembali setiap hari**: ada alasan kecil untuk login lagi besok.
+
+Status tiap poin: ✅ sudah ada · 🚧 dikerjakan di pembaruan ini · 🔜 berikutnya · 💡 ide jangka panjang
+
+---
+
+## 1. Prinsip desain
+
+| Prinsip | Artinya di dalam game |
+|---|---|
+| **Belajar lewat cerita** | Setiap huruf dan kalimat langsung dipakai dalam situasi nyata: sarapan, di kelas, belanja, festival. |
+| **Sedikit tapi sering** | 3–8 huruf baru per hari. Sesi 10–20 menit terasa lengkap. |
+| **Salah itu aman** | Tidak ada "game over". Jawaban salah selalu dijelaskan, lalu pilihan salah dihapus. |
+| **Banyak cara belajar** | Melihat (video), mendengar (suara), menulis (kaligrafi), membaca (papan kota), bicara (dialog). |
+| **Hadiah yang terasa** | Bintang, poin sakura, stempel, pencapaian, jajanan, aksesori: kemajuan selalu terlihat. |
+| **Ringan & nyaman di HP** | Tombol besar, bisa satu tangan, ketuk untuk berjalan, grafis bisa dihemat. |
+
+---
+
+## 2. Yang sudah ada (✅)
+
+- Dunia **3D gaya HD-2D** (Three.js) + mode 2D cadangan untuk HP lama.
+- **Bab 1 Hiragana** & **Bab 2 Katakana**: 22 hari sekolah, 92 huruf, ulangan & ujian.
+- Satu hari penuh: sarapan → sapa teman → pelajaran 1 → makan siang (pilih tempat) → pelajaran 2 → klub (pilih) → sore di kota → makan malam → tidur & buku harian.
+- **Video pelajaran animasi** dari sensei: urutan goresan asli (KanjiVG), subtitle, narasi suara, putar/jeda/ulang/kecepatan.
+- **Latihan menulis bertahap per goresan** (langkah 1 → 1+2 → …) dengan penilaian otomatis & stempel hanko.
+- Mini-game: **Karuta, Hujan Huruf, Kartu Memori, Susun Kata, Kaligrafi, Belanja Konbini**.
+- Karakter pixel art buatan kode, potret berekspresi, **kustomisasi pemain** + lemari.
+- Misi sampingan, event persahabatan, omikuji di kuil, stempel, poin sakura.
+- Musik latar generatif bernuansa Jepang, efek suara 8-bit, TTS bahasa Jepang.
+- PWA offline, simpan otomatis, pengaturan lengkap (romaji, mode santai, kualitas grafis, dll.).
+
+---
+
+## 3. Pembelajaran (inti dari game)
+
+### 3.1 Ulangan berjarak (Spaced Repetition) — ✅
+Huruf yang sudah dipelajari harus **muncul lagi tepat sebelum lupa**.
+- Sistem kotak Leitner: setiap huruf punya "kotak" 1–5. Benar → naik kotak (jeda makin panjang: 1, 2, 4, 7, 14 hari). Salah → kembali ke kotak 1.
+- **Ulasan Harian** di meja belajar/menu: 10–15 huruf yang "jatuh tempo" hari ini.
+- Indikator di HUD: "📝 6 huruf perlu diulas".
+
+### 3.2 Materi lanjutan — 🔜
+1. **Dakuten & handakuten** (が, ざ, だ, ば, ぱ…): Bab 3, tanda ゛ dan ゜ dijelaskan lewat video.
+2. **Yōon** (きゃ, しゅ, ちょ…) & **tsu kecil** (っ/ッ) & bunyi panjang: Bab 4.
+3. **Angka & harga** (いち〜じゅう, ひゃく, せん) dipakai di konbini dan jidouhanbaiki.
+4. **Waktu & hari** (〜じ, なんようび) dipakai di jadwal sekolah & stasiun.
+5. **Kanji dasar N5** (日, 月, 山, 川, 人, 口…): kanji muncul di papan kota dan bisa "dikoleksi".
+6. **Pola kalimat N5**: 〜は〜です, 〜が すき, 〜を ください, 〜に いきます, dipakai dalam dialog.
+
+### 3.3 Cara belajar tambahan — 🔜
+- **Latihan bicara**: pemain mengucapkan kalimat ke mikrofon (Web Speech Recognition), sensei memberi nilai.
+- **Mendengar tanpa teks**: mode "tutup romaji" di dialog untuk melatih telinga.
+- **Furigana bertahap**: romaji → hiragana → tanpa bantuan, sesuai kemampuan.
+- **Tes penempatan**: pemain yang sudah bisa hiragana bisa langsung loncat ke Bab 2.
+- **Kamus bergambar**: setiap kata di Buku Catatan punya ilustrasi pixel & contoh kalimat.
+
+### 3.4 Pelacakan kemampuan — 🔜
+- Grafik kemajuan mingguan (huruf dikuasai, ketepatan, menit belajar).
+- "Huruf rawan": huruf yang sering tertukar (シ/ツ, ソ/ン, ぬ/め) mendapat mini-latihan khusus.
+- Target JLPT N5 (bab 1–6 ≈ seluruh kana + 100 kanji + 800 kata).
+
+---
+
+## 4. Keseruan & alasan untuk kembali
+
+### 4.1 Pencapaian (achievement) — ✅ (24 lencana)
+Lencana untuk tonggak kecil & besar, dengan pop-up yang memuaskan:
+- *Langkah Pertama* (hari 1 selesai), *Tangan Kaligrafer* (10× nilai すごい), *Juara Karuta*, *Ahli Hiragana* (46 huruf), *Ahli Katakana*, *Sahabat Yuki* (♥10), *Pemburu Jajanan* (coba 8 jajanan), *Rajin* (streak 7 hari), *Detektif Kucing* (misi Mochi), dll.
+- Setiap lencana memberi poin sakura.
+
+### 4.2 Streak harian & bonus login — ✅
+- 🔥 Streak: jumlah hari berturut-turut bermain. Bonus poin naik tiap hari (maks. di hari ke-7).
+- "Hadiah hari ini" kecil saat membuka game (poin/jajanan).
+
+### 4.3 Jidouhanbaiki & jajanan Jepang — ✅ (13 jajanan, 3 tempat beli)
+Mesin minuman (自動販売機, *jidouhanbaiki*) di kota + konbini menjual jajanan khas Jepang, dibeli dengan poin sakura:
+- おにぎり (onigiri), だんご (dango), たいやき (taiyaki), メロンパン (melon pan), どらやき (dorayaki), せんべい (senbei), もち (mochi), プリン (purin), ラムネ (ramune), おちゃ (teh hijau)…
+- Nama barang **ditulis dalam hiragana/katakana**, jadi membeli = latihan membaca.
+- Setiap jajanan punya **fakta budaya** saat dimakan (+ ucapan いただきます / ごちそうさま).
+- **Hadiah untuk teman**: setiap teman punya jajanan favorit → ♥ naik lebih banyak.
+- Koleksi "Buku Jajanan" untuk dilengkapi.
+
+### 4.4 Mini-game baru — 🔜
+- ✅ **Memancing** sudah ada (lihat 4.6). 🔜 Variasi: turnamen memancing & ikan musiman.
+- **Ritme Taiko**: tekan huruf mengikuti ketukan drum festival.
+- **Kereta Kata** (Bab stasiun): sambung kata seperti shiritori (しりとり).
+- **Masak Bersama Nenek**: ikuti resep berbahasa Jepang (urutan kata kerja).
+
+### 4.5 Aktivitas santai (refreshing) — ✅
+Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa seperti rumah kedua:
+- 🎣 **Memancing** di sungai & kolam: saat ikan menggigit, baca huruf yang muncul untuk menarik pancing. 12 tangkapan (termasuk sampah lucu seperti kaleng & sandal kayu) di **Buku Ikan**.
+- 🐱 **Hewan peliharaan** (ねこ, いぬ, うさぎ, ひよこ) dibeli dengan poin, mengikuti pemain ke mana pun, bisa dielus (bonus harian).
+- 🪑 **Duduk di bangku taman**: mendengar percakapan warga (latihan menyimak kalimat nyata).
+- 📚 **Perpustakaan**: 6 buku cerita pendek yang terbuka otomatis sesuai huruf yang sudah dikuasai (graded reader), lengkap dengan suara, romaji, dan arti.
+- 🔜 Berkebun (menanam sayur bernama Jepang), foto-foto di kota, dekorasi kamar.
+
+### 4.6 Dunia yang hidup — 🔜
+- Musim (sakura → musim panas & kembang api → momiji → salju) berganti tiap bab.
+- Cuaca (hujan, gerimis) memunculkan dialog baru (あめ, かさ).
+- NPC berjalan dengan rutinitas harian, kucing Mochi berkeliaran.
+- Event musiman: Tanabata (menulis permohonan dalam hiragana), Obon, Tahun Baru (omikuji spesial).
+
+---
+
+## 5. Online bersama (seperti Growtopia) — ✅ prototipe berjalan
+
+**Tujuan:** pemain bisa melihat pemain lain di kota yang sama, menyapa, dan belajar bersama.
+
+### 5.1 Fitur
+- Melihat avatar pemain lain (dengan kustomisasi & nama) berjalan di kota 3D.
+- **Obrolan stempel frasa**: pemain memilih frasa Jepang siap pakai (こんにちは, ありがとう, いっしょに べんきょう しよう！…) yang muncul sebagai balon kata. Aman untuk anak (tanpa teks bebas) **dan** melatih kalimat sehari-hari.
+- Emote (♥, !, ?, 😊) & membungkuk (ojigi).
+- 🔜 Karuta duel 1 lawan 1 dan papan peringkat mingguan.
+- 🔜 Tukar/beri jajanan antar pemain, kunjungan kamar teman.
+- 💡 Kelas bersama: guru sungguhan membuat "ruang kelas" dan memutar video pelajaran bersamaan.
+
+### 5.2 Arsitektur
+```
+[HP pemain] ⇄ WebSocket ⇄ [server/ (Node.js)] ⇄ [HP pemain lain]
+```
+- Server ringan di folder `server/` (Node.js + `ws`), ruangan per peta, hanya meneruskan posisi, penampilan, & ID frasa.
+- Bisa di-host gratis di Render / Railway / Fly.io. Alamat server diisi di Pengaturan → Online.
+- Game tetap bisa dimainkan **offline** sepenuhnya; online bersifat opsional.
+
+### 5.3 Keamanan
+- Tidak ada teks bebas: hanya frasa dari daftar (ID angka), jadi tidak ada kata kasar/spam.
+- Nama pemain dibatasi 12 huruf & disaring.
+- Batas kirim pesan (rate limit) di server.
+
+---
+
+## 6. Tampilan & rasa (tidak kaku)
+
+- ✅ Karakter bernapas, berkedip, bergoyang saat berjalan; cahaya pagi/sore/malam.
+- 🔜 Animasi kecil: debu saat berjalan, hati muncul saat teman senang, konfeti saat naik level.
+- 🔜 Transisi kamera saat masuk bangunan, "zoom" saat dialog penting.
+- 🔜 Ekspresi baru (marah lucu, malu, menangis terharu) untuk momen cerita.
+- 🔜 Getaran HP (haptic) ringan saat jawaban benar/salah.
+- 🔜 Aksesibilitas: ukuran teks besar, mode kontras tinggi, mode buta warna.
+
+---
+
+## 7. Optimasi & teknis
+
+| Area | Rencana |
+|---|---|
+| Performa 3D | ✅ instancing pohon, ✅ render dijeda saat panel terbuka, 🔜 texture atlas, 🔜 LOD bayangan otomatis sesuai FPS |
+| Ukuran unduhan | ✅ tanpa file gambar/audio besar, 🔜 kompres three.js (tree-shaking) |
+| Baterai | ✅ kualitas Hemat 30 FPS, 🔜 deteksi baterai lemah otomatis |
+| Simpan data | ✅ localStorage, 🔜 ekspor/impor kode simpanan, 🔜 simpan awan (opsional) |
+| Pengujian | ✅ uji otomatis Playwright (main 1 hari penuh), 🔜 CI GitHub Actions |
+| Kode | 🔜 pisahkan data cerita ke JSON, 🔜 editor konten sederhana untuk guru |
+
+---
+
+## 8. Tahapan (fase)
+
+### Fase 1 — pembaruan ini ✅
+1. ✅ ROADMAP ini.
+2. ✅ **Pencapaian** + halaman lencana + spanduk pop-up.
+3. ✅ **Streak harian & bonus login.**
+4. ✅ **Ulasan Harian (SRS)** + lencana 📝 di HUD.
+5. ✅ **Jidouhanbaiki, yatai & konbini**, tas (inventaris), makan (いただきます/ごちそうさま), hadiah ke teman (jajanan favorit = ♥♥♥), buku jajanan.
+6. ✅ **Aktivitas santai**: memancing + buku ikan, hewan peliharaan, bangku taman, buku cerita perpustakaan.
+7. ✅ **Online (prototipe)**: server WebSocket (`server/`) + avatar pemain lain + papan nama + stempel frasa + reconnect otomatis.
+
+### Fase 2 🔜
+Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.
+
+### Fase 3 🔜
+Bab 4–6 (yōon, waktu, kanji N5, stasiun & kota baru), karuta duel online, papan peringkat, event musiman.
+
+### Fase 4 💡
+Mode kelas untuk guru, editor konten, simpan awan, aplikasi toko (Play Store via TWA).
+
+---
+
+## 9. Ukuran keberhasilan
+
+- **Retensi**: pemain kembali di hari ke-2 (target ≥ 50%) dan hari ke-7 (≥ 25%).
+- **Belajar**: ketepatan kuis naik dari hari ke hari; ≥ 80% pemain yang tamat Bab 1 bisa membaca semua hiragana.
+- **Kesenangan**: rata-rata sesi 15–25 menit; mini-game favorit dicatat untuk dikembangkan.
+
+---
+
+## 10. Cara menambah konten
+
+- Hari/pelajaran baru: `js/data.js` & `js/data2.js` (lihat format `DAYS`).
+- Jajanan, pencapaian, frasa online: `js/extras.js`.
+- Peta: `js/maps.js` (satu huruf = satu ubin).
+- Karakter: palet & gaya di `js/pixel.js`, potret di `js/portrait.js`.

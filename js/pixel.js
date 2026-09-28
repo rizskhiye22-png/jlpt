@@ -62,23 +62,30 @@ const Pix = (() => {
     const f = v => Math.max(0, Math.min(255, Math.round(t < 0 ? v * (1 + t) : v + (255 - v) * t))).toString(16).padStart(2, '0');
     return '#' + f(n >> 16) + f((n >> 8) & 255) + f(n & 255);
   }
-  function setPlayer(look) {
+  // Susun palet & gaya dari pilihan penampilan
+  function buildLook(look) {
     const L = Object.assign({ hair: 'short', hairColor: '#3f3a4f', skin: '#f8d9c0', uniform: 'blazer', uniformColor: '#3e4a7a', accessory: 'none', accColor: '#e0475f' }, look || {});
     const sailor = L.uniform === 'sailor';
-    PAL.player = {
-      h: L.hairColor, H: shade(L.hairColor, -.35), e: '#2a2238', E: shade(L.hairColor, .1), I: shade(L.hairColor, .5),
-      o: sailor ? '#f7f3ea' : L.uniformColor, O: sailor ? '#d3c7b3' : shade(L.uniformColor, -.3),
-      a: L.accessory === 'none' || L.accessory === 'glasses' ? '#d24c5a' : L.accColor, A: shade(L.accColor, -.3),
-      p: shade(L.uniformColor, -.2), b: '#3a2a2a', c: sailor ? L.uniformColor : '#f7f3ea', g: '#3a2438',
-      s: L.skin, S: shade(L.skin, -.1), T: shade(L.skin, -.25),
+    return {
+      pal: {
+        h: L.hairColor, H: shade(L.hairColor, -.35), e: '#2a2238', E: shade(L.hairColor, .1), I: shade(L.hairColor, .5),
+        o: sailor ? '#f7f3ea' : L.uniformColor, O: sailor ? '#d3c7b3' : shade(L.uniformColor, -.3),
+        a: L.accessory === 'none' || L.accessory === 'glasses' ? '#d24c5a' : L.accColor, A: shade(L.accColor, -.3),
+        p: shade(L.uniformColor, -.2), b: '#3a2a2a', c: sailor ? L.uniformColor : '#f7f3ea', g: '#3a2438',
+        s: L.skin, S: shade(L.skin, -.1), T: shade(L.skin, -.25),
+      },
+      style: {
+        hair: L.hair, uniform: L.uniform,
+        ribbon: L.accessory === 'ribbon', glasses: L.accessory === 'glasses', headband: L.accessory === 'headband',
+        cap: L.accessory === 'cap', flower: L.accessory === 'flower',
+      },
     };
-    STYLE.player = {
-      hair: L.hair, uniform: L.uniform,
-      ribbon: L.accessory === 'ribbon', glasses: L.accessory === 'glasses', headband: L.accessory === 'headband',
-      cap: L.accessory === 'cap', flower: L.accessory === 'flower',
-    };
-    [...cache.keys()].forEach(k => { if (k.includes(':player:')) cache.delete(k); });
   }
+  function registerLook(key, look) {
+    const b = buildLook(look); PAL[key] = b.pal; STYLE[key] = b.style;
+    [...cache.keys()].forEach(k => { if (k.includes(':' + key + ':')) cache.delete(k); });
+  }
+  function setPlayer(look) { registerLook('player', look); }
 
   /* ---------- Sprite jalan 16x16 ---------- */
   const DOWN = [
@@ -226,6 +233,64 @@ const Pix = (() => {
     '....k..k..kk....',
   ];
 
+  /* ---------- Hewan peliharaan 16x16 ---------- */
+  const PET_GRIDS = {
+    inu: [
+      '................',
+      '................',
+      '................',
+      '....kkkkkkk.....',
+      '...khhhhhhhk....',
+      '..kHhhhhhhhHk...',
+      '..kHhehhhehHk...',
+      '..kHhhhkhhhHk...',
+      '...khhhahhhk....',
+      '....khhhhhk.....',
+      '...khhhhhhhk..k.',
+      '..khhoohhhhhkhk.',
+      '..khhoohhhhhhk..',
+      '...khhhhhhhhk...',
+      '...khkkhkkhk....',
+      '....k..k..k.....',
+    ],
+    usagi: [
+      '................',
+      '.....kk..kk.....',
+      '....khk..khk....',
+      '....kak..kak....',
+      '....khk..khk....',
+      '...kkhhkkhhkk...',
+      '...khhhhhhhhk...',
+      '..khhehhhhehhk..',
+      '..khhhhakhhhhk..',
+      '...khhhhhhhhk...',
+      '...khhhhhhhhk...',
+      '..khhhhhhhhhhk..',
+      '..khhhhhhhhhhkk.',
+      '...khhhhhhhhkhk.',
+      '....kkhhhhkk.k..',
+      '......kkkk......',
+    ],
+    hiyoko: [
+      '................',
+      '................',
+      '................',
+      '.......kk.......',
+      '......khhk......',
+      '.....khhhhk.....',
+      '....khhhhhhk....',
+      '....khehhehk....',
+      '....khhoohhk....',
+      '...khhhhhhhhk...',
+      '..kHhhhhhhhhHk..',
+      '..kHhhhhhhhhHk..',
+      '...khhhhhhhhk...',
+      '....kkhhhhkk....',
+      '.....ko..ok.....',
+      '....kok..kok....',
+    ],
+  };
+
   /* ---------- Menggambar ke canvas ---------- */
   const cache = new Map();
   function toCanvas(g, pal, flip) {
@@ -251,10 +316,13 @@ const Pix = (() => {
   function sprite(id, dir = 'down', frame = 0) {
     const key = `s:${id}:${dir}:${frame}`;
     if (!cache.has(key)) {
-      if (id === 'mochi') {
-        const g = CAT.map(r => r.split(''));
-        if (frame === 1) { g[15] = '...k..k...kk....'.split(''); }
-        cache.set(key, toCanvas(g, PAL.mochi, dir === 'left'));
+      if (id === 'mochi' || id.startsWith('pet_')) {
+        const pet = id.startsWith('pet_') && typeof PETS !== 'undefined' ? PETS.find(p => p.id === id) : null;
+        const base = pet && PET_GRIDS[pet.kind] ? PET_GRIDS[pet.kind] : CAT;
+        const g = base.map(r => r.split(''));
+        if (frame === 1 && base === CAT) { g[15] = '...k..k...kk....'.split(''); }
+        if (frame === 1 && base !== CAT) { g.unshift(g.pop()); }
+        cache.set(key, toCanvas(g, pet ? pet.pal : PAL.mochi, dir === 'left'));
       } else {
         const d = dir === 'left' ? 'side' : dir === 'right' ? 'side' : dir;
         cache.set(key, toCanvas(spriteGrid(id, d, frame), PAL[id] || PAL.player, dir === 'left'));
@@ -275,5 +343,5 @@ const Pix = (() => {
   }
 
   setPlayer();
-  return { sprite, portrait, drawPortrait, setPlayer, shade, PAL, STYLE, PLAYER_OPTIONS };
+  return { sprite, portrait, drawPortrait, setPlayer, registerLook, shade, PAL, STYLE, PLAYER_OPTIONS };
 })();

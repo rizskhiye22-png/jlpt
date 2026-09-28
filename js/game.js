@@ -99,6 +99,13 @@ const Game = (() => {
     UI.setDay(d ? `Hari ${S().day} · ${STEP_LABEL[S().step]}` : 'Libur');
     UI.setObjective(objective().text, () => { if (!busy) gotoObjective(); });
     UI.setPoints(S().points || 0);
+    UI.setReview(Extras.due().length, () => { if (!busy) reviewNow(); });
+    Extras.checkAch();
+  }
+  async function reviewNow() {
+    busy = true; World.pause(true);
+    try { await Extras.review(); } catch (e) { if (!(e && e.abort)) console.error(e); }
+    UI.hideDialog(); UI.closePanel(); busy = false; World.pause(false); mood(); refreshHud();
   }
   function gotoObjective() {
     const o = objective(), here = World.map;
@@ -162,6 +169,11 @@ const Game = (() => {
     if (npc.id === 'kid' && (questOpen('sora') || q('sora').state === 'active')) return soraQuest();
     if (npc.id === 'ojii' && (questOpen('mochi') || (q('mochi').state === 'active' && q('mochi').found))) return mochiQuest();
     if (npc.id === 'mochi') return mochiFound();
+    if (npc.id !== 'mochi' && Object.values(S().bag || {}).some(n => n > 0)) {
+      const a = await menuChoice(`Bicara dengan ${nameOf(npc.id)}`, ['Ngobrol', 'Beri jajanan 🎁']);
+      UI.hideDialog();
+      if (a === 1) { await Extras.gift(npc.id); return; }
+    }
     if (npc.id === 'yuki') return runLines([{ w: 'yuki', t: 'Sst! Sensei sudah mau mulai. Ayo ke depan!' }], ['yuki']);
     if (npc.id === 'kenta') return runLines([{ w: 'kenta', e: 'happy', t: 'Semoga pelajarannya seru hari ini!' }], ['kenta']);
     if (npc.id === 'hana') return runLines([{ w: 'hana', e: 'happy', t: 'Semangat belajar, ya! Kalau bingung, tanya aku.' }], ['hana']);
@@ -306,6 +318,7 @@ const Game = (() => {
       ] : [];
       await Lesson.teach(d.kana, { title: `Video: ${d.sub}`, intro });
       d.kana.forEach(k => { if (!S().kana.includes(k)) S().kana.push(k); });
+      Extras.learn(d.kana);
       Save.write(); UI.closePanel();
       const g = CLASS_GAMES[(n - 1) % CLASS_GAMES.length];
       await UI.say({ w: 'sensei', e: 'happy', t: `Sekarang kita main "${Games.NAMES[g]}" dengan huruf hari ini!` });
@@ -473,9 +486,10 @@ const Game = (() => {
       setQ('list', { state: 'done' }); addPoints(QUESTS.list.reward, 'misi'); addStamp('list', QUESTS.list.title);
       return;
     }
-    const a = await menuChoice('Masuk konbini?', ['Latihan belanja (baca label katakana)', 'Tidak jadi']);
+    const a = await menuChoice('Masuk konbini?', ['Beli jajanan 🍙', 'Latihan belanja (baca label katakana)', 'Tidak jadi']);
     UI.hideDialog();
-    if (a === 0) await Games.shop({ count: 3, title: 'Latihan Belanja' });
+    if (a === 0) await Extras.shop('konbini');
+    if (a === 1) await Games.shop({ count: 3, title: 'Latihan Belanja' });
   }
 
   async function menuQuest() {
@@ -517,6 +531,7 @@ const Game = (() => {
     await UI.say({ n: 'Kamu menarik kertas ramalan (omikuji):' });
     await UI.say({ jp: f.jp, ro: f.ro, id: f.id });
     S().omikuji = S().day; addPoints(f.pts, 'omikuji');
+    if (f.jp === 'だいきち') Extras.bump('daikichi');
   }
 
   /* ---------- interaksi dari dunia ---------- */
@@ -531,9 +546,13 @@ const Game = (() => {
       else if (t.type === 'closet') await wardrobe();
       else if (t.type === 'mailbox') await mailbox();
       else if (t.type === 'shrine') await shrine();
-      else if (t.type === 'vending') await UI.say({ jp: 'つめたい のみもの', ro: 'tsumetai nomimono', id: 'Mesin minuman dingin: コーラ, ミルク, ココア…' });
+      else if (t.type === 'vending') { await UI.say({ jp: 'じどうはんばいき', ro: 'jidouhanbaiki', id: 'Mesin minuman otomatis! Ada di mana-mana di Jepang.' }); UI.hideDialog(); await Extras.shop('vending'); }
+      else if (t.type === 'yatai') { await UI.say({ w: 'tenin', e: 'happy', jp: 'いらっしゃい！おいしい よ！', ro: 'irasshai! oishii yo!', id: 'Silakan! Enak, lho!' }); UI.hideDialog(); await Extras.shop('yatai'); }
+      else if (t.type === 'water') { const a = await menuChoice(t.where === 'pond' ? 'Kolam yang tenang. Mau memancing?' : 'Sungai yang jernih. Mau memancing?', ['Memancing 🎣', 'Lihat Buku Ikan', 'Tidak jadi']); UI.hideDialog(); if (a === 0) await Relax.fishing(t.where); if (a === 1) await Relax.fishBook(); }
+      else if (t.type === 'bench') await Relax.bench();
+      else if (t.type === 'pet') await Relax.petPet();
       else if (t.type === 'fridge') await UI.say({ jp: 'れいぞうこ', ro: 'reizouko', id: 'Kulkas. Ada ミルク dan プリン di dalamnya.' });
-      else if (t.type === 'shelf') await UI.say({ jp: 'ほんだな', ro: 'hondana', id: 'Rak buku penuh buku bergambar.' });
+      else if (t.type === 'shelf') { UI.hideDialog(); await Relax.library(); }
       else if (t.type === 'board') await UI.say({ jp: 'がんばろう！', ro: 'ganbarou!', id: 'Tulisan di papan: "Ayo berjuang!"' });
     } catch (e) { if (!(e && e.abort)) console.error(e); }
     UI.hideDialog(); UI.closePanel();
@@ -574,8 +593,14 @@ const Game = (() => {
         const m = UI.modal(`
           <div class="w-title">Menu <span class="pts-badge">🌸 ${S().points || 0}</span></div>
           <div class="menu-list">
+            <button class="mi" data-a="review" type="button">Ulasan harian${Extras.due().length ? ` <span class="badge">${Extras.due().length}</span>` : ''}</button>
             <button class="mi" data-a="book" type="button">Buku catatan</button>
             <button class="mi" data-a="drill" type="button">Latihan bebas</button>
+            <button class="mi" data-a="bag" type="button">Tas & jajanan</button>
+            <button class="mi" data-a="pets" type="button">Hewan peliharaan</button>
+            <button class="mi" data-a="fish" type="button">Buku ikan</button>
+            <button class="mi" data-a="ach" type="button">Pencapaian</button>
+            <button class="mi" data-a="online" type="button">Online: stempel frasa</button>
             <button class="mi" data-a="quests" type="button">Misi & stempel</button>
             <button class="mi" data-a="report" type="button">Rapor</button>
             <button class="mi" data-a="wardrobe" type="button">Lemari (ganti gaya)</button>
@@ -591,6 +616,12 @@ const Game = (() => {
         UI.closeModal();
         if (a === 'close') break;
         if (a === 'book') await book();
+        if (a === 'review') { await Extras.review(); UI.hideDialog(); }
+        if (a === 'bag') await Extras.bag();
+        if (a === 'pets') await Relax.petShop();
+        if (a === 'fish') await Relax.fishBook();
+        if (a === 'ach') await Extras.achPage();
+        if (a === 'online') { Online.palette(); break; }
         if (a === 'report') await report();
         if (a === 'quests') await questLog();
         if (a === 'settings') await settings();
@@ -605,13 +636,15 @@ const Game = (() => {
 
   async function study() {
     if (S().kana.length < 4) return UI.say({ n: 'Belum cukup huruf untuk latihan bebas. Belajar dulu di sekolah, ya!' });
-    const names = ['quiz', 'karuta', 'catch', 'memory', 'builder', 'shodo'];
-    const labels = ['Kuis campuran', 'Karuta (dengar & ambil)', 'Hujan Huruf', 'Kartu Memori', 'Susun Kata', 'Kaligrafi'];
+    const names = ['review', 'quiz', 'karuta', 'catch', 'memory', 'builder', 'shodo', 'books'];
+    const labels = [`Ulasan harian (${Extras.due().length} huruf)`, 'Kuis campuran', 'Karuta (dengar & ambil)', 'Hujan Huruf', 'Kartu Memori', 'Susun Kata', 'Kaligrafi', 'Baca buku cerita'];
     const m = UI.modal(`<div class="w-title">Latihan Bebas</div><p class="muted">Pilih cara belajar yang kamu suka:</p>
       <div class="menu-list">${labels.map((l, i) => `<button class="mi" data-i="${i}" type="button">${l}</button>`).join('')}<button class="mi ghost" data-i="-1" type="button">Batal</button></div>`);
     const i = await UI.wait(done => m.querySelectorAll('.mi').forEach(b => b.onclick = () => { Sound.blip(); done(+b.dataset.i); }));
     UI.closeModal();
     if (i < 0) return;
+    if (names[i] === 'review') { await Extras.review(); return; }
+    if (names[i] === 'books') { await Relax.library(); return; }
     const scriptPick = S().kana.some(IS_KATA) && S().kana.some(k => !IS_KATA(k))
       ? await menuChoice('Huruf apa yang mau dilatih?', ['Hiragana', 'Katakana', 'Campur']) : 2;
     UI.hideDialog();
@@ -766,7 +799,7 @@ const Game = (() => {
           if (!v) { input.classList.add('shake'); input.focus(); setTimeout(() => input.classList.remove('shake'), 400); return; }
           S().name = v;
         }
-        S().look = look; Save.write(); Pix.setPlayer(look); World.refreshLook(); Sound.blip(); UI.closePanel(); done();
+        S().look = look; Save.write(); Pix.setPlayer(look); World.refreshLook(); Online.lookChanged(); Sound.blip(); UI.closePanel(); done();
       };
     });
   }
@@ -791,6 +824,11 @@ const Game = (() => {
         ${seg('quality', 'Kualitas 3D', [['low', 'Hemat'], ['normal', 'Normal'], ['high', 'Tinggi']])}
         ${tog('fx', 'Kelopak sakura', 'Efek kelopak berjatuhan di kota')}
         ${tog('force2d', 'Mode 2D klasik', 'Untuk HP lama (muat ulang game)')}
+        <div class="sec-h">Online (opsional)</div>
+        <label class="set col"><span>Alamat server<small>Contoh: wss://nama-server.onrender.com — lihat server/README</small></span><input class="srv" type="text" autocomplete="off" placeholder="wss://..." value="${UI.esc(s.server || '')}"></label>
+        <div class="row"><button class="btn ghost small" data-a="conn" type="button">${Online.status === 'on' ? 'Putuskan' : 'Sambungkan'}</button></div>
+        <p class="muted small online-st">Status: ${{ on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]}${World.online ? '' : ' (online hanya di mode 3D)'}</p>
+        ${tog('narr', 'Narasi video', 'Sensei membacakan penjelasan (bila suara bahasa Indonesia tersedia)')}
         ${Sound.hasJa() ? '' : '<p class="warn">Suara bahasa Jepang tidak ditemukan di perangkat ini. Soal "dengarkan" dilewati. Tambahkan suara Jepang di pengaturan Text-to-Speech perangkatmu.</p>'}
         <button class="btn ghost small" data-a="test" type="button">♪ Tes suara: こんにちは</button>
         <button class="btn danger small" data-a="reset" type="button">Hapus semua progres</button>
@@ -809,6 +847,11 @@ const Game = (() => {
         if (b.dataset.seg === 'quality') World.setQuality(b.dataset.v);
       });
       p.querySelector('[data-a=test]').onclick = () => Sound.speak('こんにちは');
+      p.querySelector('[data-a=conn]').onclick = () => {
+        if (Online.status === 'on' || Online.status === 'connecting') { s.online = false; Save.write(); Online.disconnect(); }
+        else { s.server = p.querySelector('.srv').value.trim(); s.online = !!s.server; Save.write(); if (!s.server) { UI.toast('Isi alamat server dulu.'); return; } Online.connect(s.server); }
+        setTimeout(() => { p.querySelector('.online-st').textContent = 'Status: ' + { on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]; p.querySelector('[data-a=conn]').textContent = Online.status === 'on' || Online.status === 'connecting' ? 'Putuskan' : 'Sambungkan'; }, 800);
+      };
       p.querySelector('[data-a=reset]').onclick = () => { if (confirm('Hapus semua progres dan mulai dari awal?')) { Save.reset(); location.reload(); } };
       p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); };
     });
@@ -854,7 +897,8 @@ const Game = (() => {
     World.resize();
     busy = true;
     try {
-      await UI.fade(() => { World.load('home', 3, 3, 'left', npcsFor('home')); mood(); refreshHud(); });
+      await UI.fade(() => { World.setPet(Relax.activePet() ? Relax.activePet().id : null); World.load('home', 3, 3, 'left', npcsFor('home')); mood(); refreshHud(); });
+      Online.autoStart();
       if (isNew) {
         await UI.say({ n: 'Musim semi. Kamu baru saja pindah dari Indonesia dan tinggal bersama Nenek Sato di kota kecil di Jepang.' });
         await UI.say({ w: 'obaa', e: 'happy', jp: 'ようこそ、{name}ちゃん。', ro: 'youkoso, {name}-chan.', id: 'Selamat datang, {name}.' });
@@ -865,6 +909,8 @@ const Game = (() => {
       }
       if (day()) { if (S().step === 'wake') await dayCard(); }
       else await UI.say({ n: 'Semua bab sudah selesai. Pakai Latihan Bebas di meja belajar untuk mengulang.' });
+      UI.hideDialog();
+      await Extras.login();
     } catch (e) { if (!(e && e.abort)) console.error(e); }
     UI.hideDialog();
     busy = false; World.pause(false); refreshHud();

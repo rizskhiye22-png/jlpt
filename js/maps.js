@@ -12,7 +12,7 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TP,...................,...PT',
       'T.f........................T',
-      'TP........................PT',
+      'TP..................Y.....PT',
       'T..........................T',
       'T.,......................,.T',
       'T.,.....#####==#####...,...T',
@@ -150,7 +150,7 @@ const MAPS = {
 };
 
 // Ubin yang tidak bisa dilewati
-const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M']);
+const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M', 'Y']);
 const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#']);
 
 const Maps = (() => {
@@ -458,6 +458,7 @@ const Maps = (() => {
         else if (t === 'L') lamp(ctx, X, Y, tx, ty);
         else if (t === 'V') vending(ctx, X, Y, tx, ty);
         else if (t === 'M') mailbox(ctx, X, Y, tx, ty);
+        else if (t === 'Y') { grass(ctx, X, Y, tx, ty); px(ctx, C.k, X + 1, Y + 6, 14, 10); px(ctx, C.wood, X + 2, Y + 7, 12, 8); for (let i = 0; i < 4; i++) px(ctx, i % 2 ? '#fff' : '#d8455d', X + i * 4, Y + 1, 4, 5); px(ctx, '#f6d44a', X + 6, Y + 9, 4, 3); }
         else grass(ctx, X, Y, tx, ty);
       } else {
         if (t === 'x') exitTile(ctx, X, Y);
@@ -513,6 +514,9 @@ const Maps = (() => {
     if (map.outdoor) {
       if (t === 'M') return { type: 'mailbox' };
       if (t === 'V') return { type: 'vending' };
+      if (t === 'Y') return { type: 'yatai' };
+      if (t === 'b') return { type: 'bench' };
+      if (t === 'W') return { type: 'water', where: x <= 8 && y >= 14 && y <= 19 ? 'pond' : 'river' };
       if ((map.buildings || []).some(b => b.type === 'shrine' && x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h)) return { type: 'shrine' };
       return null;
     }

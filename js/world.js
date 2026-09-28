@@ -235,6 +235,7 @@ const World2D = (() => {
   return {
     init, load, setNpcs, hold, release, action, walkTo, pause, refresh, resize, setPhase,
     setQuality() {}, refreshLook() { dirty = true; kick(); }, is3D: false,
+    setPet() {}, setOthers() {}, sayOther() {}, online: false,
     get map() { return mapId; }, get player() { return player; }, get npcs() { return npcs; },
   };
 })();
