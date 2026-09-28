@@ -3,12 +3,14 @@
    Untuk menambah materi baru, cukup edit file ini.
    ========================================================= */
 
-// Tokoh yang bisa berbicara. "pal" = nama palet warna di pixel.js
+// Tokoh yang bisa berbicara (warna papan nama di dialog)
 const CHARACTERS = {
   sensei: { name: 'Tanaka-sensei', color: '#52648a' },
   yuki:   { name: 'Yuki',          color: '#c8455d' },
   kenta:  { name: 'Kenta',         color: '#c98a1e' },
   obaa:   { name: 'Nenek Sato',    color: '#7a5a90' },
+  hana:   { name: 'Hana',          color: '#3b8a78' },
+  mochi:  { name: 'Mochi',         color: '#c97a35' },
   tenin:  { name: 'Pak Kasir',     color: '#3f8059' },
   kid:    { name: 'Sora',          color: '#bf6428' },
   ojii:   { name: 'Kakek Mori',    color: '#546e50' },

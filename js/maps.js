@@ -7,7 +7,7 @@ const TILE = 16;
 
 const MAPS = {
   town: {
-    name: 'Kota Sakura',
+    name: 'Kota Sakura', outdoor: true,
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TP,...................,...PT',
@@ -17,19 +17,19 @@ const MAPS = {
       'T.,......................,.T',
       'T.,.....#####==#####...,...T',
       'T............==............T',
-      'T.......f....==............T',
+      'T.......f....==.L..........T',
       'T............==...f........T',
-      'T............==............T',
+      'TM...........==...........VT',
       'T==========================T',
       'T==========================T',
-      'T.,..........==........,...T',
+      'T.,....L.....==.....L..,...T',
       'TP.f.....P.,.==......,...P.T',
       'T.,WWWWW...b.==............T',
       'TP.WWWWW.....==............T',
       'T..WWWWW..f..==..f.........T',
       'Tf.WWWWW.....==............T',
       'T.P........P.==............T',
-      'T......,.....==========....T',
+      'T......,....L==========....T',
       'TP...f....P..==..f.....,...T',
       'T.......,....==.....,......T',
       'WWWWWWWWWWWWWBBWWWWWWWWWWWWW',
@@ -41,28 +41,33 @@ const MAPS = {
       { type: 'house',   x: 2,  y: 7,  w: 5,  h: 4, doors: [[4, 10]] },
       { type: 'konbini', x: 20, y: 7,  w: 6,  h: 4, doors: [[22, 10]] },
       { type: 'station', x: 19, y: 15, w: 7,  h: 5, doors: [[22, 19]] },
+      { type: 'shrine',  x: 22, y: 1,  w: 3,  h: 2, doors: [] },
+    ],
+    props: [
+      { type: 'torii', x: 22, y: 4, w: 3, solid: [[22, 4], [24, 4]] },
     ],
     signs: [
       { x: 7,  y: 10, text: 'わたしの いえ', note: 'Rumahku' },
       { x: 15, y: 7,  text: 'さくら こうこう', note: 'SMA Sakura' },
-      { x: 19, y: 10, text: 'コンビニ', note: 'Konbini (minimarket)', kata: true },
+      { x: 19, y: 10, text: 'コンビニ', note: 'Konbini (minimarket)' },
       { x: 8,  y: 16, text: 'いけ', note: 'Kolam' },
       { x: 10, y: 14, text: 'さくら', note: 'Bunga sakura' },
       { x: 18, y: 19, text: 'えき', note: 'Stasiun' },
       { x: 12, y: 22, text: 'かわ', note: 'Sungai' },
+      { x: 21, y: 5,  text: 'じんじゃ', note: 'Kuil' },
     ],
     warps: [
-      { x: 4, y: 10, to: 'home', tx: 4, ty: 6, dir: 'up' },
+      { x: 4, y: 10, to: 'home', tx: 6, ty: 6, dir: 'up' },
       { x: 13, y: 5, to: 'class', tx: 5, ty: 8, dir: 'up' },
       { x: 14, y: 5, to: 'class', tx: 5, ty: 8, dir: 'up' },
     ],
     closedDoors: [
-      { x: 22, y: 10, msg: 'Pintu konbini terkunci. Tulisan di pintu: 「じゅんびちゅう」(sedang bersiap). Toko ini buka di Bab 2!' },
+      { x: 22, y: 10, msg: 'Pintu konbini terkunci. Tulisan di pintu: 「じゅんびちゅう」(sedang bersiap). Toko ini buka di Bab 2!', until: 12 },
       { x: 22, y: 19, msg: 'Stasiun masih ditutup. Perjalanan ke kota lain dimulai di bab berikutnya!' },
     ],
     spots: {
-      gate: [12, 7], home_front: [6, 11], park: [9, 17], konbini: [20, 12], river: [16, 22],
-      obaa: [3, 20], tenin: [24, 12], kid: [10, 22], ojii: [17, 20],
+      gate: [12, 7], home_front: [6, 11], park: [9, 17], konbini: [20, 12], river: [16, 22], shrine: [23, 3],
+      tenin: [24, 12], kid: [10, 22], ojii: [17, 20], mochi: [25, 2],
     },
   },
   class: {
@@ -80,29 +85,73 @@ const MAPS = {
       'WWWWWxWWWWW',
     ],
     warps: [{ x: 5, y: 9, to: 'town', tx: 13, ty: 6, dir: 'down' }],
-    spots: { sensei: [5, 2], yuki: [3, 6], kenta: [7, 6] },
+    spots: { sensei: [5, 2], yuki: [3, 6], kenta: [7, 6], hana: [5, 6] },
   },
   home: {
-    name: 'Kamarmu',
+    name: 'Rumah Nenek Sato',
     rows: [
-      'WWWWWWWWW',
-      'WWnWWWnWW',
-      'Wbb...ddW',
-      'Wbb....pW',
-      'W.......W',
-      'W..rrr..W',
-      'W.......W',
-      'WWWWxWWWW',
+      'WWWWWWWWWWWWW',
+      'WWnWWWWWWnWWW',
+      'Wbb..dd..kkFW',
+      'Wbb.........W',
+      'W........tt.W',
+      'W..rrr...tt.W',
+      'WC..........W',
+      'WWWWWWxWWWWWW',
     ],
-    warps: [{ x: 4, y: 7, to: 'town', tx: 4, ty: 11, dir: 'down' }],
-    spots: { wake: [3, 3] },
+    warps: [{ x: 6, y: 7, to: 'town', tx: 4, ty: 11, dir: 'down' }],
+    spots: { wake: [3, 3], obaa: [11, 4] },
+  },
+  roof: {
+    name: 'Atap Sekolah', floor: 'roof',
+    rows: [
+      '###########',
+      '#.........#',
+      '#.bb...QQ.#',
+      '#......QQ.#',
+      '#.........#',
+      '#..bb.....#',
+      '#.........#',
+      '#####x#####',
+    ],
+    warps: [{ x: 5, y: 7, to: 'class', tx: 5, ty: 8, dir: 'up' }],
+    spots: { npc: [4, 4], me: [5, 4] },
+  },
+  library: {
+    name: 'Perpustakaan',
+    rows: [
+      'WWWWWWWWWWW',
+      'WSSSSWSSSSW',
+      'W.........W',
+      'W.tt...tt.W',
+      'W.........W',
+      'WSS.....SSW',
+      'W.........W',
+      'WWWWWxWWWWW',
+    ],
+    warps: [{ x: 5, y: 7, to: 'class', tx: 5, ty: 8, dir: 'up' }],
+    spots: { npc: [4, 4], me: [5, 4] },
+  },
+  club: {
+    name: 'Ruang Klub',
+    rows: [
+      'WWWWWWWWWWW',
+      'WWnWWWWWnWW',
+      'WmmmmmmmmmW',
+      'WmmtmmmtmmW',
+      'WmmmmmmmmmW',
+      'WmmtmmmtmmW',
+      'WmmmmmmmmmW',
+      'WWWWWxWWWWW',
+    ],
+    warps: [{ x: 5, y: 7, to: 'town', tx: 13, ty: 6, dir: 'down' }],
+    spots: { npc: [4, 4], me: [5, 4] },
   },
 };
 
 // Ubin yang tidak bisa dilewati
-const SOLID = new Set(['T', 'P', 'W', '#', 'b', 'K', 'D', 'd', 'p', 'n']);
-const SOLID_CLASS = new Set(['W', 'K', 'D', 'T', 'p']);   // di dalam ruangan
-const SOLID_HOME  = new Set(['W', 'n', 'b', 'd', 'p']);
+const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M']);
+const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#']);
 
 const Maps = (() => {
   const C = {
@@ -336,40 +385,108 @@ const Maps = (() => {
   }
 
   /* ---------- gambar seluruh peta sekali ke canvas (hemat performa) ---------- */
-  function render(mapId) {
+  /* ---------- ubin tambahan ---------- */
+  function lamp(ctx, X, Y, tx, ty) {
+    grass(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 6, Y + 2, 4, 14); px(ctx, '#5b5f6e', X + 7, Y + 3, 2, 12);
+    px(ctx, C.k, X + 4, Y, 8, 5); px(ctx, '#fff3b0', X + 5, Y + 1, 6, 3);
+  }
+  function vending(ctx, X, Y, tx, ty) {
+    grass(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 2, Y, 12, 16); px(ctx, '#d8455d', X + 3, Y + 1, 10, 14);
+    px(ctx, C.glassL, X + 4, Y + 2, 8, 6); px(ctx, '#f6d44a', X + 5, Y + 4, 2, 3); px(ctx, '#5bb3a0', X + 9, Y + 4, 2, 3);
+  }
+  function mailbox(ctx, X, Y, tx, ty) {
+    grass(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 4, Y + 2, 8, 9); px(ctx, '#d8455d', X + 5, Y + 3, 6, 7); px(ctx, C.k, X + 6, Y + 5, 4, 1);
+    px(ctx, C.k, X + 7, Y + 11, 2, 5);
+  }
+  function block(ctx, X, Y, tx, ty, top, side) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 1, Y + 1, 14, 14); px(ctx, top, X + 2, Y + 2, 12, 8); px(ctx, side, X + 2, Y + 10, 12, 4);
+  }
+  function tatami(ctx, X, Y, tx, ty) {
+    px(ctx, '#c9c07a', X, Y, 16, 16); px(ctx, '#b3aa66', X, Y + (tx % 2 ? 7 : 15), 16, 1);
+    px(ctx, '#3f6b58', X + (ty % 2 ? 15 : 0), Y, 1, 16);
+    for (let i = 0; i < 4; i++) px(ctx, '#bdb470', X + 2 + i * 4, Y + 3, 1, 10);
+  }
+  function concrete(ctx, X, Y, tx, ty) {
+    px(ctx, '#b9bcc4', X, Y, 16, 16); px(ctx, '#a6a9b2', X, Y + 15, 16, 1); px(ctx, '#a6a9b2', X + 15, Y, 1, 16);
+    const h = hash(tx, ty, 90); px(ctx, '#c9ccd3', X + h % 12, Y + (h >> 4) % 12, 2, 1);
+  }
+  function roofFence(ctx, X, Y, tx, ty) {
+    concrete(ctx, X, Y, tx, ty);
+    px(ctx, '#3f8f58', X, Y + 4, 16, 2); px(ctx, '#3f8f58', X, Y + 10, 16, 2);
+    for (let x = 1; x < 16; x += 4) px(ctx, '#2b6a41', X + x, Y + 2, 1, 12);
+  }
+  function shrine2d(ctx, b) {
+    const X = b.x * TILE, Y = b.y * TILE, W = b.w * TILE, H = b.h * TILE;
+    px(ctx, C.k, X, Y + 6, W, H - 6); px(ctx, '#8a5a36', X + 1, Y + 7, W - 2, H - 8);
+    px(ctx, C.k, X - 3, Y, W + 6, 10); px(ctx, '#4a5a4f', X - 2, Y + 1, W + 4, 8);
+    px(ctx, '#f6f0e0', X + W / 2 - 3, Y + 12, 6, 8); px(ctx, '#e0c060', X + W / 2 - 1, Y + 10, 2, 3);
+  }
+  function torii2d(ctx, pr) {
+    const X = pr.x * TILE, Y = pr.y * TILE, W = pr.w * TILE;
+    px(ctx, C.k, X + 4, Y - 10, 8, 26); px(ctx, '#d8455d', X + 5, Y - 9, 6, 24);
+    px(ctx, C.k, X + W - 12, Y - 10, 8, 26); px(ctx, '#d8455d', X + W - 11, Y - 9, 6, 24);
+    px(ctx, C.k, X - 2, Y - 16, W + 4, 6); px(ctx, '#2a1f2d', X - 1, Y - 15, W + 2, 4);
+    px(ctx, C.k, X + 2, Y - 7, W - 4, 4); px(ctx, '#d8455d', X + 3, Y - 6, W - 6, 2);
+  }
+
+  /* ---------- gambar seluruh peta sekali ke canvas (hemat performa) ----------
+     opts.ground = true: hanya lantai/tanah (untuk mode 3D, objek dibuat terpisah) */
+  function render(mapId, opts = {}) {
     const map = MAPS[mapId];
+    const G = !!opts.ground;
     const w = map.rows[0].length, h = map.rows.length;
     const cv = document.createElement('canvas'); cv.width = w * TILE; cv.height = h * TILE;
     const ctx = cv.getContext('2d');
+    const base = map.floor === 'roof' ? concrete : floor;
     for (let ty = 0; ty < h; ty++) for (let tx = 0; tx < w; tx++) {
       const t = tileAt(map, tx, ty), X = tx * TILE, Y = ty * TILE;
-      if (mapId === 'town') {
+      if (map.outdoor) {
         if (t === '=') path(ctx, X, Y, tx, ty, map);
         else if (t === 'W') water(ctx, X, Y, tx, ty, map);
         else if (t === 'B') bridge(ctx, X, Y, tx);
+        else if (t === ',') flower(ctx, X, Y, tx, ty, false);
+        else if (t === 'f') flower(ctx, X, Y, tx, ty, true);
+        else if (G) grass(ctx, X, Y, tx, ty);
         else if (t === 'T') tree(ctx, X, Y, tx, ty, false);
         else if (t === 'P') tree(ctx, X, Y, tx, ty, true);
         else if (t === '#') fence(ctx, X, Y, tx, ty);
         else if (t === 'b') bench(ctx, X, Y, tx, ty);
-        else if (t === ',') flower(ctx, X, Y, tx, ty, false);
-        else if (t === 'f') flower(ctx, X, Y, tx, ty, true);
+        else if (t === 'L') lamp(ctx, X, Y, tx, ty);
+        else if (t === 'V') vending(ctx, X, Y, tx, ty);
+        else if (t === 'M') mailbox(ctx, X, Y, tx, ty);
         else grass(ctx, X, Y, tx, ty);
       } else {
-        if (t === 'W') wallT(ctx, X, Y, tx, ty, map);
+        if (t === 'x') exitTile(ctx, X, Y);
+        else if (t === 'r') rug(ctx, X, Y, tx, ty, map);
+        else if (t === 'm') tatami(ctx, X, Y, tx, ty);
+        else if (G) (mapId === 'club' ? tatami : base)(ctx, X, Y, tx, ty);
+        else if (t === 'W') wallT(ctx, X, Y, tx, ty, map);
         else if (t === 'K') blackboard(ctx, X, Y, tx, ty, map);
         else if (t === 'T') desk(ctx, X, Y, tx, ty, true);
         else if (t === 'D') desk(ctx, X, Y, tx, ty, false);
         else if (t === 'p') plant(ctx, X, Y, tx, ty);
-        else if (t === 'x') exitTile(ctx, X, Y);
         else if (t === 'b') bed(ctx, X, Y, tx, ty, map);
         else if (t === 'd') studyDesk(ctx, X, Y, tx, ty, map);
         else if (t === 'n') windowWall(ctx, X, Y, tx, ty, map);
-        else if (t === 'r') rug(ctx, X, Y, tx, ty, map);
-        else floor(ctx, X, Y, tx, ty);
+        else if (t === 'k') block(ctx, X, Y, tx, ty, '#e8e2d6', '#b9b1a2');
+        else if (t === 'F') block(ctx, X, Y, tx, ty, '#f4f6f8', '#c9ced6');
+        else if (t === 't') block(ctx, X, Y, tx, ty, C.woodL, C.wood);
+        else if (t === 'C') block(ctx, X, Y, tx, ty, '#b07a4c', '#8a5a36');
+        else if (t === 'S') block(ctx, X, Y, tx, ty, '#7a4f35', '#c9574f');
+        else if (t === 'Q') block(ctx, X, Y, tx, ty, '#c9ccd3', '#8a8f9e');
+        else if (t === '#') roofFence(ctx, X, Y, tx, ty);
+        else base(ctx, X, Y, tx, ty);
       }
     }
-    (map.buildings || []).forEach(b => building(ctx, b));
-    (map.signs || []).forEach(s => sign(ctx, s));
+    if (!G) {
+      (map.buildings || []).forEach(b => b.type === 'shrine' ? shrine2d(ctx, b) : building(ctx, b));
+      (map.props || []).forEach(pr => pr.type === 'torii' && torii2d(ctx, pr));
+      (map.signs || []).forEach(s => sign(ctx, s));
+    }
     return cv;
   }
 
@@ -378,8 +495,9 @@ const Maps = (() => {
     const map = MAPS[mapId];
     if (y < 0 || x < 0 || y >= map.rows.length || x >= map.rows[0].length) return false;
     const t = tileAt(map, x, y);
-    const solid = mapId === 'town' ? SOLID : mapId === 'class' ? SOLID_CLASS : SOLID_HOME;
+    const solid = map.outdoor ? SOLID_OUT : SOLID_IN;
     if (solid.has(t)) return false;
+    for (const pr of map.props || []) if ((pr.solid || []).some(([sx, sy]) => sx === x && sy === y)) return false;
     if ((map.signs || []).some(s => s.x === x && s.y === y)) return false;
     for (const b of map.buildings || []) {
       if (x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h) return b.doors.some(([dx, dy]) => dx === x && dy === y);
@@ -387,5 +505,21 @@ const Maps = (() => {
     return true;
   }
 
-  return { render, walkable, tileAt: (id, x, y) => tileAt(MAPS[id], x, y) };
+  // Benda yang bisa diperiksa dengan tombol A
+  function interactAt(mapId, x, y) {
+    const map = MAPS[mapId], t = tileAt(map, x, y);
+    const sign = (map.signs || []).find(s => s.x === x && s.y === y);
+    if (sign) return { type: 'sign', sign };
+    if (map.outdoor) {
+      if (t === 'M') return { type: 'mailbox' };
+      if (t === 'V') return { type: 'vending' };
+      if ((map.buildings || []).some(b => b.type === 'shrine' && x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h)) return { type: 'shrine' };
+      return null;
+    }
+    return { b: { type: 'bed' }, d: { type: 'desk' }, C: { type: 'closet' }, K: { type: 'board' }, S: { type: 'shelf' }, F: { type: 'fridge' } }[t] || null;
+  }
+  // Bisa bicara melewati ubin ini (meja, konter)
+  const across = (mapId, x, y) => !MAPS[mapId].outdoor && 'Ttk'.includes(tileAt(MAPS[mapId], x, y));
+
+  return { render, walkable, interactAt, across, tileAt: (id, x, y) => tileAt(MAPS[id], x, y), C, hash };
 })();

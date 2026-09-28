@@ -3,7 +3,24 @@
    ========================================================= */
 (function () {
   UI.init();
-  World.init(UI.els.canvas, { interact: Game.interact, warp: Game.warp, blocked: Game.blocked });
+
+  // Pilih mesin dunia: 3D (Three.js) bila didukung, 2D sebagai cadangan
+  function webgl() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+  let booted = false;
+  function boot(use3D) {
+    if (booted) return; booted = true;
+    window.World = use3D ? World3D : World2D;
+    try { World.init(UI.els.canvas, { interact: Game.interact, warp: Game.warp, blocked: Game.blocked }); }
+    catch (e) { console.warn('3D gagal, pakai 2D', e); if (use3D) { booted = false; const c = UI.els.canvas, n = c.cloneNode(); c.replaceWith(n); UI.els.canvas = n; return boot(false); } throw e; }
+    if (use3D) World.setQuality(Save.d.settings.quality || 'normal');
+    Game.title();
+  }
+  if (Save.d.settings.force2d || !webgl()) boot(false);
+  else if (window.THREE) boot(true);
+  else {
+    window.addEventListener('three-ready', () => boot(true), { once: true });
+    setTimeout(() => boot(!!window.THREE), 5000);
+  }
 
   const DIRS = ['up', 'down', 'left', 'right'];
 
@@ -21,16 +38,17 @@
     }
     if (UI.input(btn)) return;
     if (Game.busy) return;
+    if (!window.World) return;
     if (DIRS.includes(btn)) { Game.cancelAuto(); World.hold(btn); }
     else if (btn === 'a') World.action();
     else if (btn === 'b' || btn === 'menu') Game.menu();
   }
-  function release(btn) { if (DIRS.includes(btn)) World.release(btn); }
+  function release(btn) { if (DIRS.includes(btn) && window.World) World.release(btn); }
 
   // D-pad: tahan untuk terus berjalan
   document.querySelectorAll('.dpad [data-dir]').forEach(b => {
     const dir = b.dataset.dir;
-    b.addEventListener('pointerdown', e => { e.preventDefault(); Sound.unlock(); b.classList.add('on'); press(dir); });
+    b.addEventListener('pointerdown', e => { e.preventDefault(); Sound.unlock(); Music.unlock(); b.classList.add('on'); press(dir); });
     ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => { b.classList.remove('on'); release(dir); }));
   });
   document.querySelectorAll('.pad [data-btn]').forEach(b => {
@@ -59,8 +77,6 @@
 
   // Mencegah zoom tidak sengaja saat mengetuk cepat di HP
   document.addEventListener('dblclick', e => e.preventDefault());
-
-  Game.title();
 
   // Mode offline (bisa dipasang di layar utama HP)
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

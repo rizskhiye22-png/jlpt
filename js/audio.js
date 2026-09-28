@@ -5,12 +5,13 @@
    ========================================================= */
 const Sound = (() => {
   const hasTTS = 'speechSynthesis' in window;
-  let voice = null, ctx = null;
+  let voice = null, idVoice = null, ctx = null;
 
   function pickVoice() {
     if (!hasTTS) return;
     const vs = speechSynthesis.getVoices();
     voice = vs.find(v => /^ja[-_]JP/i.test(v.lang)) || vs.find(v => /^ja/i.test(v.lang)) || null;
+    idVoice = vs.find(v => /^id[-_]ID/i.test(v.lang)) || vs.find(v => /^(id|in)\b/i.test(v.lang)) || null;
   }
   if (hasTTS) { pickVoice(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', pickVoice); }
 
@@ -36,6 +37,22 @@ const Sound = (() => {
       } catch (e) { res(); }
     });
   }
+  // Narasi bahasa Indonesia (untuk video pelajaran)
+  function speakLang(text, lang) {
+    if (!hasTTS || !text) return Promise.resolve();
+    return new Promise(res => {
+      try {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang; if (idVoice && /^id/.test(lang)) u.voice = idVoice;
+        u.rate = Math.min(1.15, (settings().rate || .85) + .15);
+        let done = false; const end = () => { if (!done) { done = true; res(); } };
+        u.onend = end; u.onerror = end; setTimeout(end, 9000);
+        speechSynthesis.speak(u);
+      } catch (e) { res(); }
+    });
+  }
+  const hasId = () => hasTTS && !!idVoice;
+
   function stop() { try { hasTTS && speechSynthesis.cancel(); } catch (e) {} }
 
   // Harus dipanggil dari ketukan pertama pengguna (aturan browser HP)
@@ -64,7 +81,7 @@ const Sound = (() => {
   }
 
   return {
-    speak, stop, unlock, hasJa,
+    speak, speakLang, stop, unlock, hasJa, hasId,
     blip:  () => notes([[880, 0.03]], 'square', 0.025),
     ok:    () => notes([[784, 0.08], [1175, 0.14]]),
     bad:   () => notes([[220, 0.12], [185, 0.18]], 'triangle', 0.08),

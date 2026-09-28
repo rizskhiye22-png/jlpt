@@ -1,9 +1,10 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v1';
+const CACHE = 'nihongo-gakkou-v2';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
-  'js/data.js', 'js/pixel.js', 'js/maps.js', 'js/audio.js', 'js/save.js',
-  'js/ui.js', 'js/lesson.js', 'js/world.js', 'js/game.js', 'js/main.js',
+  'js/data.js', 'js/data2.js', 'js/strokes.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
+  'js/save.js', 'js/audio.js', 'js/music.js', 'js/ui.js', 'js/lesson.js', 'js/games.js', 'js/video.js',
+  'js/world.js', 'js/world3d.js', 'js/game.js', 'js/main.js', 'js/vendor/three.module.min.js',
 ];
 
 self.addEventListener('install', e => {

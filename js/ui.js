@@ -20,7 +20,7 @@ const UI = (() => {
         <div class="tapcatch"></div>
         <div class="hud">
           <button class="hud-obj" type="button"><span class="pin">▶</span><span class="obj-text"></span></button>
-          <div class="hud-day"></div>
+          <div class="hud-right"><div class="hud-day"></div><div class="hud-pts">🌸 <b>0</b></div></div>
         </div>
         <div class="dlg-area">
           <div class="choices" role="listbox"></div>
@@ -51,7 +51,7 @@ const UI = (() => {
     els = {
       app, screen: app.querySelector('.screen'), canvas: app.querySelector('#game'),
       tap: app.querySelector('.tapcatch'), hud: app.querySelector('.hud'),
-      obj: app.querySelector('.hud-obj'), objText: app.querySelector('.obj-text'), day: app.querySelector('.hud-day'),
+      obj: app.querySelector('.hud-obj'), objText: app.querySelector('.obj-text'), day: app.querySelector('.hud-day'), pts: app.querySelector('.hud-pts b'),
       choices: app.querySelector('.choices'), dialog: app.querySelector('.dialog'),
       panels: app.querySelector('.panels'), modals: app.querySelector('.modals'),
       toast: app.querySelector('.toast'), fade: app.querySelector('.fade'), pad: app.querySelector('.pad'),
@@ -100,10 +100,37 @@ const UI = (() => {
       if (Save.d.settings.voice) Sound.speak(txt);
     }
     setBusy(true);
+    const finishType = typewriter(els.dialog.querySelectorAll('.dlg-t, .dlg-n, .dlg-id'));
     const shown = Date.now();
     return wait(done => {
-      advanceFn = () => { if (Date.now() - shown < 220) return; advanceFn = null; Sound.blip(); done(); };
+      advanceFn = () => {
+        if (finishType()) return;                       // ketuk pertama: tampilkan semua teks
+        if (Date.now() - shown < 220) return;
+        advanceFn = null; Sound.blip(); done();
+      };
     });
+  }
+
+  // Efek teks diketik huruf demi huruf. Mengembalikan fungsi "selesaikan sekarang".
+  function typewriter(nodes) {
+    const speed = { slow: 34, fast: 14, instant: 0 }[Save.d.settings.text || 'fast'];
+    const list = [...nodes].map(n => ({ n, full: n.textContent }));
+    if (!speed || !list.length) return () => false;
+    list.forEach(o => { o.n.textContent = ''; });
+    let li = 0, ci = 0, timer = null, typing = true;
+    const tick = () => {
+      if (li >= list.length) { typing = false; return; }
+      const o = list[li];
+      ci += 2; o.n.textContent = o.full.slice(0, ci);
+      if (ci >= o.full.length) { li++; ci = 0; }
+      timer = setTimeout(tick, speed);
+    };
+    tick();
+    return () => {
+      if (!typing) return false;
+      clearTimeout(timer); typing = false; list.forEach(o => { o.n.textContent = o.full; });
+      return true;
+    };
   }
 
   function choose(prompt, options) {
@@ -111,7 +138,7 @@ const UI = (() => {
     els.dialog.innerHTML = `<div class="dlg-body"><div class="dlg-name you" style="--c:#6b5a9a">${esc(Save.d.name || 'Kamu')}</div><div class="dlg-t">${fmt(prompt)}</div></div>`;
     const romaji = Save.d.settings.romaji;
     els.choices.innerHTML = options.map((o, i) =>
-      `<button class="choice" type="button" data-i="${i}"><span class="cur">▶</span><span class="c-txt"><span class="c-jp">${o.jp}</span>${romaji && o.ro ? `<span class="c-ro">${o.ro}</span>` : ''}</span></button>`).join('');
+      `<button class="choice" type="button" data-i="${i}"><span class="cur">▶</span><span class="c-txt">${o.label ? `<span class="c-lbl">${o.label}</span>` : `<span class="c-jp">${o.jp}</span>${romaji && o.ro ? `<span class="c-ro">${o.ro}</span>` : ''}`}</span></button>`).join('');
     setBusy(true);
     advanceFn = null;
     return wait(done => {
@@ -192,13 +219,14 @@ const UI = (() => {
     els.obj.onclick = onTap || null;
   }
   function setDay(text) { els.day.textContent = text || ''; }
+  function setPoints(n) { if (els.pts) els.pts.textContent = n; }
   function showGame(on) { els.app.classList.toggle('in-game', on); }
 
   return {
     init, wait, abortAll, sleep, esc, fmt,
     say, choose, hideDialog, advance, input, dialogOpen,
     panel, closePanel, panelOpen, modal, closeModal, modalOpen,
-    toast, fade, timecard, setObjective, setDay, showGame,
-    get els() { return els; },
+    toast, fade, timecard, setObjective, setDay, setPoints, showGame,
+    get els() { return els; }, set canvas(c) { els.canvas = c; },
   };
 })();

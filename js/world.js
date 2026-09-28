@@ -3,7 +3,7 @@
    Canvas kecil (resolusi pixel asli) lalu diperbesar tajam,
    jadi ringan untuk HP.
    ========================================================= */
-const World = (() => {
+const World2D = (() => {
   const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const STEP_MS = 190;
 
@@ -111,7 +111,7 @@ const World = (() => {
       const x = Math.round(a.px - cx), y = Math.round(a.py - cy);
       ctx.fillStyle = 'rgba(30,20,35,.25)'; ctx.fillRect(x + 4, y + 13, 8, 2); ctx.fillRect(x + 3, y + 14, 10, 1);
       ctx.drawImage(Pix.sprite(a.id, a.dir, a.frame), x, y - 4 - (a.npc && a.npc.idle && bob ? 1 : 0));
-      if (a.npc && a.npc.marker) drawMarker(x + 8, y - 12 - (bob ? 1 : 0));
+      if (a.npc && a.npc.marker) drawMarker(x + 8, y - 12 - (bob ? 1 : 0), a.npc.marker === '?');
     }
     // penanda tujuan saat berjalan otomatis
     if (routeGoal && routeGoal.tile) {
@@ -119,9 +119,9 @@ const World = (() => {
       ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.strokeRect(x + 2.5, y + 2.5, 11, 11);
     }
   }
-  function drawMarker(x, y) {
+  function drawMarker(x, y, q) {
     ctx.fillStyle = '#2a1f2d'; ctx.fillRect(x - 3, y - 1, 7, 9);
-    ctx.fillStyle = '#ffd24a'; ctx.fillRect(x - 2, y, 5, 7);
+    ctx.fillStyle = q ? '#6fd3e6' : '#ffd24a'; ctx.fillRect(x - 2, y, 5, 7);
     ctx.fillStyle = '#2a1f2d'; ctx.fillRect(x, y + 1, 1, 3); ctx.fillRect(x, y + 5, 1, 1);
   }
 
@@ -150,18 +150,11 @@ const World = (() => {
   }
   function target(x, y, dir) {
     const [dx, dy] = DIRS[dir];
-    let fx = x + dx, fy = y + dy;
+    const fx = x + dx, fy = y + dy;
     let n = npcAt(fx, fy);
-    // bicara melewati meja/konter
-    if (!n && 'T'.includes(Maps.tileAt(mapId, fx, fy)) && mapId === 'class') n = npcAt(fx + dx, fy + dy);
+    if (!n && Maps.across(mapId, fx, fy)) n = npcAt(fx + dx, fy + dy);
     if (n) { n.dir = { up: 'down', down: 'up', left: 'right', right: 'left' }[dir]; dirty = true; kick(); return { type: 'npc', npc: n }; }
-    const sign = (MAPS[mapId].signs || []).find(s => s.x === fx && s.y === fy);
-    if (sign) return { type: 'sign', sign };
-    const t = Maps.tileAt(mapId, fx, fy);
-    if (mapId === 'home' && t === 'b') return { type: 'bed' };
-    if (mapId === 'home' && t === 'd') return { type: 'desk' };
-    if (mapId === 'class' && t === 'K') return { type: 'board' };
-    return null;
+    return Maps.interactAt(mapId, fx, fy);
   }
 
   // Cari jalur terpendek (BFS) ke salah satu ubin tujuan
@@ -194,14 +187,14 @@ const World = (() => {
   function walkTo(tx, ty) {
     if (paused) return false;
     const n = npcAt(tx, ty);
-    const sign = (MAPS[mapId].signs || []).find(s => s.x === tx && s.y === ty);
-    const tile = Maps.tileAt(mapId, tx, ty);
-    const special = n || sign || (mapId === 'home' && 'bd'.includes(tile)) || (mapId === 'class' && 'TK'.includes(tile));
+    const special = n || Maps.interactAt(mapId, tx, ty);
     if (special) {
-      let goals = Object.entries(DIRS).map(([d, [dx, dy]]) => [tx - dx, ty - dy, d]).filter(([x, y]) => free(x, y) || (x === player.x && y === player.y));
-      // sensei di balik meja: berdiri di depan meja
-      if (mapId === 'class' && n && n.id === 'sensei') goals = [[5, 4, 'up'], [4, 4, 'up'], [6, 4, 'up']];
-      if (mapId === 'class' && tile === 'K') goals = [[tx, 2, 'up']].filter(([x, y]) => free(x, y));
+      const goals = [];
+      Object.entries(DIRS).forEach(([d, [dx, dy]]) => {
+        const sx = tx - dx, sy = ty - dy;
+        if (free(sx, sy) || (sx === player.x && sy === player.y)) goals.push([sx, sy, d]);
+        if (n && Maps.across(mapId, sx, sy)) { const ax = sx - dx, ay = sy - dy; if (free(ax, ay) || (ax === player.x && ay === player.y)) goals.push([ax, ay, d]); }
+      });
       if (!goals.length) return false;
       const p = findPath(goals.map(g => [g[0], g[1]]));
       if (!p) return false;
@@ -237,8 +230,11 @@ const World = (() => {
   function pause(on) { paused = on; if (on) { held = null; route = []; routeGoal = null; } dirty = true; kick(); }
   function refresh() { dirty = true; kick(); }
 
+  // Mode 2D: suasana waktu cukup lewat warna layar (CSS)
+  function setPhase(p) { document.body.dataset.phase = p; }
   return {
-    init, load, setNpcs, hold, release, action, walkTo, pause, refresh, resize,
+    init, load, setNpcs, hold, release, action, walkTo, pause, refresh, resize, setPhase,
+    setQuality() {}, refreshLook() { dirty = true; kick(); }, is3D: false,
     get map() { return mapId; }, get player() { return player; }, get npcs() { return npcs; },
   };
 })();

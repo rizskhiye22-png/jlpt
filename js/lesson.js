@@ -9,7 +9,9 @@ const Lesson = (() => {
   const pick = a => a[Math.random() * a.length | 0];
   const ALL = Object.keys(KANA);
 
-  const knownWords = known => WORDS.filter(w => [...w.jp].every(c => known.has(c)));
+  const knownWords = known => WORDS.filter(w => [...w.jp].every(c => knownChar(c, known)));
+  // pasangan hiragana <-> katakana (selisih kode Unicode 0x60)
+  const twin = k => String.fromCharCode(k.charCodeAt(0) + (IS_KATA(k) ? -0x60 : 0x60));
 
   function stat(k) { return Save.d.st[k] || (Save.d.st[k] = { c: 0, w: 0 }); }
 
@@ -18,9 +20,10 @@ const Lesson = (() => {
     const K = KANA[k];
     const p = UI.panel(`
       <div class="board">
-        <div class="b-top">Huruf baru ${i + 1} / ${n}</div>
+        <div class="b-top">${IS_KATA(k) ? 'Katakana' : 'Hiragana'} baru ${i + 1} / ${n}</div>
         <button class="b-kana" type="button" aria-label="Dengarkan ${k}">${k}</button>
         <div class="b-ro">${K.ro}</div>
+        ${IS_KATA(k) && KANA[twin(k)] ? `<div class="b-twin">Hiragananya: <b>${twin(k)}</b></div>` : ''}
         <p class="b-tip">${K.tip}</p>
         ${word ? `<button class="b-ex" type="button">Contoh: <b>${word.jp}</b> (${word.ro}) = ${word.id} ♪</button>` : ''}
       </div>
@@ -102,13 +105,11 @@ const Lesson = (() => {
     });
   }
 
-  async function teach(list) {
-    const known = new Set([...Save.d.kana, ...list]);
+  // Sensei memutar video pelajaran, lalu murid menulis setiap huruf
+  async function teach(list, opts = {}) {
+    await Video.play({ kana: list, intro: opts.intro || [], title: opts.title || 'Video Pelajaran' });
     for (let i = 0; i < list.length; i++) {
-      const k = list[i];
-      const word = knownWords(known).find(w => w.jp.includes(k));
-      await introCard(k, i, list.length, word);
-      await traceCard(k);
+      await Games.shodoCard(list[i], { title: 'Latihan Menulis', info: `${i + 1}/${list.length}` });
     }
     await recap(list);
   }
@@ -121,8 +122,11 @@ const Lesson = (() => {
     return pool[pool.length - 1];
   }
 
-  function makeQuestions(focus, count) {
-    const pool = Save.d.kana.length ? Save.d.kana.slice() : focus.slice();
+  function makeQuestions(focus, count, poolKind) {
+    let pool = Save.d.kana.length ? Save.d.kana.slice() : focus.slice();
+    if (poolKind === 'kata') pool = pool.filter(IS_KATA);
+    if (poolKind === 'hira') pool = pool.filter(k => !IS_KATA(k));
+    if (!pool.length) pool = focus.slice();
     const words = knownWords(new Set(pool));
     const types = ['read', 'read', 'write', 'write', 'word'];
     if (Sound.hasJa()) types.push('listen', 'listen');
@@ -146,8 +150,10 @@ const Lesson = (() => {
   }
 
   function options(correct, source, n = 4) {
-    const learned = Save.d.kana.filter(k => k !== correct);
-    const others = shuffle(learned).concat(shuffle(ALL.filter(k => k !== correct && !learned.includes(k))));
+    const kata = IS_KATA(correct);
+    const same = ALL.filter(k => IS_KATA(k) === kata);
+    const learned = Save.d.kana.filter(k => k !== correct && IS_KATA(k) === kata);
+    const others = shuffle(learned).concat(shuffle(same.filter(k => k !== correct && !learned.includes(k))));
     return shuffle([correct, ...others.slice(0, n - 1)]).map(source);
   }
 
@@ -210,8 +216,9 @@ const Lesson = (() => {
     });
   }
 
-  async function quiz({ focus = [], count = 10, title = 'Latihan' }) {
-    const qs = makeQuestions(focus, count);
+  async function quiz({ focus = [], count = 10, title = 'Latihan', pool }) {
+    Music.play('school');
+    const qs = makeQuestions(focus, count, pool);
     let correct = 0;
     for (let i = 0; i < qs.length; i++) if (await ask(qs[i], i, qs.length, title)) correct++;
     Lesson._keys = null;
@@ -238,5 +245,5 @@ const Lesson = (() => {
     return UI.wait(done => { p.querySelector('.btn').onclick = () => { Sound.blip(); UI.closePanel(); done({ stars: s, grade: g }); }; });
   }
 
-  return { teach, quiz, results, stars, grade, starHtml, _keys: null };
+  return { teach, quiz, results, stars, grade, starHtml, twin, _keys: null };
 })();
