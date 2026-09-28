@@ -1,0 +1,15 @@
+{
+  "name": "Nihongo Gakkou — Belajar Bahasa Jepang",
+  "short_name": "Nihongo Gakkou",
+  "description": "Game RPG pixel untuk belajar hiragana dan percakapan bahasa Jepang sehari-hari.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a141e",
+  "theme_color": "#2a1f2d",
+  "lang": "id",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
