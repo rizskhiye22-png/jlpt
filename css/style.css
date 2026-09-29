@@ -161,6 +161,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
   background: var(--paper); border: 3px solid var(--ink); border-radius: 8px; padding: 16px;
   box-shadow: inset 0 0 0 2px #fff, 0 4px 0 rgba(0, 0, 0, .45); text-align: center; animation: pop .16s steps(3);
 }
+.modal { max-height: calc(100% - 24px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .modal.bare { background: none; border: none; box-shadow: none; }
 .modal.detail p { margin: 8px 0; font-size: 15px; line-height: 1.5; }
 
@@ -326,6 +327,18 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
 .mi { padding: 12px; border: 3px solid var(--ink); border-radius: 6px; background: #fff; font-size: 16px; text-align: left; box-shadow: 0 3px 0 var(--ink); }
 .mi::before { content: '▶ '; color: var(--red); }
 .mi.ghost { background: var(--paper2); }
+/* menu ringkas: grid ikon, tidak memanjang ke bawah */
+.menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.menu-grid.two { grid-template-columns: repeat(2, 1fr); }
+.mi.tile-mi { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 2px 7px; text-align: center; font-size: 12px; line-height: 1.15; min-height: 64px; }
+.mi.tile-mi::before, .mi.small-mi::before { content: none; }
+.mi.tile-mi i { font-style: normal; font-size: 24px; line-height: 1; }
+.mi.tile-mi .badge { position: absolute; top: -7px; right: -5px; }
+.mi.row-mi { flex-direction: row; justify-content: flex-start; gap: 8px; padding: 7px 8px; min-height: 0; font-size: 13px; text-align: left; }
+.mi.row-mi i { font-size: 20px; }
+.menu-foot { display: flex; gap: 7px; margin-top: 10px; }
+.mi.small-mi { flex: 1; padding: 9px 6px; font-size: 13px; text-align: center; }
+@media (max-width: 340px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
 .mi.ghost::before { content: ''; }
 .mi:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .set { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 2px dashed var(--line); cursor: pointer; }

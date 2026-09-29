@@ -632,21 +632,23 @@ const Game = (() => {
       for (;;) {
         const m = UI.modal(`
           <div class="w-title">Menu <span class="pts-badge">🌸 ${S().points || 0}</span></div>
-          <div class="menu-list">
-            <button class="mi" data-a="review" type="button">Ulasan harian${Extras.due().length ? ` <span class="badge">${Extras.due().length}</span>` : ''}</button>
-            <button class="mi" data-a="book" type="button">Buku catatan</button>
-            <button class="mi" data-a="drill" type="button">Latihan bebas</button>
-            <button class="mi" data-a="bag" type="button">Tas & jajanan</button>
-            <button class="mi" data-a="pets" type="button">Hewan peliharaan</button>
-            <button class="mi" data-a="fish" type="button">Buku ikan</button>
-            <button class="mi" data-a="ach" type="button">Pencapaian</button>
-            <button class="mi" data-a="online" type="button">Online: stempel frasa</button>
-            <button class="mi" data-a="quests" type="button">Misi & stempel</button>
-            <button class="mi" data-a="report" type="button">Rapor</button>
-            <button class="mi" data-a="wardrobe" type="button">Lemari (ganti gaya)</button>
-            <button class="mi" data-a="settings" type="button">Pengaturan</button>
-            <button class="mi" data-a="title" type="button">Simpan & ke layar judul</button>
-            <button class="mi ghost" data-a="close" type="button">Tutup</button>
+          <div class="menu-grid">
+            <button class="mi tile-mi" data-a="review" type="button"><i>📝</i><span>Ulasan</span>${Extras.due().length ? `<span class="badge">${Extras.due().length}</span>` : ''}</button>
+            <button class="mi tile-mi" data-a="book" type="button"><i>📖</i><span>Catatan</span></button>
+            <button class="mi tile-mi" data-a="drill" type="button"><i>✏️</i><span>Latihan</span></button>
+            <button class="mi tile-mi" data-a="bag" type="button"><i>🎒</i><span>Tas</span></button>
+            <button class="mi tile-mi" data-a="pets" type="button"><i>🐱</i><span>Hewan</span></button>
+            <button class="mi tile-mi" data-a="fish" type="button"><i>🎣</i><span>Ikan</span></button>
+            <button class="mi tile-mi" data-a="ach" type="button"><i>🏆</i><span>Prestasi</span></button>
+            <button class="mi tile-mi" data-a="quests" type="button"><i>🗺️</i><span>Misi</span></button>
+            <button class="mi tile-mi" data-a="report" type="button"><i>📊</i><span>Rapor</span></button>
+            <button class="mi tile-mi" data-a="wardrobe" type="button"><i>👕</i><span>Lemari</span></button>
+            <button class="mi tile-mi" data-a="online" type="button"><i>💬</i><span>Online</span></button>
+            <button class="mi tile-mi" data-a="settings" type="button"><i>⚙️</i><span>Atur</span></button>
+          </div>
+          <div class="menu-foot">
+            <button class="mi small-mi" data-a="title" type="button">🏠 Simpan & keluar</button>
+            <button class="mi ghost small-mi" data-a="close" type="button">Tutup ✕</button>
           </div>`);
         const a = await UI.wait(done => {
           m.querySelectorAll('.mi').forEach(b => b.onclick = () => { Sound.blip(); done(b.dataset.a); });
@@ -677,9 +679,10 @@ const Game = (() => {
   async function study() {
     if (S().kana.length < 4) return UI.say({ n: 'Belum cukup huruf untuk latihan bebas. Belajar dulu di sekolah, ya!' });
     const names = ['review', 'quiz', 'karuta', 'catch', 'builder', 'speed', 'kanahunt', 'wordmatch', 'dictation', 'shodo', 'books'];
-    const labels = [`Ulasan harian (${Extras.due().length} huruf)`, 'Kuis campuran', 'Karuta (dengar & ambil)', 'Hujan Huruf', 'Susun Kata', 'Benar atau Salah Kilat', 'Cari Huruf', 'Pasangkan Kata', 'Dikte (tulis dari ingatan)', 'Kaligrafi', 'Baca buku cerita'];
-    const m = UI.modal(`<div class="w-title">Latihan Bebas</div><p class="muted">Pilih cara belajar yang kamu suka:</p>
-      <div class="menu-list">${labels.map((l, i) => `<button class="mi" data-i="${i}" type="button">${l}</button>`).join('')}<button class="mi ghost" data-i="-1" type="button">Batal</button></div>`);
+    const labels = [`Ulasan (${Extras.due().length})`, 'Kuis campuran', 'Karuta', 'Hujan Huruf', 'Susun Kata', 'Benar/Salah', 'Cari Huruf', 'Pasangkan Kata', 'Dikte', 'Kaligrafi', 'Buku cerita'];
+    const icons = ['📝', '❓', '🃏', '🌧️', '🧩', '⚡', '🔍', '🔗', '👂', '🖌️', '📚'];
+    const m = UI.modal(`<div class="w-title">Latihan Bebas</div>
+      <div class="menu-grid two">${labels.map((l, i) => `<button class="mi tile-mi row-mi" data-i="${i}" type="button"><i>${icons[i]}</i><span>${l}</span></button>`).join('')}</div><div class="menu-foot"><button class="mi ghost small-mi" data-i="-1" type="button">Batal</button></div>`);
     const i = await UI.wait(done => m.querySelectorAll('.mi').forEach(b => b.onclick = () => { Sound.blip(); done(+b.dataset.i); }));
     UI.closeModal();
     if (i < 0) return;

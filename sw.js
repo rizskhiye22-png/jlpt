@@ -1,5 +1,5 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v6';
+const CACHE = 'nihongo-gakkou-v7';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
   'js/data.js', 'js/data2.js', 'js/data3.js', 'js/strokes.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
