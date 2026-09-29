@@ -911,7 +911,7 @@ const Game = (() => {
         ${tog('fx', 'Kelopak sakura', 'Efek kelopak berjatuhan di kota')}
         ${tog('force2d', 'Mode 2D klasik', 'Untuk HP lama (muat ulang game)')}
         <div class="sec-h">Online (opsional)</div>
-        <label class="set col"><span>Alamat server<small>Contoh: wss://nama-server.onrender.com — lihat server/README</small></span><input class="srv" type="text" autocomplete="off" placeholder="wss://..." value="${UI.esc(s.server || '')}"></label>
+        <label class="set col"><span>Alamat server<small>Kosongkan untuk pakai server bawaan game</small></span><input class="srv" type="text" autocomplete="off" placeholder="server bawaan (otomatis)" value="${UI.esc(s.server || '')}"></label>
         <div class="row"><button class="btn ghost small" data-a="conn" type="button">${Online.status === 'on' ? 'Putuskan' : 'Sambungkan'}</button></div>
         <p class="muted small online-st">Status: ${{ on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]}${World.online ? '' : ' (online hanya di mode 3D)'}</p>
         <button class="btn danger small" data-a="reset" type="button">Hapus semua progres</button>
@@ -936,8 +936,8 @@ const Game = (() => {
         if (sel.dataset.v === 'ja') Sound.speak('こんにちは'); else Sound.speakLang('Halo, apa kabar?');
       });
       p.querySelector('[data-a=conn]').onclick = () => {
-        if (Online.status === 'on' || Online.status === 'connecting') { s.online = false; Save.write(); Online.disconnect(); }
-        else { s.server = p.querySelector('.srv').value.trim(); s.online = !!s.server; Save.write(); if (!s.server) { UI.toast('Isi alamat server dulu.'); return; } Online.connect(s.server); }
+        if (Online.status === 'on' || Online.status === 'connecting') { s.online = false; s.offlineChoice = true; Save.write(); Online.disconnect(); }
+        else { s.server = p.querySelector('.srv').value.trim(); s.online = true; s.offlineChoice = false; Save.write(); Online.connect(s.server); }
         setTimeout(() => { p.querySelector('.online-st').textContent = 'Status: ' + { on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]; p.querySelector('[data-a=conn]').textContent = Online.status === 'on' || Online.status === 'connecting' ? 'Putuskan' : 'Sambungkan'; }, 800);
       };
       p.querySelector('[data-a=reset]').onclick = () => { if (confirm('Hapus semua progres dan mulai dari awal?')) { Save.reset(); location.reload(); } };
