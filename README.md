@@ -7,6 +7,7 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 **Tanpa pertarungan.** Belajar terasa seperti di sekolah sungguhan: guru, video pelajaran, latihan menulis, kuis, dan teman sekelas.
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**.
+> Dokumen desain v3 「さくら の てがみ」 (cerita 1 tahun sampai JLPT N5) ada di **[design/](design/00-README.md)**.
 
 ## Fitur utama
 
