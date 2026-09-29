@@ -16,10 +16,10 @@
     Game.title();
   }
   if (Save.d.settings.force2d || !webgl()) boot(false);
-  else if (window.THREE) boot(true);
+  else if (window.World3D) boot(true);
   else {
     window.addEventListener('three-ready', () => boot(true), { once: true });
-    setTimeout(() => boot(!!window.THREE), 5000);
+    setTimeout(() => boot(!!window.World3D), 8000);
   }
 
   const DIRS = ['up', 'down', 'left', 'right'];

@@ -637,6 +637,7 @@ const Game = (() => {
             <button class="mi tile-mi" data-a="book" type="button"><i>📖</i><span>Catatan</span></button>
             <button class="mi tile-mi" data-a="drill" type="button"><i>✏️</i><span>Latihan</span></button>
             <button class="mi tile-mi" data-a="bag" type="button"><i>🎒</i><span>Tas</span></button>
+            <button class="mi tile-mi" data-a="friends" type="button"><i>👥</i><span>Teman</span></button>
             <button class="mi tile-mi" data-a="pets" type="button"><i>🐱</i><span>Hewan</span></button>
             <button class="mi tile-mi" data-a="fish" type="button"><i>🎣</i><span>Ikan</span></button>
             <button class="mi tile-mi" data-a="ach" type="button"><i>🏆</i><span>Prestasi</span></button>
@@ -660,6 +661,7 @@ const Game = (() => {
         if (a === 'book') await book();
         if (a === 'review') { await Extras.review(); UI.hideDialog(); }
         if (a === 'bag') await Extras.bag();
+        if (a === 'friends') { if (window.ReactUI) await window.ReactUI.friends(); }
         if (a === 'pets') await Relax.petShop();
         if (a === 'fish') await Relax.fishBook();
         if (a === 'ach') await Extras.achPage();
@@ -818,7 +820,9 @@ const Game = (() => {
     const draw = () => {
       Pix.setPlayer(look);
       Pix.drawPortrait(p.querySelector('.w-face'), 'player', 'happy');
-      const b = p.querySelector('.w-body'), c = b.getContext('2d'); c.clearRect(0, 0, 16, 16); c.drawImage(Pix.sprite('player', 'down', 0), 0, 0);
+      const b = p.querySelector('.w-body');
+      if (window.Char3D) { const img = window.Char3D.full('player', 160, 240); b.width = 160; b.height = 240; b.classList.add('hd'); const c = b.getContext('2d'); c.clearRect(0, 0, 160, 240); c.drawImage(img, 0, 0); }
+      else { const c = b.getContext('2d'); c.clearRect(0, 0, 16, 16); c.drawImage(Pix.sprite('player', 'down', 0), 0, 0); }
     };
     draw();
     return UI.wait(done => {

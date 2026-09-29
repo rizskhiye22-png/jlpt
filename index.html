@@ -38,14 +38,10 @@
   <script src="js/relax.js"></script>
   <script src="js/online.js"></script>
   <script src="js/world.js"></script>
-  <script src="js/world3d.js"></script>
   <script src="js/game.js"></script>
   <script src="js/main.js"></script>
-  <!-- Three.js (dimuat terakhir; kalau gagal, game memakai mode 2D) -->
-  <script type="module">
-    import * as THREE from './js/vendor/three.module.min.js';
-    window.THREE = THREE;
-    window.dispatchEvent(new Event('three-ready'));
-  </script>
+  <!-- Mesin 3D + karakter realistis (React + TypeScript + Three.js).
+       Dimuat terakhir; kalau gagal, game otomatis memakai mode 2D. -->
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

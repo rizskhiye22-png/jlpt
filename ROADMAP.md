@@ -159,8 +159,8 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 | Ukuran unduhan | ✅ tanpa file gambar/audio besar, 🔜 kompres three.js (tree-shaking) |
 | Baterai | ✅ kualitas Hemat 30 FPS, 🔜 deteksi baterai lemah otomatis |
 | Simpan data | ✅ localStorage, 🔜 ekspor/impor kode simpanan, 🔜 simpan awan (opsional) |
-| Pengujian | ✅ uji otomatis Playwright (main 1 hari penuh), 🔜 CI GitHub Actions |
-| Kode | 🔜 pisahkan data cerita ke JSON, 🔜 editor konten sederhana untuk guru |
+| Pengujian | ✅ uji otomatis Playwright (main 1 hari penuh), ✅ build + typecheck di GitHub Actions |
+| Kode | ✅ Vite + TypeScript + React (bertahap), 🔜 data cerita bertipe, 🔜 editor konten sederhana untuk guru |
 
 ---
 
@@ -174,6 +174,22 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 5. ✅ **Jidouhanbaiki, yatai & konbini**, tas (inventaris), makan (いただきます/ごちそうさま), hadiah ke teman (jajanan favorit = ♥♥♥), buku jajanan.
 6. ✅ **Aktivitas santai**: memancing + buku ikan, hewan peliharaan, bangku taman, buku cerita perpustakaan.
 7. ✅ **Online (prototipe)**: server WebSocket (`server/`) + avatar pemain lain + papan nama + stempel frasa + reconnect otomatis.
+
+### Fase 1.5 — React + TypeScript & karakter realistis ✅ (tahap 1 dari migrasi)
+1. ✅ Proyek **Vite + React + TypeScript**; build & terbit otomatis ke GitHub Pages (Actions).
+2. ✅ Dunia 3D dipindah ke TypeScript (`src/world/world3d.ts`).
+3. ✅ **Karakter manusia 3D realistis** prosedural: proporsi nyata, wajah berekspresi & berkedip, rambut (poni, bob, panjang, kuncir, jabrik, sanggul), seragam (pelaut, gakuran, blazer, kimono, celemek), animasi jalan/napas/menoleh.
+4. ✅ Hewan 3D (kucing, anjing, kelinci, anak ayam).
+5. ✅ Potret dialog, video sensei, dan lemari difoto dari model 3D.
+6. ✅ Halaman **Teman** pertama dengan React + React Three Fiber (model 3D bisa diputar, perkenalan diri berbahasa Jepang).
+
+**Tahap migrasi berikutnya** (satu per satu, game tetap bisa dimainkan setiap tahap):
+- 🔜 Pindahkan data pelajaran & cerita ke modul TypeScript bertipe (`src/data/*.ts`).
+- 🔜 Ubah panel (menu, tas, pencapaian, rapor, pengaturan) menjadi komponen React.
+- 🔜 Ubah pelajaran, kuis, video, dan mini-game menjadi komponen React.
+- 🔜 Karakter: rambut dengan tekstur helai lebih halus, pakaian berlipat, animasi melambai/membungkuk (ojigi) saat menyapa, gerak bibir saat bicara.
+- 🔜 Grafik: tone mapping sinematik untuk dunia, ambient occlusion ringan, air memantul, dedaunan bergoyang (dengan saklar kualitas untuk HP).
+- 🔜 Suara: rekaman suara asli (atau file suara AI berkualitas) untuk kalimat pelajaran utama.
 
 ### Fase 2 🔜
 Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.

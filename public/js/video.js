@@ -47,7 +47,7 @@ const Video = (() => {
     const blink = (t % 3200) < 140;
     const expr = blink ? 'blink' : talking ? (Math.floor(t / 140) % 2 ? 'happy' : 'normal') : 'normal';
     const img = Pix.portrait('sensei', expr);
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = img.width > 48;
     const bob = talking ? Math.sin(t / 180) * 2 : Math.sin(t / 700) * 1.5;
     ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(112, VH - 22, 80, 10, 0, 0, 7); ctx.fill();
     ctx.drawImage(img, 16, VH - 216 + bob, 192, 192);

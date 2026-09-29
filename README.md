@@ -30,7 +30,11 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 - 🌐 **Online (opsional)**: bertemu pemain lain di kota & saling menyapa dengan stempel frasa Jepang.
 
 **Teknis**
-- Dunia 3D gaya HD-2D (Three.js): bangunan low-poly + karakter pixel art, cahaya pagi/sore/malam, kelopak sakura.
+- **React + TypeScript + Vite**, dunia 3D dengan **Three.js**, halaman React dengan **React Three Fiber**.
+- **Karakter manusia 3D realistis** buatan kode (tanpa file model): proporsi manusia, wajah dengan mata berkilau yang berkedip & berekspresi, rambut, seragam sekolah (pelaut, gakuran, blazer), animasi jalan & bernapas, bayangan lembut.
+- Potret dialog & video sensei difoto langsung dari model 3D tokohnya.
+- 👥 Halaman **Teman**: putar model 3D tiap tokoh, lihat keakraban & jajanan favorit, dengarkan perkenalan dirinya dalam bahasa Jepang.
+- Cahaya pagi/sore/malam, hujan, kelopak sakura.
 - Mode 2D klasik otomatis untuk HP yang tidak mendukung WebGL.
 - Musik latar dibuat langsung oleh browser (tanpa file MP3). Grafis dari kode, tanpa gambar besar.
 - PWA: bisa dipasang di layar utama HP & dimainkan offline.
@@ -49,45 +53,47 @@ Suara memakai Text-to-Speech bawaan perangkat. Jika video sensei tidak bersuara:
 
 ## Menjalankan
 
-Tanpa build. Cukup HTML, CSS, JavaScript.
+Butuh **Node.js 20+**.
 
 ```bash
-python3 -m http.server 8000
-# buka http://localhost:8000
+npm install
+npm run dev        # mode pengembangan → buka alamat yang muncul (bisa dari HP di jaringan yang sama)
+npm run build      # hasil siap terbit di folder dist/
+npm run preview    # coba hasil build
+npm run typecheck  # cek TypeScript
 ```
 
-> Mode 3D butuh server (http/https). Jika `index.html` dibuka langsung dari file, game otomatis memakai mode 2D.
-
-**GitHub Pages**: Settings → Pages → *Deploy from a branch* → pilih branch & folder `/ (root)`.
+**GitHub Pages**: Settings → Pages → *Source: GitHub Actions*. Setiap push ke `main` otomatis dibuild & diterbitkan (`.github/workflows/deploy.yml`).
 
 **Online bersama**: lihat [server/README.md](server/README.md).
 
 ## Struktur kode
 
+Pindah ke React + TypeScript dilakukan **bertahap**: mesin 3D & karakter sudah TypeScript,
+logika pelajaran/cerita lama masih JavaScript biasa di `public/js` dan dipindah satu per satu.
+
 ```
-index.html              halaman utama
-css/style.css           tampilan (jendela retro, papan tulis, video, mini-game)
-js/data.js              ★ materi Bab 1 (hiragana), tokoh, kosakata
-js/data2.js             ★ materi Bab 2 (katakana), sarapan/makan siang/makan malam, klub, misi, event
-js/data3.js             ★ variasi harian: kejadian, cuaca, makan siang spesial, rotasi latihan
-js/extras.js            ★ jajanan, pencapaian, streak, ulasan harian (SRS)
-js/relax.js             ★ memancing, hewan peliharaan, bangku taman, buku cerita
-js/strokes.js           data urutan goresan (KanjiVG, CC BY-SA 3.0)
-js/portrait.js          potret karakter 48x48 (ekspresi)
-js/pixel.js             sprite karakter & hewan, kustomisasi
-js/maps.js              peta & ubin (kota, rumah, kelas, atap, perpustakaan, klub)
-js/world3d.js           dunia 3D (Three.js)
-js/world.js             dunia 2D (cadangan)
-js/game.js              alur hari, dialog, menu, lemari, pengaturan
-js/lesson.js            pelajaran & kuis
-js/video.js             video pelajaran animasi
-js/games.js             mini-game belajar
-js/music.js / audio.js  musik latar, suara Jepang (TTS), efek suara
-js/online.js            klien online (stempel frasa)
-js/ui.js / save.js      antarmuka & simpan progres
-server/                 server online (Node.js + WebSocket)
+index.html                  halaman utama (memuat modul lama + src/main.tsx)
+src/main.tsx                titik masuk: pasang mesin 3D, potret 3D, antarmuka React
+src/world/world3d.ts        dunia 3D (Three.js): peta, cahaya, cuaca, kamera, jalan
+src/world/humanoid.ts       ★ karakter manusia 3D prosedural + kerangka & animasi
+src/world/face.ts           wajah dilukis (mata, alis, mulut, ekspresi, kedip)
+src/world/spec.ts           dari palet/gaya tokoh → spesifikasi 3D
+src/world/animal.ts         kucing Mochi & hewan peliharaan 3D
+src/world/portrait3d.ts     foto potret dari model 3D (dialog, video, lemari)
+src/ui/Friends.tsx          halaman Teman (React + React Three Fiber)
+src/ui/pages.tsx, mount.ts  jembatan React ↔ panel lama (dimuat saat dibutuhkan)
+src/legacy.d.ts             tipe untuk modul lama
+public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian
+public/js/game.js           alur hari, dialog, menu, lemari, pengaturan
+public/js/lesson.js, games.js, video.js   pelajaran, mini-game, video sensei
+public/js/extras.js, relax.js             jajanan, pencapaian, SRS, memancing, hewan
+public/js/world.js          dunia 2D (cadangan untuk HP tanpa WebGL)
+public/js/ui.js, save.js, audio.js, music.js, online.js
+public/css/style.css        tampilan
+server/                     server online (Node.js + WebSocket)
 ```
 
 ## Lisensi data
 - Data urutan goresan: **KanjiVG** © Ulrich Apel, CC BY-SA 3.0 (http://kanjivg.tagaini.net). File `js/strokes.js` dibagikan dengan lisensi yang sama.
-- Three.js: lisensi MIT (`js/vendor/three.LICENSE`).
+- Three.js, React, React Three Fiber: lisensi MIT (lihat `node_modules/*/LICENSE`).
