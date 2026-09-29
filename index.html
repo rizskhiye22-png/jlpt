@@ -31,6 +31,9 @@
       window.addEventListener('error', function (e) {
         var box = el('boot-err'); if (!box || !el('boot')) return;
         var src = e && e.target && (e.target.src || e.target.href);
+        // Halaman sumber dibuka tanpa build (mis. Cloudflare/GitHub Pages dengan folder akar):
+        // pindah otomatis ke versi siap pakai di docs/.
+        if (src && /\/src\/main\.tsx$/.test(src) && !/\/docs\/?/.test(location.pathname)) { location.replace('docs/'); return; }
         box.innerHTML += '⚠ ' + (src ? 'Gagal memuat: ' + src.split('/').slice(-2).join('/') : (e.message || 'Error')) + '<br>';
       }, true);
       window.__resetGame = function () {
