@@ -24,7 +24,7 @@ const Music = (() => {
     festival: { bpm: 120, root: 65, scale: 'yo',  seed: 83, lead: 'square',   prog: [0, 3, 1, 4], drums: 2 },
   };
 
-  const vol = () => { const s = window.Save ? Save.d.settings : {}; return s.music === undefined ? 0.5 : s.music; };
+  const vol = () => { const s = typeof Save !== 'undefined' ? Save.d.settings : {}; return s.music === undefined ? 0.5 : s.music; };
 
   function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 

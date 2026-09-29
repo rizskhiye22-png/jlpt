@@ -26,7 +26,7 @@ let held: Dir | null = null, route: [number, number][] = [], routeGoal: { face?:
 let handlers: any = {};
 let phase = 'morning', quality: Quality = 'normal', weather = 'sun';
 let rain: THREE.LineSegments | null = null;
-let dyn: { water: THREE.Texture | null; petals: THREE.Points | null; lamps: any[]; windows: THREE.MeshLambertMaterial[]; emissive: THREE.MeshLambertMaterial[] } = { water: null, petals: null, lamps: [], windows: [], emissive: [] };
+let dyn: { water: THREE.Texture | null; petals: THREE.Points | null; lamps: any[]; windows: THREE.MeshLambertMaterial[]; emissive: THREE.MeshLambertMaterial[]; train?: THREE.Group | null; fountain?: THREE.Mesh | null } = { water: null, petals: null, lamps: [], windows: [], emissive: [] };
 let hemi: THREE.HemisphereLight, sun: THREE.DirectionalLight, camDist = 16;
 const camTarget = new THREE.Vector3(), tmpV = new THREE.Vector3();
 const raycaster = new THREE.Raycaster(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -217,12 +217,23 @@ function buildBuilding(b: any) {
     konbini: { wall: '#fbf7ef', trim: '#e3dccf', wallH: 2.0, roof: 0xe9ecef, flat: true, door: '#9fd0ee', rows: 0 },
     station: { wall: '#efe2cf', trim: '#d6c4a6', wallH: 2.3, roof: 0x8a73a6, roofH: 1.2, door: '#6d5a86', rows: 1 },
     shrine:  { wall: '#8a5a36', trim: '#6a4228', wallH: 1.4, roof: 0x4a5a4f, roofH: 1.3, door: '#6a4228', rows: 0 },
-  } as Record<string, any>)[b.type];
+  } as Record<string, any>)[b.type] || (() => {
+    const sp = (Maps as any).SHOPS[b.type];
+    return { wall: sp.wall, trim: '#d8c4a2', wallH: 2.0, roof: new THREE.Color(sp.awning).getHex(), flat: true, door: sp.door, rows: 0, shop: sp };
+  })();
   const hPx = Math.round(specs.wallH * S);
   const draw = (lit: boolean) => (c: CanvasRenderingContext2D, w: number, h: number) => {
     c.fillStyle = lit ? '#000' : specs.wall; c.fillRect(0, 0, w, h);
     if (!lit) { c.fillStyle = specs.trim; c.fillRect(0, h - 6, w, 6); for (let y = 10; y < h - 6; y += 12) c.fillRect(0, y, w, 1); }
-    if (b.type === 'konbini') {
+    if (specs.shop) {
+      const sp = specs.shop;
+      if (!lit) {
+        for (let x = 0; x < w; x += 16) { c.fillStyle = (x / 16) % 2 ? '#ffffff' : sp.awning; c.fillRect(x, 0, 16, 12); }
+        c.fillStyle = '#2a1f2d'; c.fillRect(w / 2 - 46, 15, 92, 22); c.fillStyle = sp.board || '#fbf7ef'; c.fillRect(w / 2 - 44, 17, 88, 18);
+        c.fillStyle = sp.ink || '#2a1f2d'; c.font = '700 14px "Zen Maru Gothic",sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(sp.sign, w / 2, 27);
+      }
+      [8, w - 30].forEach(x => { if (!doorsX.some((i: number) => Math.abs(i * S + 16 - x - 11) < 20)) winPattern(c, x, h - 34, 22, 18, lit); });
+    } else if (b.type === 'konbini') {
       if (!lit) { c.fillStyle = '#3fa06a'; c.fillRect(0, 4, w, 8); c.fillStyle = '#f29b38'; c.fillRect(0, 12, w, 4); c.fillStyle = '#3f6fb0'; c.fillRect(0, 16, w, 8); }
       c.fillStyle = '#2a1f2d'; c.fillRect(8, 28, w - 16, h - 36);
       c.fillStyle = lit ? '#ffe7a8' : '#a9d8f2'; c.fillRect(10, 30, w - 20, h - 40);
@@ -274,6 +285,7 @@ function buildBuilding(b: any) {
       box(2.4, .12, .6, flat(0xd8455d), cx, 1.5, b.y + b.h + .25);
     }
     if (b.type === 'konbini') box(b.w, .12, .7, flat(0x3fa06a), cx, 1.35, b.y + b.h + .3);
+    if (specs.shop) box(b.w, .1, .6, flat(specs.roof), cx, 1.55, b.y + b.h + .28);
   } else {
     gableRoof(b.w + .5, b.h + .6, specs.roofH, flat(specs.roof), cx, specs.wallH, cz);
     box(b.w + .5, .08, .12, flat(0x2a1f2d), cx, specs.wallH + .02, b.y + b.h + .3, false);
@@ -322,6 +334,35 @@ function buildOutdoorProps(map: any) {
       const vm = lam(0xbfe6f5, { emissive: 0x000000 }); dyn.emissive.push(vm);
       box(.6, .7, .02, vm, X, .9, Z + .31, false);
     } else if (t === 'M') { cyl(.04, .04, .7, 5, post, X, .35, Z); box(.4, .5, .35, flat(0xd8455d), X, .9, Z); }
+    else if (t === 'Y') {
+      box(.95, .7, .7, wood, X, .45, Z); box(.95, .06, .75, woodL, X, .82, Z);
+      [-.42, .42].forEach(dx => box(.06, 1.2, .06, wood, X + dx, 1.2, Z + .3));
+      const aw = facade(32, 16, (c) => { for (let i = 0; i < 4; i++) { c.fillStyle = i % 2 ? '#ffffff' : '#d8455d'; c.fillRect(i * 8, 0, 8, 16); } });
+      box(1.1, .08, .9, lam(0xffffff, { map: aw }), X, 1.82, Z + .1);
+      cyl(.07, .07, .2, 8, lam(0xf28c3c, { emissive: 0x331500 }), X - .3, 1.55, Z + .42);
+      box(.3, .12, .2, flat(0xf6d44a), X + .15, .9, Z);
+    }
+    else if (t === 'O') {
+      if (Maps.tileAt(mapId!, x - 1, y) !== 'O' && Maps.tileAt(mapId!, x, y - 1) !== 'O') {
+        const stone = flat(0xc9ccd3);
+        cyl(1.0, 1.05, .35, 20, stone, X + .5, .18, Z + .5);
+        const wtr = new THREE.Mesh(new THREE.CylinderGeometry(.88, .88, .05, 20), lam(0x5aa6de, { emissive: 0x0a2a44 }));
+        wtr.position.set(X + .5, .34, Z + .5); root!.add(wtr);
+        cyl(.14, .2, .9, 10, stone, X + .5, .6, Z + .5);
+        const spray = new THREE.Mesh(new THREE.ConeGeometry(.3, .5, 12, 1, true), new THREE.MeshBasicMaterial({ color: 0xd8f0fb, transparent: true, opacity: .55, side: THREE.DoubleSide }));
+        spray.position.set(X + .5, 1.25, Z + .5); spray.rotation.x = Math.PI; root!.add(spray); dyn.fountain = spray;
+      }
+    }
+    else if (t === 'u') {
+      cyl(.03, .03, 1.5, 6, flat(0xf4f1ea), X, .75, Z);
+      const top = new THREE.Mesh(new THREE.ConeGeometry(.8, .35, 8), flat((x + y) % 2 ? 0xe35f6b : 0x3f6fb0));
+      top.position.set(X, 1.55, Z); top.castShadow = true; root!.add(top);
+      box(.5, .06, .9, flat(0xf6e05e), X + .45, .05, Z + .3);
+    }
+    else if (t === '*') {
+      const sh = new THREE.Mesh(new THREE.SphereGeometry(.14, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(0xf7c6d3));
+      sh.position.set(X, .02, Z); sh.scale.set(1, .6, 1.2); sh.castShadow = true; root!.add(sh);
+    }
     else if (t === 'B') { box(1, .12, 1, woodL, X, .1, Z); if (x === 13) box(.08, .35, 1, wood, X - .45, .3, Z); else box(.08, .35, 1, wood, X + .45, .3, Z); }
   }
   buildTrees(trees); buildWater(water);
@@ -382,8 +423,79 @@ function buildIndoorProps() {
       box(.95, 1.5, .5, [woodD, woodD, woodD, woodD, lam(0xffffff, { map: st }), woodD], X, .75, Z - .2);
     }
     else if (t === 'Q') { if (!done.has('Q')) { done.add('Q'); cyl(.8, .8, 1.3, 10, flat(0xc9ccd3), X + .5, .65, Z + .5); } }
+    else if (t === 'G') {
+      const gt = facade(32, 48, (c) => {
+        c.fillStyle = '#e9ecef'; c.fillRect(0, 0, 32, 48);
+        const cols = ['#e35f6b', '#f6d44a', '#5bb3a0', '#3f6fb0', '#f29b38', '#f7b6c8'];
+        for (let r = 0; r < 3; r++) { c.fillStyle = '#9a9ea8'; c.fillRect(0, 14 + r * 16, 32, 2); for (let i = 0; i < 4; i++) { c.fillStyle = cols[(Maps.hash(x, y, r * 4 + i) >> 3) % 6]; c.fillRect(2 + i * 8, 3 + r * 16, 6, 11); } }
+      });
+      const gm = lam(0xffffff, { map: gt }), side = flat(0xd8dce2);
+      box(.95, 1.25, .6, [side, side, side, side, gm, gm], X, .63, Z);
+    }
+    else if (t === 'I') {
+      const im = lam(0xbfe6f5, { emissive: 0x0a2233 }); dyn.emissive.push(im);
+      box(.95, 1.7, .7, flat(0xdfe8ee), X, .85, Z - .1);
+      box(.8, 1.4, .02, im, X, .9, Z + .26, false);
+      [0xe35f6b, 0x3f6fb0, 0x5bb3a0, 0xf6d44a].forEach((col, i) => box(.1, .25, .1, flat(col), X - .3 + i * .2, 1.1, Z + .15, false));
+    }
+    else if (t === 'R') {
+      box(1, .95, .7, [white, white, flat(0xf4f1ea), white, flat(0x3fa06a), white], X, .48, Z);
+      if ((x + y) % 2) { box(.4, .3, .35, flat(0x5b5f6e), X, 1.1, Z - .05); box(.25, .15, .02, lam(0x9fe0b0, { emissive: 0x1a4a2a }), X, 1.2, Z + .13, false); }
+    }
+    else if (t === 'J') {
+      box(.85, 1.6, .6, flat(0xe9ecef), X, .8, Z - .1);
+      box(.65, .45, .02, lam(0x3f6fb0, { emissive: 0x0a1a44 }), X, 1.2, Z + .21, false);
+      for (let i = 0; i < 6; i++) box(.16, .1, .03, flat(i % 2 ? 0xf6d44a : 0xf28fb0), X - .2 + (i % 3) * .2, .85 - Math.floor(i / 3) * .15, Z + .21, false);
+    }
+    else if (t === 'g') { box(.5, .95, .9, flat(0xc9ccd3), X, .48, Z); box(.4, .06, .5, flat(0x3fa06a), X, .98, Z); }
+    else if (t === 'Z') {
+      const bed = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), flat(0x6a6a70)); bed.rotation.x = -Math.PI / 2; bed.position.set(X, .01, Z); root!.add(bed);
+      if (Maps.tileAt(mapId!, x, y + 1) !== 'Z') box(1, .25, .15, flat(0xf6d44a), X, .12, Z + .45, false);
+      if (!done.has('rails')) {
+        done.add('rails');
+        let n = 0; while (Maps.tileAt(mapId!, x + n, y) === 'Z') n++;
+        [-.3, .3].forEach(dz => box(n, .05, .06, flat(0xb9bcc4), x + n / 2, .04, y + 1 + dz, false));
+        buildTrain(x, n, y + 1);
+      }
+    }
+    else if (t === 'h') { box(.95, .1, .45, flat(0x3f6fb0), X, .42, Z); box(.95, .4, .08, flat(0x5b8fd0), X, .65, Z - .2); box(.08, .4, .4, flat(0x5b5f6e), X - .4, .2, Z); box(.08, .4, .4, flat(0x5b5f6e), X + .4, .2, Z); }
+    else if (t === 'N') {
+      const wallRow = Maps.tileAt(mapId!, x, y - 1) === 'W' || y === 1;
+      const nt = facade(32, 32, (c) => { c.fillStyle = '#2f5d50'; c.fillRect(0, 0, 32, 32); c.fillStyle = '#e9efe6'; for (let i = 0; i < 4; i++) c.fillRect(5, 5 + i * 6, 22 - i * 3, 2); });
+      const nm = lam(0xffffff, { map: nt });
+      if (wallRow) { box(1, 1.7, 1, [wallMat, wallMat, wallTop, wallMat, wallMat, wallMat], X, .85, Z, false); box(.8, .7, .04, [woodD, woodD, woodD, woodD, nm, woodD], X, 1.05, Z + .52, false); }
+      else { cyl(.04, .04, 1.1, 5, woodD, X, .55, Z); box(.8, .6, .06, [woodD, woodD, woodD, woodD, nm, woodD], X, 1.2, Z); }
+    }
   }
   const l = new THREE.PointLight(0xffe8c8, quality === 'low' ? 0 : 6, 14, 1.5); l.position.set(W / 2, 3, H / 2); root!.add(l);
+}
+
+/* ---------- kereta (stasiun): datang, berhenti, lalu pergi ---------- */
+function buildTrain(x0: number, n: number, zc: number) {
+  const g = new THREE.Group();
+  const body = flat(0xf4f1ea), stripe = flat(0x3fa06a), glass = lam(0x9fd0ee, { emissive: 0x0a2233 }), dark = flat(0x3a3f55);
+  const len = 9;
+  const add = (w: number, h: number, d: number, m: THREE.Material, px: number, py: number, pz: number) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(px, py, pz); b.castShadow = true; g.add(b); };
+  add(len, 1.5, 1.5, body, 0, 1.0, 0);
+  add(len, .22, 1.52, stripe, 0, .75, 0);
+  add(len - .2, .12, 1.4, dark, 0, 1.8, 0);
+  for (let i = -3; i <= 3; i++) add(.8, .5, 1.54, glass, i * 1.2, 1.25, 0);
+  add(.1, .8, 1.3, glass, len / 2, 1.2, 0);
+  g.position.set(x0 - len, 0, zc);
+  g.userData = { x0, n, t: 0, len };
+  root!.add(g); dyn.train = g;
+}
+function updateTrain(dt: number) {
+  const g = dyn.train; if (!g) return;
+  const u = g.userData as any; u.t = (u.t + dt / 1000) % 22;
+  // 0-4 s datang (melambat), 4-12 s berhenti, 12-16 s pergi, sisanya kosong
+  const stop = u.x0 + u.n / 2, from = u.x0 - u.len, to = u.x0 + u.n + u.len;
+  let x = from;
+  if (u.t < 4) { const k = u.t / 4; x = from + (stop - from) * (1 - Math.pow(1 - k, 2)); }
+  else if (u.t < 12) x = stop;
+  else if (u.t < 16) { const k = (u.t - 12) / 4; x = stop + (to - stop) * k * k; }
+  else x = to + 50;
+  g.position.x = x; g.visible = u.t < 16;
 }
 
 /* ---------- karakter ---------- */
@@ -649,7 +761,8 @@ function update(dt: number) {
     a.plane.scale.y = 1 + Math.sin(clockT / 520 + a.phase) * .02;
     if (a.marker) a.marker.position.y = 1.95 + Math.sin(clockT / 260) * .06;
   });
-  updatePet(dt); updateOthers(dt);
+  updatePet(dt); updateOthers(dt); updateTrain(dt);
+  if (dyn.fountain) dyn.fountain.scale.y = 1 + Math.sin(clockT / 180) * .12;
   if (rain) {
     const a = rain.geometry.attributes.position.array as Float32Array;
     for (let i = 0; i < a.length; i += 6) {

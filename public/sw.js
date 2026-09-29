@@ -1,9 +1,9 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v8';
+const CACHE = 'nihongo-gakkou-v9';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
   'js/data.js', 'js/data2.js', 'js/data3.js', 'js/strokes.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
-  'js/save.js', 'js/audio.js', 'js/music.js', 'js/ui.js', 'js/lesson.js', 'js/games.js', 'js/video.js', 'js/extras.js', 'js/relax.js', 'js/online.js',
+  'js/save.js', 'js/audio.js', 'js/music.js', 'js/ui.js', 'js/lesson.js', 'js/games.js', 'js/video.js', 'js/extras.js', 'js/relax.js', 'js/online.js', 'js/places.js',
   'js/world.js', 'js/game.js', 'js/main.js',
 ];
 

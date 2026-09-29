@@ -188,6 +188,13 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 - 🔜 Grafik: tone mapping sinematik untuk dunia, ambient occlusion ringan, air memantul, dedaunan bergoyang (dengan saklar kualitas untuk HP).
 - 🔜 Suara: rekaman suara asli (atau file suara AI berkualitas) untuk kalimat pelajaran utama.
 
+### Fase 1.6 — Kota lebih luas & tempat yang bisa dimasuki ✅
+1. ✅ Kota diperluas ke timur: jalan belanja, taman + air mancur, sungai lebih panjang.
+2. ✅ Bisa masuk: konbini, stasiun, kafe, kedai ramen, toko buku, pos polisi.
+3. ✅ Kereta ke peta baru **pantai (うみ)**: kerang berhuruf, memancing di laut, es serut.
+4. ✅ Adegan belajar di tiap tempat (belanja, tiket, gerbang, memesan, arah) + stempel & poin harian.
+5. 🔜 Berikutnya: kota kedua lewat kereta (やま/gunung), rumah teman, festival di taman, interior sekolah lebih banyak (UKS, kantin, gym).
+
 ### Fase 2 🔜
 Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.
 

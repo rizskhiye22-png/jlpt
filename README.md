@@ -19,6 +19,16 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 - Percakapan sehari-hari dalam cerita: sarapan (いただきます), berangkat (いってきます), pulang (ただいま), belanja (いくら ですか).
 - Suara bahasa Jepang, romaji & arti, **mode santai** tanpa batas waktu. Salah tidak pernah dihukum.
 
+**Kota yang bisa dijelajahi**
+- Kota 2x lebih luas: **jalan belanja (おみせ)** dengan kafe, toko buku, pos polisi (こうばん), kedai ramen, dan **taman dengan air mancur**.
+- Bisa masuk ke **konbini**, **stasiun (えき)**, kafe, kedai ramen, toko buku, dan pos polisi.
+- Adegan sehari-hari di tiap tempat:
+  - 🏪 Konbini: kasir menyapa いらっしゃいませ, ditanya ふくろ は いりますか？, bekal dipanaskan (あたためますか？), rak barang berlabel katakana.
+  - 🚉 Stasiun: beli きっぷ di mesin (baca nama tujuan), lewati gerbang tiket, pengumuman peron, tanya petugas (トイレ は どこ ですか？).
+  - 🚃 Naik kereta ke **pantai (うみ)**: kerang berhuruf untuk dibaca, memancing ikan laut (たい, たこ, ふぐ…), es serut.
+  - ☕ Kafe: pesan menu katakana dengan 〜を ください. 🍜 Ramen: beli tiket makan (しょっけん), ucapkan いただきます.
+  - 📚 Toko buku: kosakata buku (まんが, じしょ, えほん) + rak buku cerita. 👮 Pos polisi: belajar arah (みぎ, ひだり, まっすぐ).
+
 **Bermain & bersantai**
 - Hari penuh dengan pilihan: makan siang di atap/kelas/perpustakaan (+ menu spesial harian), klub (kaligrafi, karuta, memasak, sains) dengan klub unggulan ★.
 - **Kejadian harian ★** yang berbeda tiap hari (anak hilang, turis tersesat, payung saat hujan, kembang api, dompet jatuh…) & cuaca cerah/berawan/hujan.
@@ -78,6 +88,7 @@ src/ui/Friends.tsx          halaman Teman (React)
 src/ui/pages.tsx, mount.ts  jembatan React ↔ panel lama (dimuat saat dibutuhkan)
 src/legacy.d.ts             tipe untuk modul lama
 public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian
+public/js/places.js         ★ tempat baru (konbini, stasiun, kafe, ramen, toko buku, pos polisi, pantai) & adegannya
 public/js/pixel.js, portrait.js   ★ karakter pixel art & potret (dibuat dari kode)
 public/js/game.js           alur hari, dialog, menu, lemari, pengaturan
 public/js/lesson.js, games.js, video.js   pelajaran, mini-game, video sensei

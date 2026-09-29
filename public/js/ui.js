@@ -214,7 +214,7 @@ const UI = (() => {
   function modal(html, cls = '') {
     els.modals.innerHTML = `<div class="modal-bg"></div><div class="modal ${cls}">${html}</div>`;
     els.modals.classList.add('on');
-    els.modals.querySelector('.modal-bg').onclick = () => { if (!back() && window.Game && Game._menuClose) Game._menuClose(); };
+    els.modals.querySelector('.modal-bg').onclick = () => { if (!back() && typeof Game !== 'undefined' && Game._menuClose) Game._menuClose(); };
     return els.modals.querySelector('.modal');
   }
   function closeModal() { els.modals.innerHTML = ''; els.modals.classList.remove('on'); }
@@ -253,7 +253,7 @@ const UI = (() => {
   function setDay(text) { els.day.textContent = text || ''; }
   function setPoints(n) { if (els.pts) els.pts.textContent = n; }
   function setReview(n, onTap) { els.rev.style.display = n ? '' : 'none'; els.rev.querySelector('b').textContent = n; els.rev.onclick = onTap; els.rev.title = `${n} huruf perlu diulas hari ini`; }
-  function setOnline(n, status) { els.onl.style.display = status === 'on' || status === 'connecting' ? '' : 'none'; els.onl.querySelector('b').textContent = status === 'on' ? n : '…'; els.onl.onclick = () => window.Online && Online.palette(); }
+  function setOnline(n, status) { els.onl.style.display = status === 'on' || status === 'connecting' ? '' : 'none'; els.onl.querySelector('b').textContent = status === 'on' ? n : '…'; els.onl.onclick = () => typeof Online !== 'undefined' && Online.palette(); }
   function showGame(on) { els.app.classList.toggle('in-game', on); }
 
   return {

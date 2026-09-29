@@ -8,7 +8,7 @@ const Sound = (() => {
   const synth = hasTTS ? window.speechSynthesis : null;
   let voice = null, idVoice = null, ctx = null, all = [];
 
-  const settings = () => (window.Save ? Save.d.settings : { voice: true, sfx: true, rate: 0.85 });
+  const settings = () => (typeof Save !== 'undefined' ? Save.d.settings : { voice: true, sfx: true, rate: 0.85 });
   const isJa = v => /^ja([-_]|$)/i.test(v.lang);
   const isId = v => /^(id|in)([-_]|$)/i.test(v.lang);
 

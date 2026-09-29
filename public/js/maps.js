@@ -150,8 +150,9 @@ const MAPS = {
 };
 
 // Ubin yang tidak bisa dilewati
-const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M', 'Y']);
-const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#']);
+const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M', 'Y', 'O', 'u', '*']);
+// G rak barang, I lemari minuman, R kasir, J mesin tiket, g gerbang tiket, Z rel kereta, h bangku, N papan info
+const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#', 'G', 'I', 'R', 'J', 'g', 'Z', 'h', 'N']);
 
 const Maps = (() => {
   const C = {
@@ -165,6 +166,14 @@ const Maps = (() => {
     wall: '#f3e6cf', wallD: '#d8c4a2', roof: '#c9574f', roofD: '#983f3a',
     glass: '#9fd0ee', glassL: '#d8f0fb', white: '#fbf7ef',
     floor: '#d0a57a', floorD: '#b58a61', board: '#2f5d50', boardD: '#244a3f',
+  };
+
+  // Toko di jalan belanja (dipakai 2D & 3D)
+  const SHOPS = {
+    kafe:  { wall: '#f7e7d4', awning: '#5bb3a0', sign: 'カフェ', door: '#8a5a36', board: '#3b8a78', ink: '#fff' },
+    honya: { wall: '#efe6d6', awning: '#8a78c8', sign: 'ほんや', door: '#6a4228' },
+    ramen: { wall: '#f3e0c4', awning: '#d8455d', sign: 'ラーメン', door: '#6a4228', board: '#2a1f2d', ink: '#f6d44a' },
+    koban: { wall: '#e9eef8', awning: '#3f6fb0', sign: 'こうばん', door: '#3a4f86' },
   };
 
   const hash = (x, y, s = 0) => {
@@ -366,6 +375,16 @@ const Maps = (() => {
       px(ctx, '#e9d8b0', X + 6, Y + 44, 20, 6); px(ctx, '#f28fb0', X + 30, Y + 42, 10, 8); px(ctx, '#f6e05e', X + 72, Y + 43, 12, 7);
       door(b.doors[0][0], b.doors[0][1], '#9fd0ee');
     }
+    if (SHOPS[b.type]) {
+      const sp = SHOPS[b.type];
+      px(ctx, C.k, X, Y + 8, W, H - 8); px(ctx, sp.wall, X + 1, Y + 9, W - 2, H - 10);
+      px(ctx, C.k, X - 2, Y + 2, W + 4, 9); for (let i = 0; i < W + 2; i += 8) px(ctx, (i / 8) % 2 ? '#fff' : sp.awning, X - 1 + i, Y + 3, 8, 7);
+      px(ctx, C.k, X + 6, Y + 13, W - 12, 12); px(ctx, sp.board || '#fbf7ef', X + 7, Y + 14, W - 14, 10);
+      ctx.fillStyle = sp.ink || C.k; ctx.font = '700 9px "Zen Maru Gothic",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(sp.sign, X + W / 2, Y + 19.5);
+      win(X + 6, Y + H - 22, 14, 12); win(X + W - 20, Y + H - 22, 14, 12);
+      b.doors.forEach(([dx, dy]) => door(dx, dy, sp.door));
+    }
     if (b.type === 'station') {
       const roofH = 22;
       px(ctx, C.k, X, Y + roofH - 1, W, H - roofH + 1); px(ctx, '#efe2cf', X + 1, Y + roofH, W - 2, H - roofH - 1);
@@ -433,6 +452,68 @@ const Maps = (() => {
     px(ctx, C.k, X + 2, Y - 7, W - 4, 4); px(ctx, '#d8455d', X + 3, Y - 6, W - 6, 2);
   }
 
+  /* ---------- ubin tempat baru (konbini, stasiun, kafe, ramen, pantai, taman) ---------- */
+  function sand(ctx, X, Y, tx, ty) {
+    px(ctx, '#f1dca6', X, Y, 16, 16);
+    for (let i = 0; i < 3; i++) { const h = hash(tx, ty, i + 110); px(ctx, i ? '#e2c98c' : '#fff0c8', X + h % 15, Y + (h >> 4) % 15, 1, 1); }
+  }
+  function goods(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X, Y + 1, 16, 15); px(ctx, '#e9ecef', X + 1, Y + 2, 14, 13);
+    const cols = ['#e35f6b', '#f6d44a', '#5bb3a0', '#3f6fb0', '#f29b38', '#f7b6c8'];
+    for (let r = 0; r < 3; r++) { px(ctx, '#b9bcc4', X + 1, Y + 6 + r * 4, 14, 1); for (let i = 0; i < 4; i++) px(ctx, cols[(hash(tx, ty, r * 4 + i) >> 3) % cols.length], X + 2 + i * 3, Y + 3 + r * 4, 2, 3); }
+  }
+  function cooler(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X, Y, 16, 16); px(ctx, '#dfe8ee', X + 1, Y + 1, 14, 14); px(ctx, C.glassL, X + 2, Y + 2, 12, 11);
+    ['#3f6fb0', '#e35f6b', '#5bb3a0', '#f6d44a'].forEach((c, i) => { px(ctx, c, X + 3 + i * 3, Y + 4, 2, 4); px(ctx, c, X + 3 + i * 3, Y + 9, 2, 3); });
+  }
+  function register(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X, Y + 3, 16, 12); px(ctx, '#f4f1ea', X, Y + 4, 16, 4); px(ctx, '#3fa06a', X, Y + 8, 16, 6);
+    if ((tx + ty) % 2) { px(ctx, C.k, X + 4, Y, 8, 6); px(ctx, '#5b5f6e', X + 5, Y + 1, 6, 4); px(ctx, '#9fe0b0', X + 6, Y + 2, 4, 2); }
+  }
+  function machine(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 1, Y, 14, 16); px(ctx, '#e9ecef', X + 2, Y + 1, 12, 14);
+    px(ctx, '#3f6fb0', X + 3, Y + 2, 10, 5);
+    for (let i = 0; i < 6; i++) px(ctx, i % 2 ? '#f6d44a' : '#f28fb0', X + 3 + (i % 3) * 4, Y + 8 + Math.floor(i / 3) * 3, 3, 2);
+  }
+  function gate(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 3, Y + 1, 10, 14); px(ctx, '#c9ccd3', X + 4, Y + 2, 8, 12); px(ctx, '#3fa06a', X + 5, Y + 3, 6, 2); px(ctx, '#f6d44a', X + 5, Y + 9, 6, 1);
+  }
+  function lane(ctx, X, Y) { px(ctx, '#c9b893', X, Y, 16, 16); px(ctx, '#f6d44a', X + 2, Y + 7, 12, 2); px(ctx, '#3fa06a', X + 6, Y + 2, 4, 3); }
+  function rails(ctx, X, Y, tx, ty, map) {
+    px(ctx, '#6a6a70', X, Y, 16, 16);
+    for (let i = 0; i < 16; i += 4) px(ctx, '#8a5a36', X + i, Y + 2, 3, 12);
+    px(ctx, '#c9ccd3', X, Y + 4, 16, 1); px(ctx, '#c9ccd3', X, Y + 11, 16, 1);
+    if (tileAt(map, tx, ty + 1) !== 'Z') { px(ctx, '#f4f1ea', X, Y + 14, 16, 2); px(ctx, '#f6d44a', X, Y + 15, 16, 1); }
+  }
+  function benchIn(ctx, X, Y, tx, ty) { floor(ctx, X, Y, tx, ty); px(ctx, C.k, X + 1, Y + 4, 14, 8); px(ctx, '#3f6fb0', X + 2, Y + 5, 12, 3); px(ctx, '#5b8fd0', X + 2, Y + 8, 12, 3); }
+  function notice(ctx, X, Y, tx, ty) {
+    floor(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 1, Y, 14, 13); px(ctx, '#2f5d50', X + 2, Y + 1, 12, 10);
+    for (let i = 0; i < 3; i++) px(ctx, '#e9efe6', X + 4, Y + 3 + i * 3, 8 - i * 2, 1);
+    px(ctx, C.k, X + 7, Y + 13, 2, 3);
+  }
+  function fountain(ctx, X, Y, tx, ty, map) {
+    grass(ctx, X, Y, tx, ty);
+    const l = tileAt(map, tx - 1, ty) !== 'O', t = tileAt(map, tx, ty - 1) !== 'O';
+    px(ctx, '#c9ccd3', X + (l ? 2 : 0), Y + (t ? 2 : 0), 16 - (l ? 2 : 0), 16 - (t ? 2 : 0));
+    px(ctx, C.water, X + (l ? 4 : 0), Y + (t ? 4 : 0), 16 - (l ? 4 : 0) - (l ? 0 : 2), 16 - (t ? 4 : 0) - (t ? 0 : 2));
+    if (!l && !t) { px(ctx, '#e9ecef', X, Y, 4, 4); px(ctx, C.waterL, X + 1, Y - 3, 2, 4); }
+  }
+  function parasol(ctx, X, Y, tx, ty) {
+    sand(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 7, Y + 6, 2, 10);
+    px(ctx, C.k, X + 1, Y + 1, 14, 6); for (let i = 0; i < 4; i++) px(ctx, i % 2 ? '#fff' : '#e35f6b', X + 2 + i * 3, Y + 2, 3, 4);
+  }
+  function shell(ctx, X, Y, tx, ty) {
+    sand(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 4, Y + 7, 8, 6); px(ctx, '#f7c6d3', X + 5, Y + 8, 6, 4); px(ctx, '#e89ab0', X + 7, Y + 8, 1, 4); px(ctx, '#fff', X + 5, Y + 8, 1, 1);
+  }
+
   /* ---------- gambar seluruh peta sekali ke canvas (hemat performa) ----------
      opts.ground = true: hanya lantai/tanah (untuk mode 3D, objek dibuat terpisah) */
   function render(mapId, opts = {}) {
@@ -450,7 +531,11 @@ const Maps = (() => {
         else if (t === 'B') bridge(ctx, X, Y, tx);
         else if (t === ',') flower(ctx, X, Y, tx, ty, false);
         else if (t === 'f') flower(ctx, X, Y, tx, ty, true);
+        else if (t === '_' || ((t === 'u' || t === '*') && G)) sand(ctx, X, Y, tx, ty);
         else if (G) grass(ctx, X, Y, tx, ty);
+        else if (t === 'O') fountain(ctx, X, Y, tx, ty, map);
+        else if (t === 'u') parasol(ctx, X, Y, tx, ty);
+        else if (t === '*') shell(ctx, X, Y, tx, ty);
         else if (t === 'T') tree(ctx, X, Y, tx, ty, false);
         else if (t === 'P') tree(ctx, X, Y, tx, ty, true);
         else if (t === '#') fence(ctx, X, Y, tx, ty);
@@ -464,6 +549,8 @@ const Maps = (() => {
         if (t === 'x') exitTile(ctx, X, Y);
         else if (t === 'r') rug(ctx, X, Y, tx, ty, map);
         else if (t === 'm') tatami(ctx, X, Y, tx, ty);
+        else if (t === 'j') lane(ctx, X, Y);
+        else if (t === 'Z') rails(ctx, X, Y, tx, ty, map);
         else if (G) (mapId === 'club' ? tatami : base)(ctx, X, Y, tx, ty);
         else if (t === 'W') wallT(ctx, X, Y, tx, ty, map);
         else if (t === 'K') blackboard(ctx, X, Y, tx, ty, map);
@@ -480,6 +567,13 @@ const Maps = (() => {
         else if (t === 'S') block(ctx, X, Y, tx, ty, '#7a4f35', '#c9574f');
         else if (t === 'Q') block(ctx, X, Y, tx, ty, '#c9ccd3', '#8a8f9e');
         else if (t === '#') roofFence(ctx, X, Y, tx, ty);
+        else if (t === 'G') goods(ctx, X, Y, tx, ty);
+        else if (t === 'I') cooler(ctx, X, Y, tx, ty);
+        else if (t === 'R') register(ctx, X, Y, tx, ty);
+        else if (t === 'J') machine(ctx, X, Y, tx, ty);
+        else if (t === 'g') gate(ctx, X, Y, tx, ty);
+        else if (t === 'h') benchIn(ctx, X, Y, tx, ty);
+        else if (t === 'N') notice(ctx, X, Y, tx, ty);
         else base(ctx, X, Y, tx, ty);
       }
     }
@@ -498,6 +592,8 @@ const Maps = (() => {
     const t = tileAt(map, x, y);
     const solid = map.outdoor ? SOLID_OUT : SOLID_IN;
     if (solid.has(t)) return false;
+    // gerbang tiket: dari lobi hanya bisa lewat kalau punya きっぷ (keluar dari peron selalu boleh)
+    if (t === 'j' && window.World && World.map === mapId && World.player.y > y && !(typeof Save !== 'undefined' && Save.d.ticket)) return false;
     for (const pr of map.props || []) if ((pr.solid || []).some(([sx, sy]) => sx === x && sy === y)) return false;
     if ((map.signs || []).some(s => s.x === x && s.y === y)) return false;
     for (const b of map.buildings || []) {
@@ -516,14 +612,18 @@ const Maps = (() => {
       if (t === 'V') return { type: 'vending' };
       if (t === 'Y') return { type: 'yatai' };
       if (t === 'b') return { type: 'bench' };
-      if (t === 'W') return { type: 'water', where: x <= 8 && y >= 14 && y <= 19 ? 'pond' : 'river' };
+      if (t === 'W') return { type: 'water', where: mapId === 'umi' ? 'sea' : x <= 8 && y >= 14 && y <= 19 ? 'pond' : 'river' };
+      if (t === 'O') return { type: 'fountain' };
+      if (t === '*') return { type: 'shell', x, y };
+      if (t === 'u') return { type: 'parasol' };
       if ((map.buildings || []).some(b => b.type === 'shrine' && x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h)) return { type: 'shrine' };
       return null;
     }
-    return { b: { type: 'bed' }, d: { type: 'desk' }, C: { type: 'closet' }, K: { type: 'board' }, S: { type: 'shelf' }, F: { type: 'fridge' } }[t] || null;
+    return { b: { type: 'bed' }, d: { type: 'desk' }, C: { type: 'closet' }, K: { type: 'board' }, S: { type: 'shelf' }, F: { type: 'fridge' },
+      G: { type: 'goods', x }, I: { type: 'cooler' }, J: { type: 'machine' }, Z: { type: 'train' }, h: { type: 'bench' }, N: { type: 'notice' } }[t] || null;
   }
   // Bisa bicara melewati ubin ini (meja, konter)
-  const across = (mapId, x, y) => !MAPS[mapId].outdoor && 'Ttk'.includes(tileAt(MAPS[mapId], x, y));
+  const across = (mapId, x, y) => !MAPS[mapId].outdoor && 'TtkR'.includes(tileAt(MAPS[mapId], x, y));
 
-  return { render, walkable, interactAt, across, tileAt: (id, x, y) => tileAt(MAPS[id], x, y), C, hash };
+  return { render, walkable, interactAt, across, tileAt: (id, x, y) => tileAt(MAPS[id], x, y), C, hash, SHOPS };
 })();

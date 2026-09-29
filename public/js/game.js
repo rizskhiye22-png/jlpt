@@ -36,7 +36,7 @@ const Game = (() => {
     World.setPhase(phase);
     let song = 'morning';
     if (m === 'home') song = st === 'night' ? 'night' : 'home';
-    else if (m !== 'town') song = 'school';
+    else if (m !== 'town') song = (window.Places && Places.song(m)) || 'school';
     else song = phase === 'morning' ? 'morning' : phase === 'night' ? 'night' : (Save.d.day === 22 && st === 'after' ? 'festival' : phase === 'day' ? 'school' : 'evening');
     Music.play(song);
   }
@@ -51,7 +51,7 @@ const Game = (() => {
     if (mapId === 'town') {
       const amb = (id, dir) => { if (!inScript(id) && SP[id] && !(ev && ev.npc === id)) list.push({ id, x: SP[id][0], y: SP[id][1], dir, marker: questMarker(id) }); };
       if (ev && !(st === 'after' && inScript(ev.npc))) list.push({ id: ev.npc, key: 'ev', x: ev.at[0], y: ev.at[1], dir: 'down', marker: '★', event: evId, idle: true });
-      amb('tenin', 'down'); amb('kid', 'down'); amb('ojii', 'left');
+      amb('kid', 'down'); amb('ojii', 'left');
       if (q('mochi').state === 'active' && !q('mochi').found) list.push({ id: 'mochi', x: SP.mochi[0], y: SP.mochi[1], dir: 'left', marker: '?' });
       if (q('mochi').state === 'done') list.push({ id: 'mochi', x: 16, y: 21, dir: 'right' });
       if (scripted) {
@@ -73,6 +73,7 @@ const Game = (() => {
       const need = st === 'wake' || st === 'evening';
       list.push({ id: 'obaa', x: SP.obaa[0], y: SP.obaa[1], dir: 'left', marker: need ? true : questMarker('obaa') });
     }
+    if (window.Places) list.push(...Places.npcs(mapId, { inScript, ev }));
     return list;
   }
   // tanda "?" untuk warga yang punya misi
@@ -175,6 +176,7 @@ const Game = (() => {
     if (npc.id === 'kid' && (questOpen('sora') || q('sora').state === 'active')) return soraQuest();
     if (npc.id === 'ojii' && (questOpen('mochi') || (q('mochi').state === 'active' && q('mochi').found))) return mochiQuest();
     if (npc.id === 'mochi') return mochiFound();
+    if (window.Places && Places.talks(npc)) return Places.talk(npc);
     if (npc.id !== 'mochi' && Object.values(S().bag || {}).some(n => n > 0)) {
       const a = await menuChoice(`Bicara dengan ${nameOf(npc.id)}`, ['Ngobrol', 'Beri jajanan 🎁']);
       UI.hideDialog();
@@ -594,6 +596,7 @@ const Game = (() => {
       else if (t.type === 'fridge') await UI.say({ jp: 'れいぞうこ', ro: 'reizouko', id: 'Kulkas. Ada ミルク dan プリン di dalamnya.' });
       else if (t.type === 'shelf') { UI.hideDialog(); await Relax.library(); }
       else if (t.type === 'board') await UI.say({ jp: 'がんばろう！', ro: 'ganbarou!', id: 'Tulisan di papan: "Ayo berjuang!"' });
+      else if (window.Places && Places.handles(t.type)) await Places.interact(t);
     } catch (e) { if (!(e && e.abort)) console.error(e); }
     UI.hideDialog(); UI.closePanel();
     busy = false; World.pause(false); mood(); refreshHud();
@@ -618,7 +621,8 @@ const Game = (() => {
     if (busy) return;
     busy = true; World.pause(true);
     try {
-      if (door.until && S().day >= door.until) await konbiniDoor();
+      if (door.kind === 'gate') await Places.gate();
+      else if (door.until && S().day >= door.until) await konbiniDoor();
       else await UI.say({ n: door.msg });
     } catch (e) { if (!(e && e.abort)) console.error(e); }
     UI.hideDialog(); UI.closePanel(); busy = false; World.pause(false); mood(); refreshHud();
@@ -975,6 +979,8 @@ const Game = (() => {
 
   return {
     title, interact, warp, blocked, menu, cancelAuto,
+    // pembantu untuk modul tempat (places.js)
+    h: { runLines, menuChoice, addPoints, addStamp, heart, q, setQ, goTo, chapter },
     get busy() { return busy; }, _menuClose: null,
   };
 })();
