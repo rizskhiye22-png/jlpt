@@ -61,13 +61,13 @@ Huruf yang sudah dipelajari harus **muncul lagi tepat sebelum lupa**.
 ### 3.3 Cara belajar tambahan — 🔜
 - **Latihan bicara**: pemain mengucapkan kalimat ke mikrofon (Web Speech Recognition), sensei memberi nilai.
 - **Mendengar tanpa teks**: mode "tutup romaji" di dialog untuk melatih telinga.
-- **Furigana bertahap**: romaji → hiragana → tanpa bantuan, sesuai kemampuan. ✅ v3.6: Romaji Otomatis (hilang bila semua huruf sudah dipelajari, tombol Aa untuk mengintip).
+- **Furigana bertahap**: romaji → hiragana → tanpa bantuan, sesuai kemampuan.
 - **Tes penempatan**: pemain yang sudah bisa hiragana bisa langsung loncat ke Bab 2.
 - **Kamus bergambar**: setiap kata di Buku Catatan punya ilustrasi pixel & contoh kalimat.
 
 ### 3.4 Pelacakan kemampuan — 🔜
 - Grafik kemajuan mingguan (huruf dikuasai, ketepatan, menit belajar).
-- "Huruf rawan": huruf yang sering tertukar (シ/ツ, ソ/ン, ぬ/め) mendapat mini-latihan khusus. ✅ v3.6: Mata Jeli (Hari 10 & 21) + huruf kembar selalu jadi pengecoh di kuis. 🔜 versi adaptif.
+- "Huruf rawan": huruf yang sering tertukar (シ/ツ, ソ/ン, ぬ/め) mendapat mini-latihan khusus.
 - Target JLPT N5 (bab 1–6 ≈ seluruh kana + 100 kanji + 800 kata).
 
 ---
@@ -208,8 +208,7 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 2. ✅ Prolog + 22 adegan Bab 1–2, loteng, Kotak Surat, Peta Harta 1976, buku bergambar, benda kenangan.
 3. ✅ Suara tahap 1: naskah tetap sensei (586 klip) dipakai video; rekaman di `public/audio/sensei/` otomatis dipakai.
 4. ✅ v3.0: Bab 3 「てんてん と すうじ」 — tenten, 14 kanji angka, Kasir Kafe, pantai, Pasar Pagi, Jurnal Misteri, Meter Kota.
-5. ✅ v3.5: Bab 4 「なつやすみ」 — yōon, っ, bunyi panjang, 上下中右左, onsen やま, kilas balik #1, Tanabata, Natsu Matsuri.
-6. 🔜 Berikutnya (v4.0): Bab 5 「しゅうがくりょこう」 — jam & hari, bentuk 〜ます, 19 kanji, karyawisata ke てら & まち, lomba manga/masak/pidato. Lihat `design/05-BAB5-KARYAWISATA-MUSIM-GUGUR.md`.
+5. 🔜 Berikutnya (v3.5): Bab 4 「なつやすみ」 — yōon, っ, bunyi panjang, menginap di onsen やま, kilas balik, Natsu Matsuri. Lihat `design/04-BAB4-MUSIM-PANAS.md`.
 
 ### Fase 2 🔜
 Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.

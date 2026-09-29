@@ -1,7 +1,7 @@
 {
   "name": "nihongo-gakkou",
   "private": true,
-  "version": "3.6.0",
+  "version": "3.0.0",
   "type": "module",
   "description": "Game 3D untuk belajar hiragana, katakana, dan percakapan bahasa Jepang sehari-hari.",
   "scripts": {
@@ -14,9 +14,7 @@
     "voice:manifest": "node scripts/voice-lines.mjs manifest",
     "test:story": "python3 tests/story_smoke.py",
     "voice:sensei": "node scripts/sensei-vo.mjs",
-    "test:bab3": "python3 tests/story_bab3.py",
-    "test:bab4": "python3 tests/story_bab4.py",
-    "test:bab12": "python3 tests/story_bab12.py"
+    "test:bab3": "python3 tests/story_bab3.py"
   },
   "dependencies": {
     "react": "^19.3.0",

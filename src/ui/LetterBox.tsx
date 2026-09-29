@@ -7,9 +7,7 @@ import { LETTERS, LETTER_BY } from '../story/letters';
 import { PAGES, MAP_SPOTS, ITEMS } from '../story/book';
 import { knowledge, tokenize, clarity, whenLearned, type Tok } from '../story/readable';
 import type { Letter } from '../story/types';
-import { CLUES as CLUES3, QUESTIONS } from '../story/scenes3';
-import { CLUES4 } from '../story/scenes4';
-const CLUES = [...CLUES3, ...CLUES4];
+import { CLUES, QUESTIONS } from '../story/scenes3';
 
 type Tab = 'letters' | 'book' | 'map' | 'items' | 'journal';
 

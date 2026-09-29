@@ -91,9 +91,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outl
   background: var(--gold); font-size: 16px; box-shadow: 0 2px 0 var(--ink);
 }
 .voice:active { transform: translateY(2px); box-shadow: none; }
-.ro-peek { flex: none; height: 34px; padding: 0 7px; border: 2px solid var(--ink); border-radius: 6px; background: #fff; color: #a8304a; font-size: 13px; font-weight: 700; box-shadow: 0 2px 0 var(--ink); }
-.ro-peek:active { transform: translateY(2px); box-shadow: none; }
-.dlg-ro.hide { display: none; }
 
 .choices { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; pointer-events: auto; }
 .choice {
@@ -808,29 +805,3 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .ks-opt { display: flex; justify-content: space-between; align-items: center; }
 .ks-opt b { font-size: 18px; }
 .ks-opt small { opacity: .7; }
-
-/* ---- Bab 4: kilas balik, kunang-kunang, tanzaku, taiko ---- */
-.screen.flashback #game, .screen.flashback canvas { filter: sepia(.85) contrast(.95) brightness(.95); }
-.screen.flashback::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3;
-  background: radial-gradient(ellipse at center, transparent 55%, rgba(60,40,20,.55) 100%), repeating-radial-gradient(circle at 30% 40%, rgba(255,255,255,.04) 0 1px, transparent 1px 3px); }
-.screen.flashback .dialog { background: #f3e6c8; }
-.ff-sky { position: relative; height: 240px; margin: 8px 0; border-radius: 8px; overflow: hidden;
-  background: radial-gradient(circle at 70% 20%, #3d4a7a 0 10%, transparent 11%), linear-gradient(#141a33, #2a3a2a); }
-.ff { position: absolute; width: 64px; height: 64px; border-radius: 50%; border: 0; color: #2a1f2d; font-size: 20px;
-  background: radial-gradient(circle, #fff8b0 0 30%, rgba(246,226,122,.75) 45%, transparent 70%); animation: ff-float 3s ease-in-out infinite; }
-.ff.caught { background: radial-gradient(circle, #bfe8cf 0 40%, transparent 70%); }
-.ff.miss { opacity: .25; }
-@keyframes ff-float { 50% { transform: translate(6px, -10px); } }
-.tz-paper { margin: 12px auto; width: 70px; min-height: 260px; padding: 14px 8px; background: #f7b6c8; border: 2px solid #c85a7a; writing-mode: vertical-rl; font-size: 18px; line-height: 1.4; box-shadow: 2px 3px 0 rgba(0,0,0,.2); }
-.taiko { max-width: 420px; }
-.tk-lane { position: relative; height: 110px; margin: 10px 0; background: #3a2230; border-radius: 8px; overflow: hidden; }
-.tk-line { position: absolute; left: 60px; top: 0; bottom: 0; width: 4px; background: #ffd24a; }
-.tk-note { position: absolute; top: 50%; left: 100%; transform: translateY(-50%); width: 64px; height: 64px; border-radius: 50%; background: #e0475f; color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; border: 3px solid #fff; }
-.tk-note.go { animation: tk-move 2.6s linear forwards; }
-@keyframes tk-move { from { left: 100%; } to { left: 30px; } }
-.tk-btns { display: flex; justify-content: center; gap: 28px; margin-top: 6px; }
-.tk-drum { width: 104px; height: 104px; border-radius: 50%; border: 4px solid var(--ink); font: 700 20px "Zen Maru Gothic", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.tk-drum.don { background: #e0475f; color: #fff; }
-.tk-drum.ka { background: #4f7fb0; color: #fff; }
-.tk-drum small { font: 700 16px "DotGothic16", monospace; }
-.tk-drum.hit { transform: scale(.94); }

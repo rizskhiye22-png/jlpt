@@ -567,12 +567,7 @@ const Games = (() => {
   }
 
   const RUN = { karuta, catch: catchGame, builder, shodo, shop, speed, kanahunt, wordmatch, dictation };
-  function run(name, opts) {
-    opts = Object.assign({}, opts || {});
-    // huruf pembantu (ゃ っ ー) tidak dimainkan sendirian
-    if (opts.pool && typeof NO_QUIZ !== 'undefined') { const p = opts.pool.filter(k => !NO_QUIZ(k)); opts.pool = p.length >= 3 ? p : Save.d.kana.filter(k => !NO_QUIZ(k)); }
-    return (RUN[name] || karuta)(opts);
-  }
+  function run(name, opts) { return (RUN[name] || karuta)(opts || {}); }
   const NAMES = { karuta: 'Karuta', catch: 'Hujan Huruf', builder: 'Susun Kata', shodo: 'Kaligrafi', shop: 'Belanja', speed: 'Benar atau Salah Kilat', kanahunt: 'Cari Huruf', wordmatch: 'Pasangkan Kata', dictation: 'Dikte' };
   const DESC = { karuta: 'dengar lalu ambil kartu tercepat', catch: 'tangkap gelembung huruf', builder: 'susun huruf menjadi kata', shodo: 'menulis rapi dengan kuas', speed: 'benar atau salah secepat kilat', kanahunt: 'temukan huruf di antara yang mirip', wordmatch: 'pasangkan kata dengan artinya', dictation: 'dengar bunyinya, tulis tanpa contoh' };
 
