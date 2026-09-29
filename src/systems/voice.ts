@@ -8,7 +8,7 @@
 import VO from '../data/voice/sensei-vo.json';
 
 interface ClipInfo { dir?: string; src?: 'human' | 'ai'; file?: string; dur?: number }
-type KanaVO = { intro: string; read: string; strokes: string; tip: string; pair?: string; similar?: string; sim?: string; word?: string; w?: string; air: string };
+type KanaVO = { intro: string; read: string; strokes: string; tip: string; pair?: string; similar?: string; sim?: string; word?: string; w?: string; wx?: { jp: string; ro: string; id: string }; air: string };
 
 let clips: Record<string, ClipInfo> = {};
 let current: HTMLAudioElement | null = null;

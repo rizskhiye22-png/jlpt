@@ -27,7 +27,9 @@ export type Act =
   | { floorGame: true }                    // mini-game "ketuk papan lantai"
   | { goal: string }                        // teks tujuan sementara di HUD
   | { town: number }                       // Meter Kota +n
-  | { trip: 'umi' | 'home' }               // pindah peta di tengah adegan
+  | { trip: 'umi' | 'home' | 'yama' | 'onsen' } // pindah peta di tengah adegan
+  | { flashback: boolean }                // kilas balik sepia (bermain sebagai Dewi muda)
+  | { game: 'fireflies' | 'tanzaku' | 'taiko' }
   | { kasir: { level: number; rounds?: number; title?: string } };
 
 export type Slot = 'class' | 'morning' | 'after' | 'dinner' | 'night' | 'event';

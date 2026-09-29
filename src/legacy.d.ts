@@ -40,3 +40,7 @@ declare const World: { map: string; load(map: string, x: number, y: number, dir:
 declare const Music: { play(song: string): void; duck(on: boolean): void; [k: string]: any };
 declare const Story: typeof import('./story/engine').Story;
 interface Window { Story?: typeof import('./story/engine').Story; Voice?: any }
+declare const KANA: Record<string, { ro: string; tip: string; noQuiz?: boolean }>;
+declare const SIMILAR: Record<string, string>;
+declare const DAYS: Array<{ kana?: string[]; [k: string]: any }>;
+declare const IS_KATA: (c: string) => boolean;

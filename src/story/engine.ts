@@ -9,9 +9,11 @@
 import type { Scene, Line, Act } from './types';
 import { SCENES as SCENES12, PROLOGUE, DIARY } from './scenes';
 import { SCENES3 } from './scenes3';
+import { SCENES4 } from './scenes4';
+import { drill, fireflies, tanzaku, taiko } from './games4';
 import { kasir } from './kasir';
 
-const SCENES = [...SCENES12, ...SCENES3];
+const SCENES = [...SCENES12, ...SCENES3, ...SCENES4];
 import { LETTERS } from './letters';
 import { ITEM_BY, PAGES } from './book';
 
@@ -38,9 +40,27 @@ function blank(): StoryState { return { v: 3, flags: {}, seen: [], items: [], pa
 
 /* ---------- tokoh baru ---------- */
 function addCharacters() {
-  Object.assign(CHARACTERS, { dewi: { name: 'Eyang Dewi', color: '#b5673a' } });
-  Object.assign(Pix.PAL, { dewi: { h: '#8d8494', H: '#5f5866', e: '#3b2a2a', E: '#6e4a36', I: '#b88a66', o: '#b5673a', O: '#7e4424', a: '#f2d49b', A: '#c9a45f', p: '#5a3a2a', b: '#3a2a2a', c: '#f4ecdc' } });
-  Object.assign(Pix.STYLE, { dewi: { hair: 'bun', old: true, uniform: 'cardigan' } });
+  Object.assign(CHARACTERS, {
+    dewi: { name: 'Eyang Dewi', color: '#b5673a' },
+    yubin: { name: 'Pak Pos', color: '#b0363f' },
+    sato_y: { name: 'Sato muda (1976)', color: '#7a5a90' },
+    mori_y: { name: 'Mori muda (1976)', color: '#546e50' },
+    dewi_y: { name: 'Dewi muda (1976)', color: '#b5673a' },
+  });
+  Object.assign(Pix.PAL, {
+    dewi: { h: '#8d8494', H: '#5f5866', e: '#3b2a2a', E: '#6e4a36', I: '#b88a66', o: '#b5673a', O: '#7e4424', a: '#f2d49b', A: '#c9a45f', p: '#5a3a2a', b: '#3a2a2a', c: '#f4ecdc' },
+    yubin: { h: '#bdbdc6', H: '#83838e', e: '#3a3030', E: '#6a6060', I: '#a09494', o: '#b0363f', O: '#7e2530', a: '#f7f3ea', A: '#d9cfbc', p: '#3a3f55', b: '#2a2a2a', c: '#f7f3ea' },
+    sato_y: { h: '#2a1f2d', H: '#16101a', e: '#3b2a3a', E: '#6d5a78', I: '#a893b4', o: '#f7f3ea', O: '#d3c7b3', a: '#8b6aa2', A: '#654a7a', p: '#34497e', b: '#4a2e22', c: '#2f4378' },
+    mori_y: { h: '#2f2c40', H: '#191824', e: '#1f2033', E: '#4f5690', I: '#8d95d8', o: '#2b3350', O: '#1a2035', a: '#e8dcc0', A: '#b7a986', p: '#2b3350', b: '#1d1d24', c: '#1a2035' },
+    dewi_y: { h: '#2a1f1a', H: '#150e0b', e: '#2a1f1a', E: '#6e4a36', I: '#b88a66', o: '#b5673a', O: '#7e4424', a: '#f2d49b', A: '#c9a45f', p: '#34497e', b: '#4a2e22', c: '#f4ecdc' },
+  });
+  Object.assign(Pix.STYLE, {
+    dewi: { hair: 'bun', old: true, uniform: 'cardigan' },
+    yubin: { hair: 'short', old: true, uniform: 'blazer', cap: true },
+    sato_y: { hair: 'twin', uniform: 'sailor' },
+    mori_y: { hair: 'short', uniform: 'gakuran', cap: true },
+    dewi_y: { hair: 'long', uniform: 'sailor', ribbon: true },
+  });
 }
 
 /* ---------- migrasi ---------- */
@@ -107,9 +127,31 @@ async function doAct(a: Act) {
   else if ('goal' in a) { st().goal = a.goal; Save.write(); UI.toast(`🎯 ${a.goal}`); await UI.sleep(300); }
   else if ('town' in a) addTown(a.town);
   else if ('kasir' in a) { UI.hideDialog(); await kasir(a.kasir); UI.closePanel(); Music.play('festival'); }
-  else if ('trip' in a) {
+  else if ('game' in a) {
     UI.hideDialog();
-    if (a.trip === 'umi') await UI.fade(() => { World.load('umi', 12, 4, 'down', [{ id: 'obaa', x: 11, y: 4, dir: 'right' }, { id: 'emma', x: 15, y: 4, dir: 'left' }]); World.setPhase('evening'); Music.play('morning'); }, 400);
+    if (a.game === 'fireflies') await fireflies({ title: 'Kunang-kunang 1976' });
+    else if (a.game === 'tanzaku') await tanzaku();
+    else if (a.game === 'taiko') await taiko({ notes: 10 });
+    UI.closePanel();
+  } else if ('flashback' in a) {
+    UI.hideDialog();
+    const scr = document.querySelector('.screen');
+    if (a.flashback) {
+      await UI.fade(() => {
+        scr && scr.classList.add('flashback');
+        Pix.setPlayer({ hair: 'long', hairColor: '#3f3a4f', skin: '#e9bd98', uniform: 'sailor', uniformColor: '#3e4a7a', accessory: 'ribbon', accColor: '#e0475f' });
+        World.load('yama', 16, 9, 'up', [{ id: 'sato_y', x: 15, y: 8, dir: 'right' }, { id: 'mori_y', x: 17, y: 8, dir: 'left' }]);
+        if (World.refreshLook) World.refreshLook();
+        World.setPhase('night'); Music.play('night');
+      }, 600);
+    } else {
+      await UI.fade(() => { scr && scr.classList.remove('flashback'); Pix.setPlayer(S().look); if (World.refreshLook) World.refreshLook(); }, 600);
+    }
+  } else if ('trip' in a) {
+    UI.hideDialog();
+    if (a.trip === 'yama') await UI.fade(() => { World.load('yama', 5, 6, 'down', [{ id: 'obaa', x: 4, y: 6, dir: 'right' }, { id: 'kenta', x: 6, y: 6, dir: 'left' }, { id: 'nouka', x: 7, y: 7, dir: 'up' }]); World.setPhase('evening'); Music.play('morning'); }, 400);
+    else if (a.trip === 'onsen') await UI.fade(() => { World.load('onsen', 7, 6, 'up', [{ id: 'okami', x: 2, y: 2, dir: 'down' }, { id: 'obaa', x: 6, y: 5, dir: 'right' }, { id: 'yuki', x: 8, y: 5, dir: 'left' }, { id: 'hana', x: 9, y: 6, dir: 'left' }]); World.setPhase('evening'); Music.play('home'); }, 400);
+    else if (a.trip === 'umi') await UI.fade(() => { World.load('umi', 12, 4, 'down', [{ id: 'obaa', x: 11, y: 4, dir: 'right' }, { id: 'emma', x: 15, y: 4, dir: 'left' }]); World.setPhase('evening'); Music.play('morning'); }, 400);
     else await UI.fade(() => { World.load('town', 22, 20, 'down', []); World.setPhase('evening'); Music.play('evening'); }, 400);
   }
 }
@@ -290,7 +332,7 @@ function init() {
 }
 
 export const Story = {
-  init, welcomeBack, has, set, hook, offer, addTown, event, npcs, claims, talk, mark, prologue, diaryNote,
+  init, welcomeBack, has, set, hook, offer, addTown, drill, event, npcs, claims, talk, mark, prologue, diaryNote,
   lettersAvailable, unread, goal,
   get state() { return st(); },
   get unlocked() { return has('letterbox_unlocked'); },

@@ -12,6 +12,21 @@ const UI = (() => {
   const fmt = s => String(s == null ? '' : s).replace(/\{name\}/g, esc(Save.d.name || 'Kamu'));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+  // Romaji otomatis: disembunyikan jika semua huruf Jepang di kalimat sudah dipelajari
+  const SMALL = 'ぁぃぅぇぉゃゅょゎァィゥェォャュョヮ';
+  function readableJP(jp) {
+    const known = new Set(Save.d.kana || []), a = [...String(jp || '').replace(/\{name\}/g, '')];
+    return a.every((c, i) => {
+      if (!/[\u3040-\u30ff\u4e00-\u9fff]/.test(c) || c === 'ー' || c === '・' || c === '゛' || c === '゜') return true;
+      if (known.has(c)) return true;
+      return SMALL.includes(c) && i > 0 && known.has(a[i - 1] + c);
+    });
+  }
+  function showRo(jp) {
+    const m = Save.d.settings.romaji;
+    return m === 'auto' ? !readableJP(jp) : !!m;
+  }
+
   function init() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -86,8 +101,10 @@ const UI = (() => {
     let body = '';
     if (who) body += `<div class="dlg-name" style="--c:${who.color}">${who.name}</div>`;
     if (line.jp) {
-      body += `<div class="dlg-jp"><span>${fmt(line.jp)}</span><button class="voice" type="button" aria-label="Dengarkan">♪</button></div>`;
-      if (Save.d.settings.romaji && line.ro) body += `<div class="dlg-ro">${fmt(line.ro)}</div>`;
+      const ro = line.ro && showRo(line.jp), peek = line.ro && !ro && Save.d.settings.romaji === 'auto';
+      body += `<div class="dlg-jp"><span>${fmt(line.jp)}</span>${peek ? '<button class="ro-peek" type="button" aria-label="Lihat romaji">Aa</button>' : ''}<button class="voice" type="button" aria-label="Dengarkan">♪</button></div>`;
+      if (ro) body += `<div class="dlg-ro">${fmt(line.ro)}</div>`;
+      else if (peek) body += `<div class="dlg-ro peek hide">${fmt(line.ro)}</div>`;
       if (line.id) body += `<div class="dlg-id">${fmt(line.id)}</div>`;
     }
     if (line.t) body += `<div class="dlg-t">${fmt(line.t)}</div>`;
@@ -99,6 +116,8 @@ const UI = (() => {
     if (line.jp) {
       const txt = fmt(line.jp).replace(/&amp;/g, '&');
       els.dialog.querySelector('.voice').onclick = e => { e.stopPropagation(); Sound.speak(txt); };
+      const pk = els.dialog.querySelector('.ro-peek');
+      if (pk) pk.onclick = e => { e.stopPropagation(); Sound.blip(); els.dialog.querySelector('.dlg-ro.peek').classList.toggle('hide'); };
       if (Save.d.settings.voice) Sound.speak(txt);
     }
     setBusy(true);
@@ -138,9 +157,8 @@ const UI = (() => {
   function choose(prompt, options) {
     els.dialog.className = 'dialog';
     els.dialog.innerHTML = `<div class="dlg-body"><div class="dlg-name you" style="--c:#6b5a9a">${esc(Save.d.name || 'Kamu')}</div><div class="dlg-t">${fmt(prompt)}</div></div>`;
-    const romaji = Save.d.settings.romaji;
     els.choices.innerHTML = options.map((o, i) =>
-      `<button class="choice" type="button" data-i="${i}"><span class="cur">▶</span><span class="c-txt">${o.label ? `<span class="c-lbl">${o.label}</span>` : `<span class="c-jp">${o.jp}</span>${romaji && o.ro ? `<span class="c-ro">${o.ro}</span>` : ''}`}</span></button>`).join('');
+      `<button class="choice" type="button" data-i="${i}"><span class="cur">▶</span><span class="c-txt">${o.label ? `<span class="c-lbl">${o.label}</span>` : `<span class="c-jp">${o.jp}</span>${o.ro && showRo(o.jp) ? `<span class="c-ro">${o.ro}</span>` : ''}`}</span></button>`).join('');
     setBusy(true);
     advanceFn = null;
     return wait(done => {
@@ -256,7 +274,7 @@ const UI = (() => {
   function setOnline(n, status) { els.onl.style.display = status === 'on' || status === 'connecting' ? '' : 'none'; els.onl.querySelector('b').textContent = status === 'on' ? n : '…'; els.onl.onclick = () => typeof Online !== 'undefined' && Online.palette(); }
   function showGame(on) { els.app.classList.toggle('in-game', on); }
 
-  return {
+  return { readableJP, showRo,
     init, wait, abortAll, sleep, esc, fmt,
     say, choose, hideDialog, advance, input, dialogOpen,
     panel, closePanel, panelOpen, modal, closeModal, modalOpen, back, exitActivity,

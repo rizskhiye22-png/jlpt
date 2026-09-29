@@ -7,23 +7,26 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const ctx = { window: {}, console };
+const ctx = { window: {}, console, document: { addEventListener() {} } };
 vm.createContext(ctx);
-for (const f of ['data.js', 'data2.js', 'data3.js', 'strokes.js', 'strokes3.js', 'data4.js'])
+for (const f of ['data.js', 'data2.js', 'data3.js', 'strokes.js', 'strokes3.js', 'data4.js', 'strokes4.js', 'data5.js'])
   vm.runInContext(readFileSync('public/js/' + f, 'utf8'), ctx, { filename: f });
 const G = k => vm.runInContext(k, ctx);
 const KANA = G('KANA'), STROKES = G('STROKES'), WORDS = G('WORDS'), DAYS = G('DAYS');
-const SIM = Object.fromEntries([...readFileSync('public/js/video.js', 'utf8').match(/const SIMILAR = \{([\s\S]*?)\};/)[1].matchAll(/'(.)': '(.)'/g)].map(m => [m[1], m[2]]));
+const SIM = Object.fromEntries(Object.entries(G('SIMILAR')).map(([k, v]) => [k, [...v][0]]));
 const isKanji = c => c >= '一' && c <= '鿿';
 const isKata = c => c >= '゠' && c <= 'ヿ' && c !== 'ー';
 
-const PRON = { shi: 'Bacanya "shi", seperti "syi" yang lembut, bukan "si".', chi: 'Bacanya "chi", mirip "ci" dalam kata cinta.', tsu: 'Bacanya "tsu". Ujung lidah menempel sebentar, lalu "su". Pelan-pelan: ts, tsu.', fu: 'Bacanya "fu", tapi bibir tidak menyentuh gigi. Seperti meniup lilin pelan: fu.', n: 'Bacanya "n" saja, tanpa huruf hidup. Satu ketukan penuh, lho.', wo: 'Walaupun ditulis "wo", bacanya "o". Huruf ini hampir hanya dipakai sebagai partikel.', ha: 'Bacanya "ha". Tapi kalau jadi partikel, dibaca "wa". Nanti kita pelajari.', he: 'Bacanya "he". Kalau jadi partikel arah, dibaca "e".', ra: 'Bunyi R Jepang ada di antara R dan L. Lidah cukup mengetuk sekali: ra.', ri: 'Lidah mengetuk sekali, antara R dan L: ri.', ru: 'Lidah mengetuk sekali: ru.', re: 'Lidah mengetuk sekali: re.', ro: 'Lidah mengetuk sekali: ro.', u: 'Bacanya "u", bibir tidak terlalu dimonyongkan.', su: 'Bacanya "su". Huruf u di akhir sering terdengar samar, seperti "s" saja.', ji: 'Bacanya "ji", seperti "ji" dalam kata jika.', zu: 'Bacanya "zu", huruf z yang mendengung.' };
+const PRON = { shi: 'Bacanya "shi", seperti "syi" yang lembut, bukan "si".', chi: 'Bacanya "chi", mirip "ci" dalam kata cinta.', tsu: 'Bacanya "tsu". Ujung lidah menempel sebentar, lalu "su". Pelan-pelan: ts, tsu.', fu: 'Bacanya "fu", tapi bibir tidak menyentuh gigi. Seperti meniup lilin pelan: fu.', n: 'Bacanya "n" saja, tanpa huruf hidup. Satu ketukan penuh, lho.', wo: 'Walaupun ditulis "wo", bacanya "o". Huruf ini hampir hanya dipakai sebagai partikel.', ha: 'Bacanya "ha". Tapi kalau jadi partikel, dibaca "wa". Nanti kita pelajari.', he: 'Bacanya "he".', ra: 'Bunyi R Jepang ada di antara R dan L. Lidah cukup mengetuk sekali: ra.', ri: 'Lidah mengetuk sekali, antara R dan L: ri.', ru: 'Lidah mengetuk sekali: ru.', re: 'Lidah mengetuk sekali: re.', ro: 'Lidah mengetuk sekali: ro.', u: 'Bacanya "u", bibir tidak terlalu dimonyongkan.', su: 'Bacanya "su". Huruf u di akhir sering terdengar samar, seperti "s" saja.', ji: 'Bacanya "ji", seperti "ji" dalam kata jika.', zu: 'Bacanya "zu", huruf z yang mendengung.' };
 const OPEN = ['Huruf pertama kita hari ini:', 'Berikutnya, huruf ini:', 'Oke, lanjut ke huruf ini:', 'Sekarang, perhatikan huruf ini:', 'Nah, yang ini juga penting:', 'Terakhir untuk hari ini:'];
 const OPEN_K = ['Kanji pertama hari ini:', 'Kanji berikutnya:', 'Lanjut, kanji ini:', 'Perhatikan kanji ini:', 'Yang ini juga penting:', 'Kanji terakhir hari ini:'];
 const INTROS = ['Halo lagi! Hari ini kita belajar huruf: {}. Siap?', 'Selamat datang kembali! Hari ini giliran huruf: {}. Yuk!', 'Pagi yang cerah untuk belajar! Hari ini: {}. Kita mulai, ya.'];
 const SPECIAL_INTRO = {
   1: 'Selamat datang di kelas video pertamamu! Hari ini kita belajar lima huruf pertama hiragana. Santai saja, ya.',
   12: 'Selamat datang di dunia katakana! Bunyinya sama dengan hiragana, hanya bentuknya lebih tegas dan bersudut.',
+  35: 'Selamat datang di Kelas Musim Panas! Hari ini huruf kecil ya, yu, yo yang menempel pada huruf lain.',
+  38: 'Hari ini huruf yang tidak berbunyi, tapi sangat penting: tsu kecil.',
+  39: 'Hari ini kita belajar bunyi panjang. Siapkan telingamu!',
   23: 'Selamat datang di Bab 3! Hari ini ada tanda kecil yang ajaib: tenten. Dua titik kecil yang mengubah bunyi.',
   27: 'Hari yang istimewa! Hari ini kamu belajar kanji untuk pertama kalinya. Kita mulai dari angka, ya.',
 };
@@ -31,7 +34,7 @@ const SHARED = [['sen_air_1', 'Sekarang tulis di udara dengan jarimu, ikuti kapu
 
 const clips = {}, emotion = {}, kana = {}, days = {}, rows = [];
 const add = (id, text, e) => { clips[id] = text; emotion[id] = e; rows.push([id, text, e]); };
-const idOf = k => isKanji(k) ? 'sen_kj_' + k.codePointAt(0).toString(16) : `sen_${isKata(k) ? 'k' : 'h'}_${KANA[k].ro}`;
+const idOf = k => isKanji(k) ? 'sen_kj_' + k.codePointAt(0).toString(16) : /^[a-z]+$/.test(KANA[k].ro) ? `sen_${isKata(k) ? 'k' : 'h'}_${KANA[k].ro}` : 'sen_x_' + [...k].map(c => c.codePointAt(0).toString(16)).join('_');
 const learned = new Set(), used = new Set();
 let li = 0;
 DAYS.forEach((d, i) => {
@@ -41,22 +44,28 @@ DAYS.forEach((d, i) => {
   rows.push(['#', `Hari ${dn} — ${ks.join(' ')}`]);
   add(`sen_d${String(dn).padStart(2, '0')}_intro`, SPECIAL_INTRO[dn] || INTROS[li % 3].replace('{}', ks.join('、')), 'ceria');
   li++;
+  ks.forEach(k => learned.add(k)); (d.also || []).forEach(a => learned.add(a));
   ks.forEach((k, idx) => {
-    learned.add(k); (d.also || []).forEach(a => learned.add(a));
     const { ro, tip } = KANA[k], n = (STROKES[k] || []).length, b = idOf(k), kj = isKanji(k), e = {};
     const op = (kj ? OPEN_K : OPEN)[idx === 0 ? 0 : idx === ks.length - 1 ? 5 : 1 + (idx % 4)];
     add(b + '_01', `${op} ${k}.`, 'semangat'); e.intro = b + '_01';
-    const p = kj ? `Kanji ini dibaca "${ro}". ${k}.` : (PRON[ro] || (ro.endsWith('e') ? `Bacanya "${ro}". Huruf e-nya seperti pada kata "enak", bukan "emas".` : `Bacanya "${ro}", sama seperti bunyi "${ro}" dalam bahasa Indonesia.`)) + ` ${k}.`;
+    const SPECIAL = { 'っ': 'Huruf ini tidak dibaca. っ kecil artinya jeda satu ketukan sebelum bunyi berikutnya. がっこう: gak, kou.', 'ー': 'Garis ini tidak punya bunyi sendiri. Ia memanjangkan bunyi sebelumnya. コーヒー: koo, hii.' };
+    const HE = { 'へ': 'Bacanya "he". Kalau jadi partikel arah, dibaca "e". へ.', 'ヘ': 'Bacanya "he". Bentuknya hampir sama dengan へ hiragana, hanya lebih lurus. ヘ.' };
+    const p = HE[k] ? HE[k] : SPECIAL[k] ? SPECIAL[k] : [...k].length === 2 ? `Bacanya "${ro}". Dua huruf, tapi cuma satu ketukan. ${k}.` : kj ? `Kanji ini dibaca "${ro}". ${k}.` : (PRON[ro] || (ro.endsWith('e') ? `Bacanya "${ro}". Huruf e-nya seperti pada kata "enak", bukan "emas".` : `Bacanya "${ro}", sama seperti bunyi "${ro}" dalam bahasa Indonesia.`)) + ` ${k}.`;
     add(b + '_02', p, 'tenang'); e.read = b + '_02';
     add(b + '_03', n === 1 ? 'Cara menulisnya cuma satu goresan. Perhatikan arahnya, ya.' : `Ada ${n} goresan. Perhatikan urutannya baik-baik.`, 'tenang'); e.strokes = b + '_03';
     add(b + '_04', tip, 'lucu'); e.tip = b + '_04';
     if (isKata(k)) { const tw = String.fromCharCode(k.charCodeAt(0) - 0x60); if (KANA[tw]) { add(b + '_05', `Pasangan hiragananya adalah ${tw}. Bunyinya sama persis: ${k}, ${tw}.`, 'tenang'); e.pair = b + '_05'; } }
     const sim = SIM[k];
     if (sim && KANA[sim]) { add(b + '_06', `Hati-hati, jangan tertukar dengan ${sim}. Yang kiri ${k}, dibaca "${ro}". Yang kanan ${sim}, dibaca "${KANA[sim].ro}".`, 'serius-lembut'); e.similar = b + '_06'; e.sim = sim; }
-    if (k === 'を') { add(b + '_07', 'Contohnya: パン を たべます. Artinya "makan roti". を menunjukkan benda yang dimakan.', 'ceria'); e.word = b + '_07'; e.w = 'を'; }
+    if (k === 'を') { add(b + '_07', 'Contohnya: ほん を よむ. Artinya "membaca buku". を menandai benda yang dibaca.', 'ceria'); e.word = b + '_07'; e.w = 'を'; e.wx = { jp: 'ほん を よむ', ro: 'hon o yomu', id: 'membaca buku' }; }
     else if (k !== 'ヲ') {
-      const cand = WORDS.filter(w => w.jp.includes(k) && !used.has(w.jp));
-      const w = cand.find(w => [...w.jp].every(c => learned.has(c) || ' ー'.includes(c))) || cand[0];
+      // pilih contoh: (1) terbaca & belum dipakai, (2) terbaca, (3) katakana dengan bantuan hiragana, (4) tidak ada
+      const ok = c => learned.has(c) || ' ー'.includes(c);
+      const hintable = c => ok(c) || (isKata(c) && learned.has(String.fromCharCode(c.charCodeAt(0) - 0x60)));
+      const cand = WORDS.filter(w => w.jp.includes(k) && !isKanji(w.jp[0]));
+      const w = cand.find(w => !used.has(w.jp) && [...w.jp].every(ok)) || cand.find(w => [...w.jp].every(ok))
+        || (isKata(k) ? cand.find(w => !used.has(w.jp) && [...w.jp].every(hintable)) || cand.find(w => [...w.jp].every(hintable)) : null);
       if (w) { used.add(w.jp); add(b + '_07', `Contoh katanya: ${w.jp}. Artinya "${w.id}". ${w.jp}.`, 'ceria'); e.word = b + '_07'; e.w = w.jp; }
     }
     e.air = `sen_air_${(idx % 3) + 1}`;
