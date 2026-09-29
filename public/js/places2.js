@@ -405,7 +405,8 @@ const Places2 = (() => {
     await say({ n: 'Papan petunjuk lantai (フロアガイド): ' + FLOORS.map(x => `${x.f}: ${x.item}`).join(' ・ ') });
     await say({ n: 'Ingat: lantai 3 dibaca さんがい (sangai), bukan さんかい!' });
     const t = pick(FLOORS.slice(1));
-    await H().runLines([{ q: `Kamu mau beli ${t.item} (${t.iid}). Ke lantai berapa?`, o: FLOORS.map(x => x === t ? { jp: x.f, ro: romaji() ? x.ro : '', ok: true } : { jp: x.f, ro: romaji() ? x.ro : '', why: `${t.item} ada di ${t.f} (${t.id}).` }).slice(0, 4) }], ['staff']);
+    const floorOpts = [t, ...shuffle(FLOORS.filter(x => x !== t)).slice(0, 3)];  // jawaban benar selalu ada
+    await H().runLines([{ q: `Kamu mau beli ${t.item} (${t.iid}). Ke lantai berapa?`, o: floorOpts.map(x => x === t ? { jp: x.f, ro: romaji() ? x.ro : '', ok: true } : { jp: x.f, ro: romaji() ? x.ro : '', why: `${t.item} ada di ${t.f} (${t.id}).` }) }], ['staff']);
     await say({ w: 'staff', jp: 'エレベーター は こちら です。うえ に まいります。', ro: 'erebeetaa wa kochira desu. ue ni mairimasu.', id: 'Lift di sebelah sini. Naik ke atas.' });
     await say({ n: `Kamu sampai di ${t.f} dan melihat-lihat ${t.item}. Sebelum pulang, kamu mampir ke ちか: surga makanan (デパちか)!` });
     if (once('depato', 10, 'department store')) H().addStamp('depato', 'Jalan-jalan di デパート');
@@ -414,7 +415,7 @@ const Places2 = (() => {
     await say({ w: 'staff', e: 'happy', jp: 'いらっしゃいませ。なにいろ が いい ですか？', ro: 'irasshaimase. nani iro ga ii desu ka?', id: 'Selamat datang. Mau warna apa?' });
     const COLORS = [['あか', 'aka', 'merah'], ['あお', 'ao', 'biru'], ['しろ', 'shiro', 'putih'], ['くろ', 'kuro', 'hitam'], ['きいろ', 'kiiro', 'kuning']];
     const c = pick(COLORS);
-    await H().runLines([{ q: `Kamu ingin kaos warna ${c[2]}. Jawab:`, o: shuffle(COLORS).slice(0, 3).concat([c]).filter((x, i, a) => a.indexOf(x) === i).slice(-3).map(x => x === c ? { jp: `${x[0]} が いい です。`, ro: romaji() ? `${x[1]} ga ii desu.` : '', ok: true } : { jp: `${x[0]} が いい です。`, ro: '', why: `${x[0]} (${x[1]}) = ${x[2]}. ${c[2]} = ${c[0]}.` }) }], ['staff']);
+    await H().runLines([{ q: `Kamu ingin kaos warna ${c[2]}. Jawab:`, o: [c, ...shuffle(COLORS.filter(x => x !== c)).slice(0, 2)].map(x => x === c ? { jp: `${x[0]} が いい です。`, ro: romaji() ? `${x[1]} ga ii desu.` : '', ok: true } : { jp: `${x[0]} が いい です。`, ro: '', why: `${x[0]} (${x[1]}) = ${x[2]}. ${c[2]} = ${c[0]}.` }) }], ['staff']);
     await say({ w: 'staff', jp: 'サイズ は？ エス、エム、エル が あります。', ro: 'saizu wa? esu, emu, eru ga arimasu.', id: 'Ukurannya? Ada S, M, L.' });
     await H().runLines([{ q: 'Kamu pakai ukuran M. Pilih:', o: [
       { jp: 'エム', ro: 'emu', ok: true }, { jp: 'エス', ro: 'esu', why: 'エス = S. M = エム.' }, { jp: 'エル', ro: 'eru', why: 'エル = L. M = エム.' },

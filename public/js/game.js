@@ -131,6 +131,7 @@ const Game = (() => {
     const friends = cast.filter(c => FRIENDS.includes(c));
     let first = true;
     for (;;) {
+      if (!order.length) return;  // pengaman: tidak ada pilihan tersisa → jangan macet
       const i = await UI.choose(line.q, order.map(j => ({ jp: UI.fmt(line.o[j].jp), ro: UI.fmt(line.o[j].ro) })));
       const o = line.o[order[i]];
       if (!o.ok) order = order.filter((_, x) => x !== i);
