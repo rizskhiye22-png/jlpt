@@ -1,13 +1,9 @@
 /* =========================================================
-   HALAMAN TEMAN (React + React Three Fiber)
-   Lihat setiap tokoh dalam 3D (bisa diputar), tingkat keakraban,
+   HALAMAN TEMAN (React)
+   Lihat potret & sprite pixel tiap tokoh (berjalan di tempat), tingkat keakraban,
    jajanan favorit, dan dengarkan perkenalan diri mereka dalam bahasa Jepang.
    ========================================================= */
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-import { Humanoid } from '../world/humanoid';
-import { specFor } from '../world/spec';
+import { useEffect, useRef, useState } from 'react';
 
 declare const FAVORITE: Record<string, string>;
 declare const SNACKS: Array<{ id: string; jp: string; ro: string; name: string }>;
@@ -30,44 +26,25 @@ const BIOS: Record<string, Bio> = {
 };
 const ORDER = ['yuki', 'kenta', 'hana', 'sensei', 'obaa', 'tenin', 'kid', 'ojii', 'mai', 'emma', 'omawari', 'ryo', 'imoya'];
 
-function Model({ id, spin }: { id: string; spin: { current: number } }) {
-  const hm = useMemo(() => new Humanoid(specFor(id)), [id]);
-  useEffect(() => () => hm.dispose(), [hm]);
-  const t = useRef(0);
-  useFrame((_, dt) => {
-    t.current += dt;
-    hm.update(dt * 1000, false);
-    hm.root.rotation.y = spin.current;
-    // sesekali melambai kecil dengan kepala
-    hm.lookYaw = Math.sin(t.current * .8) * .25;
-  });
-  return <primitive object={hm.root} position={[0, -hm.height * .5, 0]} />;
-}
-
+// Potret besar + sprite yang berjalan di tempat (berputar arah pelan-pelan)
 function Viewer({ id }: { id: string }) {
-  const spin = useRef(0);
-  const drag = useRef<{ x: number; a: number } | null>(null);
-  const auto = useRef(true);
-  const Auto = () => { useFrame((_, dt) => { if (auto.current && !drag.current) spin.current = Math.sin(performance.now() / 2400) * .5; void dt; }); return null; };
+  const face = useRef<HTMLCanvasElement>(null), walk = useRef<HTMLCanvasElement>(null);
+  useEffect(() => { if (face.current) Pix.drawPortrait(face.current, id, 'happy'); }, [id]);
+  useEffect(() => {
+    const dirs = ['down', 'left', 'up', 'right'];
+    let n = 0, blink = 0;
+    const t = setInterval(() => {
+      n++;
+      const c = walk.current?.getContext('2d');
+      if (c) { c.clearRect(0, 0, 16, 16); c.drawImage(Pix.sprite(id, dirs[Math.floor(n / 8) % 4], n % 2 ? 1 : 2), 0, 0); }
+      if (face.current && ++blink % 14 === 0) { Pix.drawPortrait(face.current, id, 'blink'); setTimeout(() => face.current && Pix.drawPortrait(face.current, id, 'happy'), 140); }
+    }, 220);
+    return () => clearInterval(t);
+  }, [id]);
   return (
-    <div className="fr-view"
-      onPointerDown={e => { drag.current = { x: e.clientX, a: spin.current }; auto.current = false; (e.target as HTMLElement).setPointerCapture?.(e.pointerId); }}
-      onPointerMove={e => { if (drag.current) spin.current = drag.current.a + (e.clientX - drag.current.x) / 60; }}
-      onPointerUp={() => { drag.current = null; }}>
-      <Canvas dpr={[1, 1.5]} camera={{ fov: 30, position: [0, .15, 3] }}
-        gl={{ antialias: true, toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.0 }}>
-        <hemisphereLight args={[0xfff6ee, 0x8a7a88, 1.1]} />
-        <directionalLight position={[-1.2, 1.6, 2.2]} intensity={1.7} color={0xfff0e0} />
-        <directionalLight position={[1.6, .4, 1.5]} intensity={.7} color={0xdfe8ff} />
-        <directionalLight position={[.6, 1.4, -2.4]} intensity={1.5} />
-        <mesh rotation-x={-Math.PI / 2} position={[0, -.78, 0]}>
-          <circleGeometry args={[.7, 40]} />
-          <meshBasicMaterial color={0x000000} transparent opacity={.12} />
-        </mesh>
-        <Model id={id} spin={spin} />
-        <Auto />
-      </Canvas>
-      <span className="fr-hint">⟲ geser untuk memutar</span>
+    <div className="fr-view">
+      <canvas ref={face} width={48} height={48} className="fr-face" />
+      <canvas ref={walk} width={16} height={16} className="fr-walk" />
     </div>
   );
 }
@@ -81,7 +58,6 @@ function Thumb({ id }: { id: string }) {
 export function Friends({ onClose }: { onClose: () => void }) {
   const [sel, setSel] = useState('yuki');
   const friends: Record<string, number> = Save.d.friends || {};
-  const can3D = !!window.Char3D;
   const bio = BIOS[sel];
   const snackId = typeof FAVORITE !== 'undefined' ? FAVORITE[sel] : undefined;
   const snack = snackId && typeof SNACKS !== 'undefined' ? SNACKS.find(s => s.id === snackId) : undefined;
@@ -90,7 +66,7 @@ export function Friends({ onClose }: { onClose: () => void }) {
     <div className="win friends">
       <div className="w-title">Teman <span className="muted small">ともだち · tomodachi</span></div>
       <div className="fr-main">
-        {can3D ? <Viewer id={sel} /> : <div className="fr-view flat"><Thumb id={sel} /></div>}
+        <Viewer id={sel} />
         <div className="fr-info">
           <div className="fr-name" style={{ ['--c' as string]: CHARACTERS[sel]?.color }}>{CHARACTERS[sel]?.name || sel}</div>
           <div className="fr-hearts" aria-label={`Keakraban ${hearts} dari 10`}>

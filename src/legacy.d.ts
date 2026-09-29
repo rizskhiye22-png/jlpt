@@ -31,7 +31,5 @@ declare const PETS: Array<{ id: string; kind: string; name?: string; pal?: Recor
 
 interface Window {
   World3D: any;
-  THREE3D?: boolean;
-  Char3D?: any;
   ReactUI?: any;
 }

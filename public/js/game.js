@@ -820,9 +820,7 @@ const Game = (() => {
     const draw = () => {
       Pix.setPlayer(look);
       Pix.drawPortrait(p.querySelector('.w-face'), 'player', 'happy');
-      const b = p.querySelector('.w-body');
-      if (window.Char3D) { const img = window.Char3D.full('player', 160, 240); b.width = 160; b.height = 240; b.classList.add('hd'); const c = b.getContext('2d'); c.clearRect(0, 0, 160, 240); c.drawImage(img, 0, 0); }
-      else { const c = b.getContext('2d'); c.clearRect(0, 0, 16, 16); c.drawImage(Pix.sprite('player', 'down', 0), 0, 0); }
+      const b = p.querySelector('.w-body'), c = b.getContext('2d'); c.clearRect(0, 0, 16, 16); c.drawImage(Pix.sprite('player', 'down', 0), 0, 0);
     };
     draw();
     return UI.wait(done => {
