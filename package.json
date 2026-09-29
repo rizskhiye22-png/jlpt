@@ -7,8 +7,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:pages": "tsc --noEmit && vite build --outDir docs --emptyOutDir",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "voice:export": "node scripts/voice-lines.mjs export",
+    "voice:manifest": "node scripts/voice-lines.mjs manifest"
   },
   "dependencies": {
     "react": "^19.3.0",

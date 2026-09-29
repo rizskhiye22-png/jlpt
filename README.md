@@ -69,9 +69,18 @@ npm run dev        # mode pengembangan → buka alamat yang muncul (bisa dari HP
 npm run build      # hasil siap terbit di folder dist/
 npm run preview    # coba hasil build
 npm run typecheck  # cek TypeScript
+npm run build:pages  # hasil build ke folder docs/ (untuk GitHub Pages tanpa Actions)
 ```
 
-**GitHub Pages**: Settings → Pages → *Source: GitHub Actions*. Setiap push ke `main` otomatis dibuild & diterbitkan (`.github/workflows/deploy.yml`).
+**Menerbitkan (GitHub Pages)**, pilih salah satu:
+- **Paling mudah:** Settings → Pages → *Deploy from a branch* → pilih branch-nya → folder **`/docs`**.
+  Folder `docs/` berisi game yang sudah dibuild. Jalankan `npm run build:pages` setiap kali selesai mengubah kode.
+- **Otomatis:** Settings → Pages → *Source: GitHub Actions*. Setiap push ke `main` dibuild & diterbitkan (`.github/workflows/deploy.yml`).
+
+> Jika halaman dibuka dari akar repo tanpa build (mis. *Deploy from a branch* → `/ (root)`), game otomatis pindah ke `docs/`.
+> Untuk APK / aplikasi pembungkus (WebView, Capacitor, dll.), gunakan isi folder **`docs/`** (atau `dist/`), bukan file sumber.
+
+**Suara asli penutur Jepang:** lihat [voice/README.md](voice/README.md). Rekaman MP3 di `public/audio/ja/` otomatis dipakai menggantikan suara TTS.
 
 **Online bersama**: lihat [server/README.md](server/README.md).
 
