@@ -31,10 +31,13 @@ const PHRASES = [
   { jp: '(＾▽＾)', ro: '', id: '(senyum)' },
 ];
 
+const DEFAULT_SERVER = 'wss://nihongo-game-server.irfanfzm10.workers.dev';
+
 const Online = (() => {
   let ws = null, myId = null, url = '', status = 'off', retry = 0, retryT = null, lastMove = '';
   const players = new Map();
   const S = () => Save.d.settings;
+  const serverUrl = () => (S().server || DEFAULT_SERVER || '').trim();
 
   function setStatus(s) { status = s; UI.setOnline && UI.setOnline(s === 'on' ? players.size + 1 : 0, s); }
   function pushWorld() {
@@ -45,7 +48,7 @@ const Online = (() => {
 
   function connect(u) {
     disconnect(true);
-    url = (u || S().server || '').trim();
+    url = (u || serverUrl()).trim();
     if (!url) return;
     if (!/^wss?:\/\//.test(url)) url = (location.protocol === 'https:' ? 'wss://' : 'ws://') + url;
     setStatus('connecting');
@@ -66,7 +69,7 @@ const Online = (() => {
     };
     ws.onclose = () => {
       const was = status; ws = null; players.clear(); pushWorld();
-      if (S().online && url) { setStatus('connecting'); clearTimeout(retryT); retryT = setTimeout(() => connect(url), Math.min(30000, 2000 * 2 ** retry++)); }
+      if (!S().offlineChoice && url) { setStatus('connecting'); clearTimeout(retryT); retryT = setTimeout(() => connect(url), Math.min(30000, 2000 * 2 ** retry++)); }
       else setStatus(was === 'error' ? 'error' : 'off');
     };
     ws.onerror = () => { setStatus('error'); };
@@ -102,7 +105,7 @@ const Online = (() => {
     m.querySelector('[data-a=close]').onclick = () => UI.closeModal();
   }
 
-  function autoStart() { if (S().online && S().server && World.online) connect(S().server); }
+  function autoStart() { if (!S().offlineChoice && serverUrl() && World.online) connect(serverUrl()); }
 
   return { connect, disconnect, moved, say, palette, autoStart, lookChanged, get status() { return status; }, get count() { return players.size; } };
 })();
