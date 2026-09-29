@@ -203,6 +203,13 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 5. ✅ Adegan budaya: aturan onsen, kuil Buddha vs Shinto, lantai department store, warna & ukuran baju, jimat, rusa おじぎ.
 6. 🔜 Berikutnya: festival musim panas (まつり) di taman, salju & musim dingin di やま, kota pelabuhan (みなと), rumah teman, menginap semalam di onsen.
 
+### Fase 2.5 — 「さくら の てがみ」 fondasi cerita ✅
+1. ✅ Mesin cerita (flag, adegan per slot, NPC cerita) + save v3 dengan migrasi otomatis.
+2. ✅ Prolog + 22 adegan Bab 1–2, loteng, Kotak Surat, Peta Harta 1976, buku bergambar, benda kenangan.
+3. ✅ Suara tahap 1: naskah tetap sensei (586 klip) dipakai video; rekaman di `public/audio/sensei/` otomatis dipakai.
+4. ✅ v3.0: Bab 3 「てんてん と すうじ」 — tenten, 14 kanji angka, Kasir Kafe, pantai, Pasar Pagi, Jurnal Misteri, Meter Kota.
+5. 🔜 Berikutnya (v3.5): Bab 4 「なつやすみ」 — yōon, っ, bunyi panjang, menginap di onsen やま, kilas balik, Natsu Matsuri. Lihat `design/04-BAB4-MUSIM-PANAS.md`.
+
 ### Fase 2 🔜
 Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.
 

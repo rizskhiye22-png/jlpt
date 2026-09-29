@@ -67,7 +67,7 @@ const MAPS = {
     ],
     spots: {
       gate: [12, 7], home_front: [6, 11], park: [9, 17], konbini: [20, 12], river: [16, 22], shrine: [23, 3],
-      tenin: [24, 12], kid: [10, 22], ojii: [17, 20], mochi: [25, 2],
+      tenin: [24, 12], kid: [10, 22], ojii: [17, 20], mochi: [7, 9],
     },
   },
   class: {

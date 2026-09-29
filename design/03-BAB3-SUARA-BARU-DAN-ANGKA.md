@@ -12,6 +12,21 @@
 | **Sistem baru** | 🧾 Kerja Paruh Waktu (アルバイト), 📈 Meter Kota, 🔎 Jurnal Misteri |
 | **Mini-game baru** | Kasir Kafe, Hitung Kembalian, Tangkap Tenten (varian Hujan Huruf) |
 
+### ✅ Status implementasi (v3.0)
+Bab 3 sudah ada di game: `public/js/data4.js` (pelajaran), `public/js/strokes3.js` (goresan KanjiVG), `src/story/scenes3.ts` (cerita), `src/story/kasir.ts` (mini-game Kasir Kafe).
+Penyesuaian dari rancangan di bawah, agar beban belajar per hari tetap ringan:
+| Hari | Rancangan | Di game |
+|---|---|---|
+| 23–26 | Hiragana + katakana ber-tenten | Video & latihan menulis untuk **hiragana**; katakana ber-tenten ikut dikuasai (aturannya sama) dan diumumkan sensei |
+| 27 | Angka 1–10 + 一〜十 | 一 二 三 四 五 |
+| 29 | Angka 11–99 + pantai | 六 七 八 九 十 + perjalanan ke pantai (sore) |
+| 30 | 百 & 円 | 百 円 (+ Kakek Mori di kafe) |
+| 31 | 千 & 万 | 千 万 |
+| 32 | Rapat warga | Kuis Harga + rapat warga (sore) → Meter Kota terbuka |
+| 33 | Persiapan | Ulasan besar + おはぎ bersama Nenek |
+| 34 | Ujian + Pasar Pagi + Surat #6 | Sama (Pasar Pagi = Kasir Kafe mode pasar) |
+Jurnal Misteri: versi pertama berupa papan petunjuk + 6 pertanyaan besar (fitur "tarik benang merah" menyusul).
+
 ### Catatan kurikulum
 - Dakuten diajarkan **berpasangan**: hiragana & katakana di hari yang sama (aturannya identik, jadi beban ringan).
 - Angka: bunyi dipelajari lewat **dengar & ucap**. Ejaan seperti じゅう/ひゃく memakai huruf kecil ゅ/ゃ — ditampilkan dengan catatan "huruf kecil, dipelajari di Bab 4" (**pratinjau**, tidak diuji).

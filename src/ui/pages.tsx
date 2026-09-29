@@ -6,6 +6,8 @@
 import { createRoot } from 'react-dom/client';
 import type { ReactElement } from 'react';
 import { Friends } from './Friends';
+import { LetterBox } from './LetterBox';
+import type { LettersOpts } from './mount';
 
 function open(render: (close: () => void) => ReactElement, cls = 'scroll'): Promise<void> {
   const p = UI.panel('<div class="react-page"></div>', cls);
@@ -26,4 +28,5 @@ function open(render: (close: () => void) => ReactElement, cls = 'scroll'): Prom
 
 export const pages = {
   friends: () => open(close => <Friends onClose={close} />),
+  letters: (o: LettersOpts = {}) => open(close => <LetterBox onClose={close} letter={o.letter} reading={o.reading} tab={o.tab} />),
 };

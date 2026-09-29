@@ -20,7 +20,7 @@ const Lesson = (() => {
     const K = KANA[k];
     const p = UI.panel(`
       <div class="board">
-        <div class="b-top">${IS_KATA(k) ? 'Katakana' : 'Hiragana'} baru ${i + 1} / ${n}</div>
+        <div class="b-top">${scriptOf(k) === 'kanji' ? 'Kanji' : IS_KATA(k) ? 'Katakana' : 'Hiragana'} baru ${i + 1} / ${n}</div>
         <button class="b-kana" type="button" aria-label="Dengarkan ${k}">${k}</button>
         <div class="b-ro">${K.ro}</div>
         ${IS_KATA(k) && KANA[twin(k)] ? `<div class="b-twin">Hiragananya: <b>${twin(k)}</b></div>` : ''}
@@ -107,7 +107,7 @@ const Lesson = (() => {
 
   // Sensei memutar video pelajaran, lalu murid menulis setiap huruf
   async function teach(list, opts = {}) {
-    await Video.play({ kana: list, intro: opts.intro || [], title: opts.title || 'Video Pelajaran' });
+    await Video.play({ kana: list, intro: opts.intro || [], title: opts.title || 'Video Pelajaran', day: opts.day });
     for (let i = 0; i < list.length; i++) {
       await Games.shodoCard(list[i], { title: 'Latihan Menulis', info: `${i + 1}/${list.length}` });
     }
@@ -125,8 +125,9 @@ const Lesson = (() => {
   function makeQuestions(focus, count, poolKind, only) {
     let pool = Save.d.kana.length ? Save.d.kana.slice() : focus.slice();
     if (only) pool = focus.slice();
-    if (poolKind === 'kata') pool = pool.filter(IS_KATA);
-    if (poolKind === 'hira') pool = pool.filter(k => !IS_KATA(k));
+    if (poolKind && typeof POOL_FILTER !== 'undefined' && POOL_FILTER[poolKind]) pool = pool.filter(POOL_FILTER[poolKind]);
+    else if (poolKind === 'kata') pool = pool.filter(IS_KATA);
+    else if (poolKind === 'hira') pool = pool.filter(k => !IS_KATA(k));
     if (!pool.length) pool = focus.slice();
     const words = knownWords(new Set(pool));
     const types = ['read', 'read', 'write', 'write', 'word'];
@@ -150,11 +151,25 @@ const Lesson = (() => {
     return shuffle(out);
   }
 
+  const scriptOf = k => (typeof SCRIPT_OF !== 'undefined' ? SCRIPT_OF(k) : IS_KATA(k) ? 'kata' : 'hira');
   function options(correct, source, n = 4) {
-    const kata = IS_KATA(correct);
-    const same = ALL.filter(k => IS_KATA(k) === kata);
-    const learned = Save.d.kana.filter(k => k !== correct && IS_KATA(k) === kata);
-    const others = shuffle(learned).concat(shuffle(same.filter(k => k !== correct && !learned.includes(k))));
+    const sc = scriptOf(correct);
+    // bacaan harus unik (じ/ぢ dan ず/づ sama-sama "ji"/"zu")
+    const roOk = k => KANA[k].ro !== KANA[correct].ro;
+    const same = Object.keys(KANA).filter(k => scriptOf(k) === sc && roOk(k));
+    const learned = Save.d.kana.filter(k => k !== correct && scriptOf(k) === sc && KANA[k] && roOk(k));
+    // huruf ber-tenten: pengecoh terbaik adalah huruf dasarnya & pasangan ゛/゜ (が↔か, ば↔ぱ↔は)
+    const confuse = [];
+    if (typeof DAKU_RO !== 'undefined') {
+      const h = IS_KATA(correct) ? String.fromCharCode(correct.charCodeAt(0) - 0x60) : correct;
+      const toK = c => IS_KATA(correct) ? String.fromCharCode(c.charCodeAt(0) + 0x60) : c;
+      if (DAKU_RO[h]) {
+        const handa = /^p/.test(DAKU_RO[h]), code = h.charCodeAt(0);
+        [code - (handa ? 2 : 1), handa ? code - 1 : code + 1].map(x => toK(String.fromCharCode(x)))
+          .forEach(c => { if (KANA[c] && c !== correct && KANA[c].ro !== KANA[correct].ro) confuse.push(c); });
+      }
+    }
+    const others = [...confuse, ...shuffle(learned).concat(shuffle(same.filter(k => k !== correct && !learned.includes(k)))).filter(k => !confuse.includes(k))];
     return shuffle([correct, ...others.slice(0, n - 1)]).map(source);
   }
 

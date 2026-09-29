@@ -18,10 +18,12 @@ const Games = (() => {
   const learnedSet = () => new Set(Save.d.kana);
 
   function stat(k, ok) { const s = Save.d.st[k] || (Save.d.st[k] = { c: 0, w: 0 }); ok ? s.c++ : s.w++; }
+  const scriptOf = k => (typeof SCRIPT_OF !== 'undefined' ? SCRIPT_OF(k) : IS_KATA(k) ? 'kata' : 'hira');
   function sameScript(k, pool) {
-    const kata = IS_KATA(k);
-    const mine = pool.filter(x => IS_KATA(x) === kata);
-    const all = Object.keys(KANA).filter(x => IS_KATA(x) === kata);
+    const sc = scriptOf(k), ro = KANA[k] && KANA[k].ro;
+    const ok = x => scriptOf(x) === sc && KANA[x] && (x === k || KANA[x].ro !== ro);
+    const mine = pool.filter(ok);
+    const all = Object.keys(KANA).filter(ok);
     return { mine, all };
   }
   function distractors(k, pool, n) {

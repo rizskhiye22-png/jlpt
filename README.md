@@ -6,13 +6,30 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 **Tanpa pertarungan.** Belajar terasa seperti di sekolah sungguhan: guru, video pelajaran, latihan menulis, kuis, dan teman sekelas.
 
-> Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**.
-> Dokumen desain v3 「さくら の てがみ」 (cerita 1 tahun sampai JLPT N5) ada di **[design/](design/00-README.md)**.
+> Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
+
+## Baru di v3.0 — Bab 3 「てんてん と すうじ」 (Suara Baru & Angka)
+- **12 hari baru (Hari 23–34)** di musim hujan: huruf ber-**tenten ゛ & maru ゜** (50 huruf) dan **14 kanji pertama** (一〜十, 百, 円, 千, 万) lengkap dengan video, urutan goresan KanjiVG, dan penilaian tulisan.
+- Kuis & mini-game memakai pengecoh yang pas: が dilawankan dengan か, ぱ dengan ば & は.
+- 🧾 **Kerja paruh waktu di Kafe Hanamizuki**: mini-game **Kasir Kafe** (baca pesanan katakana, harga dalam kanji 三百五十円, hitung kembalian) dengan 4 level.
+- Cerita: bingkai menu kafe menyimpan halaman buku, **perjalanan ke pantai うみ** (ほこら di tebing, bertemu Emma lagi), Kakek Mori memesan melon soda, rapat warga, **Pasar Pagi**, Surat #5 & #6.
+- 🔎 **Jurnal Misteri** (papan petunjuk + 6 pertanyaan besar), 🏮 **Meter Kota**, tab **Tenten** & **Kanji** di Buku Catatan, 8 pencapaian baru.
+- Naskah suara sensei kini **768 klip** (`npm run voice:sensei` membuatnya ulang dari data pelajaran).
+
+## v2.5 — 「さくら の てがみ」 (Surat-Surat Sakura)
+- **Prolog** baru: tiba di stasiun Sakura-machi, dijemput Nenek Sato, malam pertama dan loteng yang terkunci.
+- **Cerita besar yang saling berkaitan**: Mochi menggali **kunci loteng**, di loteng ada **surat-surat Eyang Dewi** (nenekmu sendiri!) untuk Nenek Sato dari tahun 1976.
+- 📮 **Kotak Surat** (Menu → Surat): surat hanya bisa dibaca sejauh huruf yang sudah kamu pelajari — kata yang hurufnya belum dipelajari tampil **kabur**, ketuk untuk tahu kapan huruf itu dipelajari.
+- 🗺️ **Peta Harta 1976** dari Mai, 📖 **buku bergambar** 『さくら と ともだち』 yang halamannya tersebar, dan 🎁 **benda kenangan**.
+- 22 adegan cerita baru di Bab 1–2 (Tanaka-sensei, Kakek Mori, Kenta, Ibu Hana, Ryo, telepon dari Eyang, pengakuan Nenek Sato…).
+- 🎙️ **Suara sensei siap diganti rekaman manusia**: video pelajaran memakai naskah tetap (586 klip, `voice/sensei-lines.csv`). Taruh rekaman di `public/audio/sensei/<id>.mp3` → otomatis dipakai; tanpa rekaman tetap memakai TTS.
+- Save lama otomatis dimigrasi: progres tidak hilang, surat & benda yang sesuai langsung tersedia.
+
 
 ## Fitur utama
 
 **Belajar**
-- **Bab 1 Hiragana** (11 hari) & **Bab 2 Katakana** (11 hari): 92 huruf, ulangan, dan ujian.
+- **Bab 1 Hiragana** (11 hari), **Bab 2 Katakana** (11 hari) & **Bab 3 Tenten & Angka** (12 hari): 142 huruf + 14 kanji, ulangan, dan ujian.
 - **Video pelajaran animasi** dari sensei: urutan goresan asli, subtitle, narasi suara sensei yang santai, putar/jeda/ulang/kecepatan.
 - **Latihan menulis bertahap** per goresan (langkah 1 → 1+2 → …), dinilai otomatis dengan stempel hanko.
 - **Ulasan Harian** (spaced repetition): huruf muncul lagi tepat sebelum lupa.
@@ -78,6 +95,8 @@ npm run build      # hasil siap terbit di folder dist/
 npm run preview    # coba hasil build
 npm run typecheck  # cek TypeScript
 npm run build:pages  # hasil build ke folder docs/ (untuk GitHub Pages tanpa Actions)
+npm run test:bab3    # uji browser Bab 3 (kuis tenten, kasir, pantai, Pasar Pagi)
+npm run test:story   # uji browser alur cerita (butuh: pip install playwright && python -m playwright install chromium; jalankan `npm run preview` dulu di port 4173)
 ```
 
 **Menerbitkan (GitHub Pages)**, pilih salah satu:
@@ -104,7 +123,15 @@ src/world/world3d.ts        dunia 3D (Three.js): peta, karakter pixel, cahaya, c
 src/ui/Friends.tsx          halaman Teman (React)
 src/ui/pages.tsx, mount.ts  jembatan React ↔ panel lama (dimuat saat dibutuhkan)
 src/legacy.d.ts             tipe untuk modul lama
-public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian
+src/story/                  ★ cerita v3: surat, buku bergambar, peta harta, adegan, mesin flag & migrasi save
+src/ui/LetterBox.tsx        ★ Kotak Surat (React)
+src/systems/voice.ts        suara: rekaman manusia/AI → cadangan TTS
+src/data/voice/sensei-vo.json  ★ naskah tetap sensei (dipakai video pelajaran)
+design/                     dokumen desain lengkap v3 (cerita Bab 1–6, kurikulum N5, suara)
+public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian (data4.js = Bab 3)
+public/js/strokes3.js       urutan goresan tenten & kanji angka (KanjiVG, CC BY-SA 3.0)
+src/story/scenes3.ts, kasir.ts  cerita Bab 3 & mini-game Kasir Kafe
+scripts/sensei-vo.mjs       pembuat naskah suara sensei dari data pelajaran
 public/js/places.js         ★ tempat di kota (konbini, stasiun, kafe, ramen, toko buku, pos polisi, pantai)
 public/js/places2.js        ★ jalur kereta (やま, まち, てら), menu restoran, Buku Makanan, mini-game dunia Jepang
 public/js/pixel.js, portrait.js   ★ karakter pixel art & potret (dibuat dari kode)

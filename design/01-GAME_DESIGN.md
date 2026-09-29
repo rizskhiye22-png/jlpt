@@ -720,16 +720,18 @@ export type Requirement =
 | **v5.0** | *Musim Semi Kedua* | Epilog, ujian N5 tiruan, 6 ending, pasca-tamat, karuta duel online. | Sprint 11–12 |
 | 💡 | *Tahun Kedua* | NG+ materi N4, kouhai, mode guru, aplikasi toko (TWA). | Nanti |
 
-### 16.1 Checklist v2.5 (pekerjaan pertama)
-- [ ] `src/data/types.ts` + pindahkan `CHARACTERS`, `KANA`, `WORDS`, `DAYS` Bab 1–2.
-- [ ] `systems/story.ts` (flag, requires, sets) + debug menu.
-- [ ] `save.version = 3` + migrasi dari v2.
-- [ ] Peta loteng + objek kotak surat.
-- [ ] Komponen `LetterBox.tsx` (kata kabur/jelas sesuai penguasaan).
-- [ ] Tulis Prolog + surat #1–4 + halaman #1–2.
-- [ ] Sambungkan misi Mochi (kunci), misi surat, Mai (peta loteng).
-- [ ] Uji Playwright: prolog → hari 1 → baca surat #1 (dengan save debug).
-- [ ] Suara tahap 1: lihat checklist §14.11.
+### 16.1 Checklist v2.5 (pekerjaan pertama) — ✅ selesai
+- [x] Data cerita bertipe di `src/story/` (surat, buku, peta harta, adegan, benda kenangan).
+- [x] `src/story/engine.ts`: flag, pemicu adegan per slot, NPC cerita, adegan "wajib" dengan cadangan.
+- [x] Save v3 (`Save.d.story`) + migrasi otomatis dari save v2 (pemain lama tidak kehilangan progres).
+- [x] Loteng (adegan + mini-game ketuk papan) + Kotak Surat.
+- [x] `src/ui/LetterBox.tsx`: 4 tab (Surat, Buku, Peta, Benda), kata kabur/jelas sesuai huruf yang dipelajari.
+- [x] Prolog + adegan cerita Bab 1–2 (22 adegan) + Surat #1–#4 dapat dibaca + halaman #1–#2.
+- [x] Misi Mochi → kunci; misi surat → kelopak Eyang; Mai → Peta Harta 1976.
+- [x] Suara tahap 1 (infrastruktur): naskah tetap sensei dipakai video, `Voice` memutar rekaman bila ada, cadangan TTS.
+- [x] Uji browser otomatis `tests/story_smoke.py` (prolog, loteng, Surat #1, peta harta, migrasi).
+- [ ] Suara: isi rekaman (manusia/AI) ke `public/audio/sensei/` lalu `npm run voice:manifest`.
+- [ ] Album foto (kamera sudah didapat sebagai benda; fitur memotret menyusul di v3.0).
 
 ---
 

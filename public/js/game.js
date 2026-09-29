@@ -74,6 +74,7 @@ const Game = (() => {
       list.push({ id: 'obaa', x: SP.obaa[0], y: SP.obaa[1], dir: 'left', marker: need ? true : questMarker('obaa') });
     }
     if (window.Places) list.push(...Places.npcs(mapId, { inScript, ev }));
+    if (window.Story) { list.push(...Story.npcs(mapId)); Story.mark(list); }
     return list;
   }
   // tanda "?" untuk warga yang punya misi
@@ -98,6 +99,7 @@ const Game = (() => {
     if (st === 'class2') return { text: 'Pelajaran kedua bersama sensei', map: 'class', tile: [5, 2] };
     if (st === 'after') return { text: `Temui ${nameOf(d.brk.npc)} di ${PLACE[d.brk.at]}`, map: 'town', tile: SP[d.brk.at] };
     if (st === 'evening') return { text: 'Pulang untuk makan malam', map: 'home', tile: MAPS.home.spots.obaa };
+    if (st === 'night' && window.Story && Story.goal()) return { text: `Tidur di kamarmu · 🎯 ${Story.goal()}`, map: 'home', tile: [2, 3] };
     return { text: 'Tidur di kamarmu', map: 'home', tile: [2, 3] };
   }
   function refreshHud() {
@@ -162,7 +164,9 @@ const Game = (() => {
       const sc = npc.script, cast = [sc.npc, sc.with].filter(Boolean);
       await runLines(sc.lines, cast);
       UI.hideDialog();
+      if (st === 'commute' && window.Story) { await Story.hook('morning'); UI.hideDialog(); }
       if (st === 'after') {
+        if (window.Story) { await Story.hook('after'); UI.hideDialog(); }
         await friendEvent(cast);
         S().step = 'evening';
       } else S().step = 'class1';
@@ -172,11 +176,13 @@ const Game = (() => {
       return;
     }
     if (npc.event) return runEvent(npc.event);
+    if (window.Story && Story.claims(npc)) { await Story.talk(npc); World.setNpcs(npcsFor(World.map)); return; }
     if (npc.id === 'sensei') return senseiTalk();
     if (npc.id === 'obaa') return obaaTalk();
     if (npc.id === 'kid' && (questOpen('sora') || q('sora').state === 'active')) return soraQuest();
     if (npc.id === 'ojii' && (questOpen('mochi') || (q('mochi').state === 'active' && q('mochi').found))) return mochiQuest();
     if (npc.id === 'mochi') return mochiFound();
+    if (window.Story && await Story.offer(npc)) { World.setNpcs(npcsFor(World.map)); return; }
     if (window.Places && Places.talks(npc)) return Places.talk(npc);
     if (npc.id !== 'mochi' && Object.values(S().bag || {}).some(n => n > 0)) {
       const a = await menuChoice(`Bicara dengan ${nameOf(npc.id)}`, ['Ngobrol', 'Beri jajanan 🎁']);
@@ -243,9 +249,11 @@ const Game = (() => {
     await runLines(WELCOME_HOME, ['obaa']);
     await runLines(DINNER[(S().day - 1) % DINNER.length], ['obaa']);
     if (q('letter').state === 'active' && q('letter').got) {
-      await runLines([{ n: 'Kamu memberikan surat itu kepada Nenek.' }, { w: 'obaa', e: 'happy', jp: 'まあ、まごから の てがみ！ありがとう。', ro: 'maa, mago kara no tegami! arigatou.', id: 'Wah, surat dari cucuku! Terima kasih.' }], ['obaa']);
+      if (window.Story) await Story.event('letter_delivered');
+      else await runLines([{ n: 'Kamu memberikan surat itu kepada Nenek.' }, { w: 'obaa', e: 'happy', jp: 'まあ、まごから の てがみ！ありがとう。', ro: 'maa, mago kara no tegami! arigatou.', id: 'Wah, surat dari cucuku! Terima kasih.' }], ['obaa']);
       setQ('letter', { state: 'done' }); addPoints(QUESTS.letter.reward, 'misi'); addStamp('letter', QUESTS.letter.title);
     }
+    if (window.Story) { await Story.hook('dinner'); UI.hideDialog(); }
     await runLines(GOOD_NIGHT, ['obaa']);
     S().step = 'night'; Save.write();
     World.setNpcs(npcsFor('home')); mood(); refreshHud();
@@ -271,6 +279,7 @@ const Game = (() => {
     Music.play('night');
     await UI.say({ n: pickOne(NIGHT_LINES) });
     UI.hideDialog();
+    if (window.Story) { await Story.hook('night'); UI.hideDialog(); UI.closePanel(); Music.play('night'); }
     await diary(S().day, d);
     const finished = S().day;
     await UI.fade(() => {
@@ -278,7 +287,8 @@ const Game = (() => {
       World.load('home', 3, 3, 'left', npcsFor('home'));
       mood(); refreshHud();
     }, 500);
-    if (finished === 11) await chapterCard(2);
+    const nextCh = CHAPTERS.find(c => c.from === finished + 1);
+    if (nextCh && day()) await chapterCard(nextCh.n);
     if (day()) await dayCard(); else await ending();
   }
 
@@ -292,6 +302,8 @@ const Game = (() => {
         ${d.kana ? `<div class="sec"><div class="sec-h">Huruf baru</div><div class="chips">${d.kana.map(k => `<button class="chip" type="button" data-say="${k}"><b>${k}</b><small>${KANA[k].ro}</small></button>`).join('')}</div></div>` : ''}
         <div class="sec"><div class="sec-h">${d.type === 'test' ? 'Nilai ulangan' : 'Latihan'}</div><div>${result} <span class="muted">(${r.correct || 0}/${r.total || 0} benar)</span></div></div>
         <div class="sec"><div class="sec-h">Kalimat hari ini</div><ul class="phr">${d.phrases.map(ph => `<li><button class="say" type="button" data-say="${ph.jp.replace(/[〜~]/g, '')}">♪</button><div><b>${ph.jp}</b><small>${ph.ro} — ${ph.id}</small></div></li>`).join('')}</ul></div>
+        ${window.Story && Story.town ? `<div class="sec"><div class="sec-h">🏮 Meter Kota</div><div class="lt-bar"><i style="width:${Story.town}%"></i></div></div>` : ''}
+        ${window.Story && Story.diaryNote() ? `<div class="sec story-note"><div class="sec-h">Catatan hati</div><p>${UI.esc(Story.diaryNote())}</p></div>` : ''}
         <div class="sec"><div class="sec-h">Pertemanan</div><div class="hearts">${FRIENDS.filter(f => f !== 'hana' || chapter() >= 2 || S().friends.hana).map(f => `<span>${nameOf(f)} <b>♥ ${S().friends[f] || 0}</b></span>`).join('')}</div></div>
         <button class="btn block" data-a="sleep" type="button">Tidur ▶</button>
       </div>`, 'scroll');
@@ -303,16 +315,16 @@ const Game = (() => {
   function dayCard() { const d = day(); return UI.timecard(`Hari ${S().day}`, `${d.title}<br><span class="jp">${d.sub}</span>`); }
   function chapterCard(n) {
     const c = CHAPTERS[n - 1];
-    return UI.timecard(`Bab ${n}`, `${c.title}<br><span class="jp">${n === 2 ? 'カタカナ' : 'ひらがな'}</span>`);
+    return UI.timecard(`Bab ${n}`, `${c.title}<br><span class="jp">${c.jp || (n === 2 ? 'カタカナ' : 'ひらがな')}</span>`);
   }
   function ending() {
     Music.play('festival');
     const p = UI.panel(`
       <div class="win result">
         <div class="r-title">Tamat — Terima kasih!</div>
-        <div class="big-jp">ひらがな ＆ カタカナ</div>
-        <p>Kamu sudah mempelajari <b>${S().kana.length}</b> huruf dan banyak kalimat sehari-hari bersama teman-temanmu.</p>
-        <p class="muted">Terus latihan lewat <b>Latihan Bebas</b> di meja belajar atau menu. Bab selanjutnya (angka, waktu, kanji dasar) bisa ditambahkan nanti!</p>
+        <div class="big-jp" style="font-size:24px;line-height:1.6">${CHAPTERS.map(c => c.jp).join('<br>')}</div>
+        <p>Kamu sudah mempelajari <b>${S().kana.length}</b> huruf & kanji dan banyak kalimat sehari-hari bersama teman-temanmu.</p>
+        <p class="muted">Bab ${CHAPTERS.length + 1} (musim panas di gunung やま) sedang disiapkan! Sementara itu, terus latihan lewat <b>Latihan Bebas</b> dan buka 📮 Kotak Surat.</p>
         <button class="btn" type="button">Lanjut ▶</button>
       </div>`, 'center');
     Sound.star();
@@ -324,7 +336,7 @@ const Game = (() => {
     const d = day(), st = S().step;
     if (d && st === 'class1') return classOne();
     if (d && st === 'class2') return classTwo();
-    if (!d) return UI.say({ w: 'sensei', e: 'happy', t: 'Selamat! Kamu sudah menguasai hiragana dan katakana. Sensei bangga padamu!' });
+    if (!d) return UI.say({ w: 'sensei', e: 'happy', t: `Selamat! Kamu sudah menyelesaikan ${CHAPTERS.length} bab. Sensei bangga padamu!` });
     if (st === 'wake' || st === 'commute') return UI.say({ w: 'sensei', t: `Pelajaran belum dimulai. ${nameOf(d.morning.npc)} menunggumu di ${PLACE[d.morning.at]}.` });
     return runLines([{ w: 'sensei', e: 'happy', jp: 'また あした。', ro: 'mata ashita.', id: 'Sampai besok.' }], ['sensei']);
   }
@@ -334,6 +346,7 @@ const Game = (() => {
     Music.play('school');
     await runLines(d.cls, ['sensei']);
     UI.hideDialog();
+    if (window.Story) { await Story.hook('class'); UI.hideDialog(); }
     if (d.type === 'lesson') {
       const intro = n === 1 ? [
         'Bahasa Jepang punya tiga jenis huruf: hiragana, katakana, dan kanji.',
@@ -343,17 +356,20 @@ const Game = (() => {
         'Katakana punya bunyi yang sama dengan hiragana, tetapi bentuknya lebih tegas dan bersudut.',
         'Katakana dipakai untuk kata serapan, nama negara, dan nama orang asing.',
         'Garis panjang ー artinya bunyi sebelumnya dipanjangkan, seperti pada ケーキ.',
-      ] : [];
-      await Lesson.teach(d.kana, { title: `Video: ${d.sub}`, intro });
-      d.kana.forEach(k => { if (!S().kana.includes(k)) S().kana.push(k); });
-      Extras.learn(d.kana);
+      ] : (d.intro || []);
+      await Lesson.teach(d.kana, { title: `Video: ${d.sub}`, intro, day: n });
+      const learnedNow = [...d.kana, ...(d.also || [])];
+      learnedNow.forEach(k => { if (!S().kana.includes(k)) S().kana.push(k); });
+      Extras.learn(learnedNow);
       Save.write(); UI.closePanel();
+      if (d.also && d.also.length) await UI.say({ w: 'sensei', e: 'happy', t: `Katakananya ikut kamu kuasai hari ini: ${d.also.join(' ')}. Aturannya sama persis!` });
       const acts = activitiesFor(n);
       await UI.say({ w: 'sensei', e: 'happy', t: 'Bagus! Sekarang pilih cara latihan hari ini. Setiap hari pilihannya berbeda, lho!' });
       const pickA = await menuChoice('Mau latihan dengan cara apa?', acts.map(x => `${Games.NAMES[x]} — ${Games.DESC[x]}`));
       const g = acts[pickA];
       UI.hideDialog();
-      const pool = [...new Set([...d.kana, ...shuffle(S().kana.filter(k => IS_KATA(k) === IS_KATA(d.kana[0]))).slice(0, 3)])];
+      const sc = typeof SCRIPT_OF !== 'undefined' ? SCRIPT_OF : (k => IS_KATA(k) ? 'kata' : 'hira');
+      const pool = [...new Set([...d.kana, ...shuffle(S().kana.filter(k => sc(k) === sc(d.kana[0]))).slice(0, 3)])];
       await Games.run(g, { pool, words: Games.wordsFor(new Set(S().kana)).filter(w => d.kana.some(k => w.jp.includes(k))) });
     } else {
       const r = await Lesson.quiz({ focus: [], count: d.count, title: d.title, pool: d.pool || 'hira' });
@@ -428,7 +444,8 @@ const Game = (() => {
     } else {
       await UI.say({ w: 'sensei', e: 'happy', t: 'Ulangan selesai. Sekarang turnamen karuta untuk bersenang-senang!' });
       UI.hideDialog();
-      const pool = S().kana.filter(k => (d.pool === 'kata') === IS_KATA(k));
+      const pf = typeof POOL_FILTER !== 'undefined' && POOL_FILTER[d.pool];
+      const pool = pf ? S().kana.filter(pf) : S().kana.filter(k => (d.pool === 'kata') === IS_KATA(k));
       await Games.karuta({ pool, rounds: 8, title: 'Turnamen Karuta' });
     }
     if (!S().phrases.includes(n)) S().phrases.push(n);
@@ -485,7 +502,7 @@ const Game = (() => {
     if (!Q.state) {
       await runLines([
         { w: 'ojii', e: 'sad', jp: 'ねこ の モチ が いない…', ro: 'neko no Mochi ga inai…', id: 'Kucingku, Mochi, tidak ada…' },
-        { w: 'ojii', t: 'Kucing putih dengan ekor oranye. Mungkin dia bermain di dekat kuil?' },
+        { w: 'ojii', t: 'Kucing putih dengan ekor oranye. Dia suka menyelinap ke taman rumah Sato… mungkin di sana?' },
       ], ['ojii']);
       const a = await menuChoice('Bantu mencari Mochi?', ['Aku cari sekarang!', 'Nanti saja']);
       if (a === 0) { setQ('mochi', { state: 'active' }); UI.toast(`Misi baru: ${QUESTS.mochi.title}`); World.setNpcs(npcsFor(World.map)); }
@@ -496,18 +513,20 @@ const Game = (() => {
         { n: 'Kamu menyerahkan Mochi kepada Kakek Mori.' },
         { w: 'ojii', e: 'happy', jp: 'モチ！よかった… ほんとう に ありがとう！', ro: 'Mochi! yokatta… hontou ni arigatou!', id: 'Mochi! Syukurlah… Terima kasih banyak!' },
       ], ['ojii']);
+      if (window.Story) await Story.event('mochi_returned');
       setQ('mochi', { state: 'done' }); addPoints(QUESTS.mochi.reward, 'misi'); addStamp('mochi', QUESTS.mochi.title);
       World.setNpcs(npcsFor(World.map));
     }
   }
   async function mochiFound() {
     if (q('mochi').state === 'done') return runLines(AMBIENT.mochi[0], []);
-    await UI.say({ n: 'Seekor kucing putih berekor oranye duduk di dekat kuil. Itu Mochi!' });
+    await UI.say({ n: 'Seekor kucing putih berekor oranye sedang menggali tanah di bedeng bunga samping rumah Nenek Sato. Itu Mochi!' });
     await runLines([{ q: 'Panggil Mochi dengan lembut!', o: [
       { jp: 'おいで、モチ！', ro: 'oide, Mochi!', ok: true },
       { jp: 'あっち いけ！', ro: 'acchi ike!', why: 'あっち いけ = pergi sana! Mochi malah takut. Panggil dia: おいで (kemarilah)!' },
     ] }], []);
-    await UI.say({ n: 'Mochi mengeong "にゃあ" lalu melompat ke pelukanmu. Bawa dia ke Kakek Mori di stasiun!' });
+    if (window.Story) await Story.event('mochi_found');
+    await UI.say({ n: 'Mochi mengeong "にゃあ" lalu melompat ke pelukanmu. Bawa dia ke Kakek Mori di dekat stasiun!' });
     setQ('mochi', { found: true });
     World.setNpcs(npcsFor(World.map));
   }
@@ -642,6 +661,7 @@ const Game = (() => {
           <div class="menu-grid">
             <button class="mi tile-mi" data-a="review" type="button"><i>📝</i><span>Ulasan</span>${Extras.due().length ? `<span class="badge">${Extras.due().length}</span>` : ''}</button>
             <button class="mi tile-mi" data-a="book" type="button"><i>📖</i><span>Catatan</span></button>
+            ${window.Story && Story.unlocked ? `<button class="mi tile-mi" data-a="letters" type="button"><i>📮</i><span>Surat</span>${Story.unread() ? `<span class="badge">${Story.unread()}</span>` : ''}</button>` : ''}
             <button class="mi tile-mi" data-a="drill" type="button"><i>✏️</i><span>Latihan</span></button>
             <button class="mi tile-mi" data-a="bag" type="button"><i>🎒</i><span>Tas</span></button>
             <button class="mi tile-mi" data-a="friends" type="button"><i>👥</i><span>Teman</span></button>
@@ -670,6 +690,7 @@ const Game = (() => {
         if (a === 'review') { await Extras.review(); UI.hideDialog(); }
         if (a === 'bag') await Extras.bag();
         if (a === 'friends') { if (window.ReactUI) await window.ReactUI.friends(); }
+        if (a === 'letters') { if (window.ReactUI) await window.ReactUI.letters(); }
         if (a === 'food' && window.Places && Places.foodBook) await Places.foodBook();
         if (a === 'pets') await Relax.petShop();
         if (a === 'fish') await Relax.fishBook();
@@ -710,12 +731,13 @@ const Game = (() => {
 
   function book(tab = 'hira') {
     const learned = new Set(S().kana);
-    const tabs = `<div class="tabs">${[['hira', 'Hiragana'], ['kata', 'Katakana'], ['words', 'Kata'], ['phrases', 'Kalimat']].map(([k, l]) => `<button class="tab ${k === tab ? 'on' : ''}" data-tab="${k}" type="button">${l}</button>`).join('')}</div>`;
+    const extraTabs = typeof DAKU_GRID !== 'undefined' && S().kana.some(k => DAKU_GRID.flat().includes(k) || KANJI_GRID.flat().includes(k)) ? [['daku', 'Tenten'], ['kanji', 'Kanji']] : [];
+    const tabs = `<div class="tabs">${[['hira', 'Hiragana'], ['kata', 'Katakana'], ...extraTabs, ['words', 'Kata'], ['phrases', 'Kalimat']].map(([k, l]) => `<button class="tab ${k === tab ? 'on' : ''}" data-tab="${k}" type="button">${l}</button>`).join('')}</div>`;
     let body = '';
-    if (tab === 'hira' || tab === 'kata') {
-      const grid = tab === 'hira' ? HIRAGANA_GRID : KATAKANA_GRID;
+    if (tab === 'hira' || tab === 'kata' || tab === 'daku' || tab === 'kanji') {
+      const grid = { hira: HIRAGANA_GRID, kata: KATAKANA_GRID, daku: typeof DAKU_GRID !== 'undefined' ? DAKU_GRID : [], kanji: typeof KANJI_GRID !== 'undefined' ? KANJI_GRID : [] }[tab];
       const n = grid.flat().filter(k => k && learned.has(k)).length;
-      body = `<p class="muted">${n} / 46 huruf dipelajari. Ketuk huruf untuk detail.</p><div class="kgrid">` +
+      body = `<p class="muted">${n} / ${grid.flat().filter(Boolean).length} ${tab === 'kanji' ? 'kanji' : 'huruf'} dipelajari. Ketuk huruf untuk detail.</p><div class="kgrid">` +
         grid.flat().map(k => {
           if (!k) return '<span class="kc empty"></span>';
           if (!learned.has(k)) return '<span class="kc locked">?</span>';
@@ -750,7 +772,7 @@ const Game = (() => {
     const m = UI.modal(`
       <button class="b-kana small" type="button">${k}</button>
       <div class="b-ro dark">${KANA[k].ro}</div>
-      ${KANA[tw] ? `<p class="muted">${IS_KATA(k) ? 'Hiragana' : 'Katakana'}: <b class="jp">${tw}</b></p>` : ''}
+      ${KANA[tw] && !(typeof IS_KANJI !== 'undefined' && IS_KANJI(k)) ? `<p class="muted">${IS_KATA(k) ? 'Hiragana' : 'Katakana'}: <b class="jp">${tw}</b></p>` : ''}
       <p>${KANA[k].tip}</p>
       <p class="muted">Benar ${s.c} kali · salah ${s.w} kali</p>
       <div class="row"><button class="btn ghost" data-a="say" type="button">♪ Dengar</button><button class="btn ghost" data-a="video" type="button">▶ Video</button></div>
@@ -780,7 +802,7 @@ const Game = (() => {
     const rows = DAYS.map((d, i) => {
       const n = i + 1, r = S().days[n];
       const res = !r ? '<span class="muted">—</span>' : r.grade ? `<span class="grade-s g-${r.grade.replace('+', 'p')}">${r.grade}</span>` : Lesson.starHtml(r.stars || 0);
-      return `${n === 1 || n === 12 ? `<tr class="ch"><td colspan="3">Bab ${d.chapter}: ${CHAPTERS[d.chapter - 1].title}</td></tr>` : ''}<tr class="${n > S().day ? 'lock' : ''}"><td>Hari ${n}</td><td>${d.title}<small>${d.sub}</small></td><td>${res}</td></tr>`;
+      return `${CHAPTERS.some(c => c.from === n) ? `<tr class="ch"><td colspan="3">Bab ${d.chapter}: ${CHAPTERS[d.chapter - 1].title}</td></tr>` : ''}<tr class="${n > S().day ? 'lock' : ''}"><td>Hari ${n}</td><td>${d.title}<small>${d.sub}</small></td><td>${res}</td></tr>`;
     }).join('');
     let c = 0, w = 0; Object.values(S().st).forEach(s => { c += s.c; w += s.w; });
     const weak = Object.entries(S().st).filter(([, s]) => s.w > 0).sort((a, b) => (b[1].w / (b[1].c + b[1].w)) - (a[1].w / (a[1].c + a[1].w))).slice(0, 6);
@@ -944,12 +966,13 @@ const Game = (() => {
           ${has ? `<button class="btn" data-a="cont" type="button">Lanjutkan — Hari ${Math.min(S().day, DAYS.length)} · Bab ${d.chapter}</button>` : ''}
           <button class="btn ${has ? 'ghost' : ''}" data-a="new" type="button">${has ? 'Main dari awal' : 'Mulai'}</button>
         </div>
-        <div class="ver">Bab 1 Hiragana · Bab 2 Katakana · ${World.is3D ? '3D' : '2D'}</div>
+        <div class="ver">v3 「さくら の てがみ」 · Bab 1–${CHAPTERS.length} · ${World.is3D ? '3D' : '2D'}</div>
       </div>`, 'title-p');
     const a = await UI.wait(done => p.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { Sound.unlock(); Music.unlock(); Sound.blip(); done(b.dataset.a); }));
     if (a === 'new') {
       if (has && !confirm('Mulai dari awal? Progres lama akan dihapus.')) return title();
       if (has) Save.reset();
+      if (window.Story) Story.init();
       UI.closePanel();
       await wardrobe({ creator: true });
       return start(true);
@@ -965,14 +988,18 @@ const Game = (() => {
     try {
       await UI.fade(() => { World.setPet(Relax.activePet() ? Relax.activePet().id : null); World.load('home', 3, 3, 'left', npcsFor('home')); mood(); refreshHud(); });
       Online.autoStart();
-      if (isNew) {
+      if (isNew && window.Story && !Story.has('prolog_done')) {
+        await Story.prologue();
+        await UI.fade(() => { World.load('home', 3, 3, 'left', npcsFor('home')); mood(); refreshHud(); });
+        await chapterCard(1);
+      } else if (isNew) {
         await UI.say({ n: 'Musim semi. Kamu baru saja pindah dari Indonesia dan tinggal bersama Nenek Sato di kota kecil di Jepang.' });
         await UI.say({ w: 'obaa', e: 'happy', jp: 'ようこそ、{name}ちゃん。', ro: 'youkoso, {name}-chan.', id: 'Selamat datang, {name}.' });
         await UI.say({ n: 'Cara main: ketuk layar untuk berjalan, atau pakai tombol arah. Ketuk orang atau tekan A untuk bicara.' });
         await UI.say({ n: 'Tugasmu selalu tertulis di kiri atas. Ketuk tulisan itu untuk berjalan otomatis ke tujuan!' });
         UI.hideDialog();
         await chapterCard(1);
-      }
+      } else if (window.Story) await Story.welcomeBack();
       if (day()) { if (S().step === 'wake') await dayCard(); }
       else await UI.say({ n: 'Semua bab sudah selesai. Pakai Latihan Bebas di meja belajar untuk mengulang.' });
       UI.hideDialog();

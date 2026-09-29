@@ -22,7 +22,7 @@ Paket ini berisi desain lengkap pembaruan besar **Nihongo Gakkou**: dari game be
 | `08-SURAT-DAN-BUKU-BERGAMBAR.md` | Isi lengkap 14 surat + 11 halaman buku bergambar, aturan kata kabur | Penulis, pengisi suara |
 | `09-KIZUNA-DAN-ENDING.md` | Aturan keakraban, 25 event teman, 7 ending | Penulis |
 | `10-KURIKULUM-N5.md` | Kana, angka, **100 kanji**, 32 pola tata bahasa, kosakata per bab, ujian N5 tiruan, SRS | Desainer belajar |
-| `11-NASKAH-SUARA-SENSEI.md` | **685 klip** naskah sensei siap rekam (Bab 1–2 lengkap, dibuat dari data game) + templat Bab 3–6 | Pengisi suara, audio |
+| `11-NASKAH-SUARA-SENSEI.md` | **768 klip** naskah sensei siap rekam (Bab 1–2 lengkap, dibuat dari data game) + templat Bab 3–6 | Pengisi suara, audio |
 | `12-SISTEM-DAN-MINIGAME.md` | Spesifikasi Kotak Surat, Jurnal Misteri, Peta Harta, kerja paruh waktu, Meter Kota, kamera, kebun, pesan; 16 mini-game + 7 mini-game kecil; daftar flag; save v3 | Programmer |
 | `13-KEJADIAN-MISI-NPC.md` | Kejadian harian (lama & baru), misi sampingan, rutinitas NPC, dialog ambien | Penulis, programmer |
 | `NIHONGO_GAKKOU_v3_FULL.md` | Semua file di atas digabung jadi satu | Membaca sekaligus |
@@ -38,7 +38,7 @@ Paket ini berisi desain lengkap pembaruan besar **Nihongo Gakkou**: dari game be
 | Event Kizuna | 25 (5 teman × 5 tingkat) |
 | Ending | 7 |
 | Mini-game baru | 16 + 7 mini-game kecil (+ 16 yang sudah ada) |
-| Klip suara sensei siap rekam | 685 (Bab 1–2) |
+| Klip suara sensei siap rekam | 768 (Bab 1–3, dipakai video di game; `npm run voice:sensei`) |
 
 ## Cara memakai dokumen
 1. Mulai dari **01** untuk gambaran besar, lalu **02** untuk kanon.
