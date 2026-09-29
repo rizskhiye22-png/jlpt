@@ -57,6 +57,8 @@ export const ITEMS: Item[] = [
   { id: 'sepia', icon: '🖼️', name: 'Foto sepia', desc: 'Tiga remaja tertawa di pantai. Gadis di kanan memakai kain batik bermotif sama dengan kopermu.' },
   { id: 'map1976', icon: '🗺️', name: 'Peta Harta 1976', desc: 'Ditemukan Mai di buku perpustakaan. Di pojoknya: tiga kelopak sakura dan inisial S・D・M.' },
   { id: 'camera', icon: '📷', name: 'Kamera film lama', desc: 'Milik Dewi muda. "Supaya tidak lupa," katanya.' },
+  { id: 'compost', icon: '🪴', name: 'Kompos Pak Petani', desc: 'Untuk menyehatkan akar pohon sakura tua di sekolah.' },
+  { id: 'yukata', icon: '👘', name: 'Yukata biru tua', desc: 'Yukata yang dulu dipinjamkan Nenek Sato kepada Dewi muda.' },
   { id: 'petal', icon: '🌸', name: 'Kelopak kering', desc: 'Dikirim Eyang Dewi untuk Nenek Sato bersama tulisan ありがとう.' },
 ];
 export const ITEM_BY = Object.fromEntries(ITEMS.map(i => [i.id, i]));

@@ -22,7 +22,7 @@ const Save = (() => {
     omikuji: 0,          // hari terakhir menarik omikuji
     bag: {}, tried: [], ach: [], stats: {}, streak: { last: '', count: 0 }, srs: {},   // fitur tambahan
     fish: {}, pets: [], petActive: null, books: [], daily: {},
-    settings: { romaji: true, voice: true, sfx: true, rate: 0.85, music: 0.5, relax: false, quality: 'normal', fx: true, text: 'fast', force2d: false, narr: true, server: '', online: false },
+    settings: { romaji: 'auto', romajiV: 1, voice: true, sfx: true, rate: 0.85, music: 0.5, relax: false, quality: 'normal', fx: true, text: 'fast', force2d: false, narr: true, server: '', online: false },
   });
 
   let d = fresh();
@@ -32,6 +32,8 @@ const Save = (() => {
       const loaded = JSON.parse(raw), f = fresh();
       d = Object.assign(f, loaded);
       ['settings', 'friends', 'look', 'lunch'].forEach(k => { d[k] = Object.assign(fresh()[k], loaded[k] || {}); });
+      // v3.6: romaji otomatis (sekali saja; pemain tetap bisa memilih "Selalu" di Pengaturan)
+      if (!(loaded.settings || {}).romajiV) { if (d.settings.romaji === true) d.settings.romaji = 'auto'; d.settings.romajiV = 1; }
     }
   } catch (e) { /* mode privat / penyimpanan diblokir: tetap bisa main */ }
 

@@ -9,12 +9,8 @@
 const Video = (() => {
   const VW = 640, VH = 360;
   const BOARD = { x: 236, y: 24, w: 384, h: 250 };
-  const SIMILAR = {
-    'シ': 'ツ', 'ツ': 'シ', 'ソ': 'ン', 'ン': 'ソ', 'は': 'ほ', 'ほ': 'は', 'ぬ': 'め', 'め': 'ぬ', 'わ': 'れ', 'れ': 'わ', 'ね': 'れ',
-    'る': 'ろ', 'ろ': 'る', 'さ': 'き', 'き': 'さ', 'い': 'り', 'り': 'い', 'ロ': 'ろ', 'ク': 'ケ', 'ケ': 'ク', 'ウ': 'ワ', 'ワ': 'ウ',
-    'ア': 'マ', 'マ': 'ア', 'チ': 'テ', 'テ': 'チ', 'ヌ': 'ス', 'ス': 'ヌ', 'ユ': 'コ', 'コ': 'ユ', 'ノ': 'ソ', 'へ': 'ヘ', 'ヘ': 'へ',
-    'あ': 'お', 'お': 'あ', 'た': 'な', 'な': 'た', 'ち': 'さ', 'う': 'つ', 'つ': 'う',
-  };
+  // SIMILAR (huruf rawan) sekarang ada di data2.js; video memakai huruf mirip pertama
+  const simOf = k => (typeof SIMILAR !== 'undefined' && SIMILAR[k] ? [...SIMILAR[k]][0] : null);
   const lenCache = new Map();
   function pathLen(d) {
     if (!lenCache.has(d)) {
@@ -122,8 +118,10 @@ const Video = (() => {
     kana.forEach((k, idx) => {
       const K = KANA[k], strokes = STROKES[k] || [], n = strokes.length || 1;
       const V = VX ? VX.kana(k) : null;
-      const word = (V && V.w && WORDS.find(w => w.jp === V.w)) || WORDS.find(w => w.jp.includes(k) && [...w.jp].every(ch => knownChar(ch, known)));
-      const tw = Lesson.twin(k), sim = SIMILAR[k];
+      const word = (V && V.wx) || (V && V.w && WORDS.find(w => w.jp === V.w)) || WORDS.find(w => w.jp.includes(k) && [...w.jp].every(ch => knownChar(ch, known)));
+      // katakana yang belum dipelajari dibantu hiragana kecil (pemain sudah hafal semua hiragana)
+      const hint = word && [...word.jp].some(ch => IS_KATA(ch) && !known.has(ch)) ? [...word.jp].map(ch => IS_KATA(ch) ? Lesson.twin(ch) : ch === 'ー' ? '—' : ch).join('') : '';
+      const tw = Lesson.twin(k), sim = simOf(k);
       const tag = `${idx + 1}/${kana.length}`;
       shots.push({ dur: 2000, cap: `Huruf ${tag}: ${k}`, vo: V && V.intro, narr: V ? T(V.intro) : idx === 0 ? pick(['Huruf pertama kita.', 'Kita mulai dari huruf ini.', 'Pertama, huruf ini dulu.'], seed) : idx === kana.length - 1 ? pick(['Dan ini huruf terakhir hari ini!', 'Terakhir, huruf ini.'], seed + idx) : pick(['Oke, huruf berikutnya!', 'Lanjut ya, yang ini.', 'Nah, sekarang yang ini.', 'Coba lihat huruf ini.'], seed + idx), jp: k,
         draw: (c, t, p) => { const s = 150 + Math.sin(Math.min(1, p) * Math.PI) * 16; drawStrokes(c, k, cx, cy, s, 1, { numbers: false, pen: false, ghost: false }); } });
@@ -137,8 +135,8 @@ const Video = (() => {
         draw: (c) => { drawStrokes(c, k, cx - 90, cy, 150, 1, { numbers: false, pen: false }); drawStrokes(c, tw, cx + 90, cy, 150, 1, { numbers: false, pen: false, color: '#bfe3ff' }); textOnBoard(c, '=', 40, cy); } });
       if (sim && KANA[sim]) shots.push({ dur: 3000, cap: `Hati-hati! ${k} (${K.ro}) mirip dengan ${sim} (${KANA[sim].ro}). Perhatikan bedanya.`, vo: V && V.sim === sim && V.similar, narr: V && V.sim === sim && V.similar ? T(V.similar) : `Awas, jangan ketuker sama huruf yang mirip ini, ya. Yang kiri ${sayRo(K.ro)}, yang kanan ${sayRo(KANA[sim].ro)}.`,
         draw: (c, t) => { drawStrokes(c, k, cx - 90, cy - 10, 150, 1, { numbers: false, pen: false }); drawStrokes(c, sim, cx + 90, cy - 10, 150, 1, { numbers: false, pen: false, color: '#f6b2a4' }); c.save(); chalk(c); c.font = '700 28px "DotGothic16",sans-serif'; c.textAlign = 'center'; c.fillStyle = '#ffd24a'; c.fillText(K.ro, cx - 90, cy + 95); c.restore(); c.save(); chalk(c); c.font = '700 28px "DotGothic16",sans-serif'; c.fillStyle = '#f6b2a4'; c.textAlign = 'center'; c.fillText(KANA[sim].ro, cx + 90, cy + 95); c.restore(); } });
-      if (word) shots.push({ dur: 3000, cap: `Contoh kata: ${word.jp} (${word.ro}) artinya "${word.id}".`, vo: V && V.w === word.jp && V.word, narr: V && V.w === word.jp ? T(V.word) : pick([`Contoh katanya, artinya ${word.id}.`, `Huruf ini ada di kata ini. Artinya ${word.id}.`, `Kata yang pakai huruf ini, artinya ${word.id}.`], seed + idx), jp: word.jp,
-        draw: (c, t, p) => { textOnBoard(c, word.jp, 76, cy - 18); textOnBoard(c, word.ro, 26, cy + 56, '#ffd24a', '"DotGothic16",sans-serif'); } });
+      if (word) shots.push({ dur: 3000, cap: `Contoh kata: ${word.jp} (${word.ro}) artinya "${word.id}".${hint ? ` Huruf yang belum dipelajari dibantu hiragana: ${hint}.` : ''}`, vo: V && (V.wx === word || V.w === word.jp) && V.word, narr: V && (V.wx === word || V.w === word.jp) ? T(V.word) : pick([`Contoh katanya, artinya ${word.id}.`, `Huruf ini ada di kata ini. Artinya ${word.id}.`, `Kata yang pakai huruf ini, artinya ${word.id}.`], seed + idx), jp: word.jp,
+        draw: (c, t, p) => { if (hint) textOnBoard(c, hint, 24, cy - 84, '#bfe3ff'); textOnBoard(c, word.jp, word.jp.length > 5 ? 58 : 76, cy - 18); textOnBoard(c, word.ro, 26, cy + 56, '#ffd24a', '"DotGothic16",sans-serif'); } });
       shots.push({ dur: 1200 + n * 900, cap: 'Sekarang ikuti di udara dengan jarimu, pelan-pelan!', vo: V && V.air, narr: V ? T(V.air) : pick(['Sekarang ikuti pakai jarimu di udara, pelan-pelan.', 'Yuk, tulis di udara bareng sensei.', 'Coba gerakkan jarimu ikuti kapurnya.'], seed + idx),
         draw: (c, t, p) => drawStrokes(c, k, cx, cy, 200, Math.min(1, p * 1.08)) });
     });

@@ -13,6 +13,19 @@
 | **Sistem baru** | 🌙 Menginap (hari multi-peta), 🎞 Kilas balik (sepia, bermain sebagai Dewi muda), 🌱 Kebun |
 | **Mini-game baru** | Taiko Ritme, Tanzaku, Tangkap Kunang-kunang (yōon), Semangka Pecah (dengar arah) |
 
+### ✅ Status implementasi (v3.5)
+Bab 4 sudah ada di game: `public/js/data5.js` (pelajaran), `public/js/strokes4.js` (goresan ゃゅょっー & kanji posisi dari KanjiVG), `src/story/scenes4.ts` (cerita), `src/story/games4.ts` (mini-game).
+| Hari | Rancangan | Di game |
+|---|---|---|
+| 35–37 | Yōon | Video & latihan menulis hiragana yōon (goresan disusun otomatis: huruf besar + huruf kecil); katakana & yōon ber-tenten ikut dikuasai |
+| 38–39 | っ & bunyi panjang | Video + **Latihan Telinga** (きて/きって, おばさん/おばあさん) menggantikan kuis biasa |
+| 40–42 | Menginap 3 hari | Kelas pagi tetap berjalan; **tiap sore** berangkat ke onsen/gunung (hari 1: surat #7 · hari 2: jizo + kilas balik sepia + Tangkap Kunang-kunang · hari 3: tatami + pertengkaran) |
+| 41–42 | 上下中 / 右左 | Sesuai rancangan (digeser dari Hari 43–44) |
+| 43 | Pohon sakura | Kuis posisi + merawat pohon (Meter Kota +5) |
+| 44 | Tanabata | Mini-game **Tanzaku** + tanzaku Kakek Mori |
+| 45 | Persiapan | Foto festival 1976 + yukata dari Nenek |
+| 46 | Matsuri | Mini-game **Taiko**, salah paham Yuki, hanabi, Surat #8 |
+
 ### Catatan liburan musim panas
 Sekolah libur, tapi Tanaka-sensei membuka **なつ の とくべつ クラス (Kelas Musim Panas)** setiap pagi — struktur harian tetap sama (pagi → kelas → siang → sore → malam), tanpa klub.
 
