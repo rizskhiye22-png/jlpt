@@ -581,7 +581,8 @@ const Game = (() => {
     if (busy) return;
     busy = true; cancelAuto(); World.pause(true);
     try {
-      if (t.type === 'npc') await talk(t.npc);
+      if (window.Places && Places.claims && Places.claims(t)) await Places.interact(t);
+      else if (t.type === 'npc') await talk(t.npc);
       else if (t.type === 'sign') await readSign(t.sign);
       else if (t.type === 'bed') await bed();
       else if (t.type === 'desk') await study();
@@ -622,6 +623,7 @@ const Game = (() => {
     busy = true; World.pause(true);
     try {
       if (door.kind === 'gate') await Places.gate();
+      else if (door.kind === 'scene') await Places.scene(door.id);
       else if (door.until && S().day >= door.until) await konbiniDoor();
       else await UI.say({ n: door.msg });
     } catch (e) { if (!(e && e.abort)) console.error(e); }
@@ -642,6 +644,7 @@ const Game = (() => {
             <button class="mi tile-mi" data-a="drill" type="button"><i>✏️</i><span>Latihan</span></button>
             <button class="mi tile-mi" data-a="bag" type="button"><i>🎒</i><span>Tas</span></button>
             <button class="mi tile-mi" data-a="friends" type="button"><i>👥</i><span>Teman</span></button>
+            <button class="mi tile-mi" data-a="food" type="button"><i>🍱</i><span>Makanan</span></button>
             <button class="mi tile-mi" data-a="pets" type="button"><i>🐱</i><span>Hewan</span></button>
             <button class="mi tile-mi" data-a="fish" type="button"><i>🎣</i><span>Ikan</span></button>
             <button class="mi tile-mi" data-a="ach" type="button"><i>🏆</i><span>Prestasi</span></button>
@@ -666,6 +669,7 @@ const Game = (() => {
         if (a === 'review') { await Extras.review(); UI.hideDialog(); }
         if (a === 'bag') await Extras.bag();
         if (a === 'friends') { if (window.ReactUI) await window.ReactUI.friends(); }
+        if (a === 'food' && window.Places && Places.foodBook) await Places.foodBook();
         if (a === 'pets') await Relax.petShop();
         if (a === 'fish') await Relax.fishBook();
         if (a === 'ach') await Extras.achPage();

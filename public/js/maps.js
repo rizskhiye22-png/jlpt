@@ -150,9 +150,10 @@ const MAPS = {
 };
 
 // Ubin yang tidak bisa dilewati
-const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M', 'Y', 'O', 'u', '*']);
+// R momiji, q sawah, k orang-orangan sawah, z jizo, a pemandian kaki, g lampu lalu lintas, H Hachiko, E lonceng, l lentera batu, v daun
+const SOLID_OUT = new Set(['T', 'P', 'W', '#', 'b', 'L', 'V', 'M', 'Y', 'O', 'u', '*', 'R', 'q', 'k', 'z', 'a', 'g', 'H', 'E', 'l', 'v']);
 // G rak barang, I lemari minuman, R kasir, J mesin tiket, g gerbang tiket, Z rel kereta, h bangku, N papan info
-const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#', 'G', 'I', 'R', 'J', 'g', 'Z', 'h', 'N']);
+const SOLID_IN  = new Set(['W', 'K', 'D', 'T', 'p', 'n', 'b', 'd', 'k', 'F', 't', 'C', 'S', 'Q', '#', 'G', 'I', 'R', 'J', 'g', 'Z', 'h', 'N', 'y', 'o']);
 
 const Maps = (() => {
   const C = {
@@ -174,6 +175,15 @@ const Maps = (() => {
     honya: { wall: '#efe6d6', awning: '#8a78c8', sign: 'ほんや', door: '#6a4228' },
     ramen: { wall: '#f3e0c4', awning: '#d8455d', sign: 'ラーメン', door: '#6a4228', board: '#2a1f2d', ink: '#f6d44a' },
     koban: { wall: '#e9eef8', awning: '#3f6fb0', sign: 'こうばん', door: '#3a4f86' },
+    soba:    { wall: '#e9dcc4', awning: '#3a4f86', sign: 'そば', door: '#6a4228', board: '#2a1f2d', ink: '#fbf7ef' },
+    onsen:   { wall: '#efe2cf', awning: '#8a4a78', sign: 'おんせん', door: '#6a4228', board: '#fbf7ef', ink: '#8a4a78' },
+    depato:  { wall: '#f4f1ea', awning: '#c9384a', sign: 'デパート', door: '#3a3f55' },
+    sushi:   { wall: '#f7efe0', awning: '#3f6fb0', sign: 'すし', door: '#6a4228', board: '#fbf7ef', ink: '#3f6fb0' },
+    karaoke: { wall: '#e8def5', awning: '#8a4aa8', sign: 'カラオケ', door: '#3a2a4a', board: '#2a1f2d', ink: '#f6d44a' },
+    fuku:    { wall: '#fbeef2', awning: '#f28fb0', sign: 'ふく', door: '#6a4228' },
+    game:    { wall: '#e0f0f5', awning: '#5bb3a0', sign: 'プリクラ', door: '#3a3f55', board: '#2a1f2d', ink: '#f28fb0' },
+    chaya:   { wall: '#e9dcc4', awning: '#5a7a3a', sign: 'おちゃ', door: '#6a4228', board: '#fbf7ef', ink: '#3f6b38' },
+    omamori: { wall: '#f4ecdc', awning: '#d8455d', sign: 'おまもり', door: '#6a4228' },
   };
 
   const hash = (x, y, s = 0) => {
@@ -234,7 +244,8 @@ const Maps = (() => {
   }
   function tree(ctx, X, Y, tx, ty, pink) {
     grass(ctx, X, Y, tx, ty);
-    const L = pink ? C.pink : C.leaf, D = pink ? C.pinkD : C.leafD, H = pink ? C.pinkL : C.leafL;
+    const red = pink === 'red';
+    const L = red ? '#d8553d' : pink ? C.pink : C.leaf, D = red ? '#a8352a' : pink ? C.pinkD : C.leafD, H = red ? '#f29b6a' : pink ? C.pinkL : C.leafL;
     px(ctx, 'rgba(0,0,0,.18)', X + 3, Y + 13, 10, 2);
     px(ctx, C.k, X + 6, Y + 10, 4, 5); px(ctx, C.trunk, X + 7, Y + 10, 2, 4);
     // tajuk bulat
@@ -453,6 +464,18 @@ const Maps = (() => {
   }
 
   /* ---------- ubin tempat baru (konbini, stasiun, kafe, ramen, pantai, taman) ---------- */
+  function asphalt(ctx, X, Y, tx, ty) { px(ctx, '#5b5f6e', X, Y, 16, 16); const h = hash(tx, ty, 130); px(ctx, '#6a6e7c', X + h % 14, Y + (h >> 4) % 14, 2, 1); if (ty % 3 === 1 && tx % 4 < 2) px(ctx, '#e9ecef', X, Y + 7, 16, 2); }
+  function pavement(ctx, X, Y, tx, ty) { px(ctx, '#c9c4bc', X, Y, 16, 16); px(ctx, '#b3ada4', X, Y + 15, 16, 1); px(ctx, '#b3ada4', X + ((ty % 2) ? 7 : 15), Y, 1, 16); }
+  function zebra(ctx, X, Y) { px(ctx, '#5b5f6e', X, Y, 16, 16); for (let i = 0; i < 16; i += 5) px(ctx, '#f4f1ea', X + i, Y + 1, 3, 14); }
+  function paddy(ctx, X, Y, tx, ty) {
+    px(ctx, '#7aa8b8', X, Y, 16, 16);
+    for (let r = 2; r < 16; r += 5) for (let c = 2; c < 16; c += 4) { px(ctx, '#5a9a3a', X + c, Y + r, 2, 3); px(ctx, '#8fcf6f', X + c, Y + r, 1, 1); }
+  }
+  function statue(ctx, X, Y, tx, ty, body, cap) {
+    grass(ctx, X, Y, tx, ty);
+    px(ctx, C.k, X + 4, Y + 3, 8, 12); px(ctx, body, X + 5, Y + 4, 6, 10);
+    if (cap) { px(ctx, C.k, X + 3, Y + 1, 10, 4); px(ctx, cap, X + 4, Y + 2, 8, 2); }
+  }
   function sand(ctx, X, Y, tx, ty) {
     px(ctx, '#f1dca6', X, Y, 16, 16);
     for (let i = 0; i < 3; i++) { const h = hash(tx, ty, i + 110); px(ctx, i ? '#e2c98c' : '#fff0c8', X + h % 15, Y + (h >> 4) % 15, 1, 1); }
@@ -532,9 +555,22 @@ const Maps = (() => {
         else if (t === ',') flower(ctx, X, Y, tx, ty, false);
         else if (t === 'f') flower(ctx, X, Y, tx, ty, true);
         else if (t === '_' || ((t === 'u' || t === '*') && G)) sand(ctx, X, Y, tx, ty);
+        else if (t === 'A') asphalt(ctx, X, Y, tx, ty);
+        else if (t === 'c') zebra(ctx, X, Y);
+        else if (t === 'q') paddy(ctx, X, Y, tx, ty);
+        else if (t === 'p' || (mapId === 'machi' && G)) pavement(ctx, X, Y, tx, ty);
         else if (G) grass(ctx, X, Y, tx, ty);
         else if (t === 'O') fountain(ctx, X, Y, tx, ty, map);
         else if (t === 'u') parasol(ctx, X, Y, tx, ty);
+        else if (t === 'R') tree(ctx, X, Y, tx, ty, 'red');
+        else if (t === 'k') statue(ctx, X, Y, tx, ty, '#c9a070', '#d9a45a');
+        else if (t === 'z') statue(ctx, X, Y, tx, ty, '#a6a9b2', '#e35f6b');
+        else if (t === 'H') statue(ctx, X, Y, tx, ty, '#8a7a5a', null);
+        else if (t === 'l') statue(ctx, X, Y, tx, ty, '#9a9ea8', '#6a6e7c');
+        else if (t === 'E') statue(ctx, X, Y, tx, ty, '#6a4228', '#3a3f55');
+        else if (t === 'g') { grass(ctx, X, Y, tx, ty); px(ctx, C.k, X + 7, Y + 5, 2, 11); px(ctx, C.k, X + 4, Y, 8, 7); px(ctx, '#3fa06a', X + 5, Y + 1, 3, 2); px(ctx, '#e35f6b', X + 8, Y + 1, 3, 2); }
+        else if (t === 'a') { grass(ctx, X, Y, tx, ty); px(ctx, C.k, X + 1, Y + 3, 14, 11); px(ctx, '#9fd0ee', X + 2, Y + 4, 12, 9); px(ctx, '#fff', X + 5, Y + 1, 1, 3); px(ctx, '#fff', X + 9, Y, 1, 3); }
+        else if (t === 'v') { grass(ctx, X, Y, tx, ty); for (let i = 0; i < 5; i++) { const h = hash(tx, ty, i + 140); px(ctx, i % 2 ? '#d8553d' : '#f29b38', X + 3 + h % 9, Y + 5 + (h >> 4) % 7, 3, 2); } }
         else if (t === '*') shell(ctx, X, Y, tx, ty);
         else if (t === 'T') tree(ctx, X, Y, tx, ty, false);
         else if (t === 'P') tree(ctx, X, Y, tx, ty, true);
@@ -574,6 +610,8 @@ const Maps = (() => {
         else if (t === 'g') gate(ctx, X, Y, tx, ty);
         else if (t === 'h') benchIn(ctx, X, Y, tx, ty);
         else if (t === 'N') notice(ctx, X, Y, tx, ty);
+        else if (t === 'y') { floor(ctx, X, Y, tx, ty); px(ctx, C.k, X, Y + 2, 16, 12); px(ctx, '#c9ccd3', X, Y + 3, 16, 5); px(ctx, '#b07a4c', X, Y + 8, 16, 5); const h = hash(tx, ty, 150); px(ctx, '#fff', X + 3 + h % 6, Y + 4, 5, 3); px(ctx, ['#c9384a', '#f28c5c', '#f6d44a'][h % 3], X + 4 + h % 6, Y + 4, 3, 2); }
+        else if (t === 'o') { px(ctx, '#8a9aa6', X, Y, 16, 16); px(ctx, '#7fc0dd', X + 1, Y + 1, 14, 14); px(ctx, '#d8f0fb', X + 3 + (tx % 3) * 3, Y + 4, 4, 1); px(ctx, '#fff', X + 6, Y + 9, 3, 1); }
         else base(ctx, X, Y, tx, ty);
       }
     }
@@ -596,6 +634,7 @@ const Maps = (() => {
     if (t === 'j' && window.World && World.map === mapId && World.player.y > y && !(typeof Save !== 'undefined' && Save.d.ticket)) return false;
     for (const pr of map.props || []) if ((pr.solid || []).some(([sx, sy]) => sx === x && sy === y)) return false;
     if ((map.signs || []).some(s => s.x === x && s.y === y)) return false;
+    if ((map.closedDoors || []).some(d => d.x === x && d.y === y && d.kind !== 'gate')) return false;
     for (const b of map.buildings || []) {
       if (x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h) return b.doors.some(([dx, dy]) => dx === x && dy === y);
     }
@@ -607,12 +646,17 @@ const Maps = (() => {
     const map = MAPS[mapId], t = tileAt(map, x, y);
     const sign = (map.signs || []).find(s => s.x === x && s.y === y);
     if (sign) return { type: 'sign', sign };
+    const door = (map.closedDoors || []).find(d => d.x === x && d.y === y && d.kind === 'scene');
+    if (door) return { type: 'door', door };
     if (map.outdoor) {
       if (t === 'M') return { type: 'mailbox' };
       if (t === 'V') return { type: 'vending' };
       if (t === 'Y') return { type: 'yatai' };
       if (t === 'b') return { type: 'bench' };
-      if (t === 'W') return { type: 'water', where: mapId === 'umi' ? 'sea' : x <= 8 && y >= 14 && y <= 19 ? 'pond' : 'river' };
+      if (t === 'W') return { type: 'water', where: mapId === 'umi' ? 'sea' : mapId === 'tera' ? 'pond' : mapId === 'yama' ? 'river' : x <= 8 && y >= 14 && y <= 19 ? 'pond' : 'river' };
+      const O2 = { q: 'tanbo', k: 'scarecrow', z: 'jizo', a: 'ashiyu', g: 'signal', H: 'hachiko', E: 'bell', l: 'lantern' };
+      if (O2[t]) return { type: O2[t] };
+      if (t === 'v') return { type: 'leaf', x, y };
       if (t === 'O') return { type: 'fountain' };
       if (t === '*') return { type: 'shell', x, y };
       if (t === 'u') return { type: 'parasol' };
@@ -620,10 +664,11 @@ const Maps = (() => {
       return null;
     }
     return { b: { type: 'bed' }, d: { type: 'desk' }, C: { type: 'closet' }, K: { type: 'board' }, S: { type: 'shelf' }, F: { type: 'fridge' },
-      G: { type: 'goods', x }, I: { type: 'cooler' }, J: { type: 'machine' }, Z: { type: 'train' }, h: { type: 'bench' }, N: { type: 'notice' } }[t] || null;
+      G: { type: 'goods', x }, I: { type: 'cooler' }, J: { type: 'machine' }, Z: { type: 'train' }, h: { type: 'bench' }, N: { type: 'notice' },
+      y: { type: 'conveyor' }, o: { type: 'bath' } }[t] || null;
   }
   // Bisa bicara melewati ubin ini (meja, konter)
-  const across = (mapId, x, y) => !MAPS[mapId].outdoor && 'TtkR'.includes(tileAt(MAPS[mapId], x, y));
+  const across = (mapId, x, y) => !MAPS[mapId].outdoor && 'TtkRy'.includes(tileAt(MAPS[mapId], x, y));
 
   return { render, walkable, interactAt, across, tileAt: (id, x, y) => tileAt(MAPS[id], x, y), C, hash, SHOPS };
 })();

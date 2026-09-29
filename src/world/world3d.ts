@@ -143,7 +143,7 @@ function buildGround(id: string) {
   const g = new THREE.Mesh(new THREE.PlaneGeometry(W, H), lam(0xffffff, { map: tex }));
   g.rotation.x = -Math.PI / 2; g.position.set(W / 2, 0, H / 2); g.receiveShadow = true; root!.add(g);
   if (map.outdoor) {
-    const out = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), lam(0x5f9a52));
+    const out = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), lam(id === 'machi' ? 0x8a8f9a : id === 'umi' ? 0x5f9a52 : 0x5f9a52));
     out.rotation.x = -Math.PI / 2; out.position.set(W / 2, -0.02, H / 2); out.receiveShadow = true; root!.add(out);
   }
 }
@@ -163,14 +163,14 @@ function buildWater(list: [number, number][]) {
   root!.add(inst); dyn.water = tex;
 }
 
-function buildTrees(list: [number, number, boolean][]) {
+function buildTrees(list: [number, number, number][]) {  // 0 hijau, 1 sakura, 2 momiji
   if (!list.length) return;
   const trunkGeo = new THREE.CylinderGeometry(0.09, 0.14, 0.9, 6); trunkGeo.translate(0, 0.45, 0);
   const leafGeo = new THREE.IcosahedronGeometry(0.58, 0);
   const trunks = new THREE.InstancedMesh(trunkGeo, flat(0x7a4f35), list.length);
   const leaves = new THREE.InstancedMesh(leafGeo, flat(0xffffff), list.length * 2);
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), c = new THREE.Color();
-  const GREEN = [0x4f9a5e, 0x428f55, 0x5aa866, 0x3f8a52], PINK = [0xf3adc4, 0xf7bfd1, 0xeb9fb9, 0xf9cbd8];
+  const GREEN = [0x4f9a5e, 0x428f55, 0x5aa866, 0x3f8a52], PINK = [0xf3adc4, 0xf7bfd1, 0xeb9fb9, 0xf9cbd8], RED = [0xd8553d, 0xe0703a, 0xc9402e, 0xf29b38];
   list.forEach(([x, y, pink], i) => {
     const h = Maps.hash(x, y, 7), r = (h % 100) / 100;
     trunks.setMatrixAt(i, m4.makeTranslation(x + .5, 0, y + .5));
@@ -180,7 +180,7 @@ function buildTrees(list: [number, number, boolean][]) {
       p.set(x + .5 + (k ? (r - .5) * .5 : 0), k ? 1.55 + r * .2 : 1.2, y + .5 + (k ? .1 : 0));
       s.set(sc, sc * .92, sc);
       leaves.setMatrixAt(i * 2 + k, m4.compose(p, q, s));
-      c.setHex((pink ? PINK : GREEN)[(h >>> (k * 3)) % 4]); leaves.setColorAt(i * 2 + k, c);
+      c.setHex([GREEN, PINK, RED][pink][(h >>> (k * 3)) % 4]); leaves.setColorAt(i * 2 + k, c);
     }
   });
   trunks.castShadow = leaves.castShadow = true; leaves.receiveShadow = true;
@@ -315,12 +315,12 @@ function buildSigns(map: any) {
 }
 
 function buildOutdoorProps(map: any) {
-  const trees: [number, number, boolean][] = [], water: [number, number][] = [];
+  const trees: [number, number, number][] = [], water: [number, number][] = [];
   const post = flat(0x5b5f6e), woodL = flat(0xd19a66), wood = flat(0x8a5a36);
   const lamps: [number, number][] = [];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const t = Maps.tileAt(mapId!, x, y), X = x + .5, Z = y + .5;
-    if (t === 'T' || t === 'P') trees.push([x, y, t === 'P']);
+    if (t === 'T' || t === 'P' || t === 'R') trees.push([x, y, t === 'P' ? 1 : t === 'R' ? 2 : 0]);
     else if (t === 'W') water.push([x, y]);
     else if (t === '#') { box(.1, .6, .1, wood, X - .3, .3, Z); box(.1, .6, .1, wood, X + .3, .3, Z); box(1, .08, .06, woodL, X, .45, Z); box(1, .08, .06, woodL, X, .22, Z); }
     else if (t === 'b') { box(.9, .08, .35, woodL, X, .35, Z); box(.9, .3, .06, woodL, X, .55, Z - .16); box(.08, .35, .3, wood, X - .38, .17, Z); box(.08, .35, .3, wood, X + .38, .17, Z); }
@@ -341,6 +341,48 @@ function buildOutdoorProps(map: any) {
       box(1.1, .08, .9, lam(0xffffff, { map: aw }), X, 1.82, Z + .1);
       cyl(.07, .07, .2, 8, lam(0xf28c3c, { emissive: 0x331500 }), X - .3, 1.55, Z + .42);
       box(.3, .12, .2, flat(0xf6d44a), X + .15, .9, Z);
+    }
+    else if (t === 'k') {
+      cyl(.04, .04, 1.3, 5, wood, X, .65, Z); box(.9, .06, .06, wood, X, 1.0, Z);
+      box(.34, .4, .2, flat(0x5a7a9a), X, .95, Z); const hd = new THREE.Mesh(new THREE.SphereGeometry(.14, 8, 6), flat(0xf4e6c8)); hd.position.set(X, 1.3, Z); root!.add(hd);
+      const hat = new THREE.Mesh(new THREE.ConeGeometry(.3, .16, 10), flat(0xd9a45a)); hat.position.set(X, 1.45, Z); hat.castShadow = true; root!.add(hat);
+    }
+    else if (t === 'z') {
+      cyl(.16, .18, .5, 10, flat(0xa6a9b2), X, .25, Z); const hd = new THREE.Mesh(new THREE.SphereGeometry(.13, 10, 8), flat(0xa6a9b2)); hd.position.set(X, .6, Z); hd.castShadow = true; root!.add(hd);
+      box(.3, .14, .04, flat(0xe35f6b), X, .42, Z + .15);
+      const kasa = new THREE.Mesh(new THREE.ConeGeometry(.22, .1, 10), flat(0xc9a070)); kasa.position.set(X, .76, Z); root!.add(kasa);
+    }
+    else if (t === 'a') {
+      box(.95, .3, .95, wood, X, .15, Z);
+      const aw = new THREE.Mesh(new THREE.PlaneGeometry(.8, .8), lam(0x9fd0ee, { emissive: 0x10303a })); aw.rotation.x = -Math.PI / 2; aw.position.set(X, .31, Z); root!.add(aw);
+    }
+    else if (t === 'g') {
+      cyl(.04, .05, 1.9, 6, post, X, .95, Z);
+      box(.2, .5, .2, flat(0x3a3f55), X, 1.95, Z);
+      const gl = lam(0x3fa06a, { emissive: 0x1f7a3a }), rl = lam(0xe35f6b, { emissive: 0x6a1a1a });
+      box(.12, .12, .02, rl, X, 2.08, Z + .11, false); box(.12, .12, .02, gl, X, 1.84, Z + .11, false);
+    }
+    else if (t === 'H') {
+      box(.9, .5, .9, flat(0xb9bcc4), X, .25, Z);
+      const bronze = flat(0x7a6a4a);
+      box(.55, .28, .22, bronze, X, .7, Z); box(.2, .24, .2, bronze, X, .92, Z + .22);
+      [-.2, .2].forEach(dx => [-.07, .07].forEach(dz => box(.06, .22, .06, bronze, X + dx, .55, Z + dz * 1.4)));
+      box(.06, .1, .06, bronze, X - .06, 1.07, Z + .22); box(.06, .1, .06, bronze, X + .06, 1.07, Z + .22);
+    }
+    else if (t === 'E') {
+      const dw = flat(0x6a4228);
+      [[-.4, -.4], [.4, -.4], [-.4, .4], [.4, .4]].forEach(([dx, dz]) => box(.1, 2.0, .1, dw, X + dx, 1.0, Z + dz));
+      const rf = new THREE.Mesh(new THREE.ConeGeometry(.9, .5, 4), flat(0x3a3f55)); rf.rotation.y = Math.PI / 4; rf.position.set(X, 2.25, Z); rf.castShadow = true; root!.add(rf);
+      cyl(.24, .3, .6, 12, flat(0x7a6a4a), X, 1.55, Z);
+      box(.9, .08, .08, wood, X, 1.2, Z + .3);
+    }
+    else if (t === 'l') {
+      const st = flat(0x9a9ea8);
+      box(.3, .1, .3, st, X, .05, Z); cyl(.07, .07, .6, 6, st, X, .4, Z); box(.36, .26, .36, lam(0xd8d0c2, { emissive: 0x000000 }), X, .83, Z);
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(.35, .2, 4), st); cap.rotation.y = Math.PI / 4; cap.position.set(X, 1.06, Z); root!.add(cap);
+    }
+    else if (t === 'v') {
+      for (let i = 0; i < 6; i++) { const h = Maps.hash(x, y, i + 140); const lf = new THREE.Mesh(new THREE.CircleGeometry(.09, 5), flat(i % 2 ? 0xd8553d : 0xf29b38)); lf.rotation.x = -Math.PI / 2; lf.position.set(X - .3 + (h % 60) / 100, .02 + i * .004, Z - .3 + ((h >> 6) % 60) / 100); root!.add(lf); }
     }
     else if (t === 'O') {
       if (Maps.tileAt(mapId!, x - 1, y) !== 'O' && Maps.tileAt(mapId!, x, y - 1) !== 'O') {
@@ -457,6 +499,15 @@ function buildIndoorProps() {
         [-.3, .3].forEach(dz => box(n, .05, .06, flat(0xb9bcc4), x + n / 2, .04, y + 1 + dz, false));
         buildTrain(x, n, y + 1);
       }
+    }
+    else if (t === 'y') {
+      box(1, .8, .7, [wood, wood, flat(0xc9ccd3), wood, woodD, wood], X, .4, Z);
+      const h = Maps.hash(x, y, 150);
+      if (h % 2) { cyl(.16, .12, .04, 12, flat(0xf4f1ea), X, .83, Z); box(.2, .07, .09, flat([0xc9384a, 0xf28c5c, 0xf6d44a, 0xf7a08a][h % 4]), X, .88, Z); }
+    }
+    else if (t === 'o') {
+      box(1, .25, 1, flat(0x8a9aa6), X, .12, Z, false);
+      const wtr = new THREE.Mesh(new THREE.PlaneGeometry(.96, .96), lam(0x7fc0dd, { emissive: 0x0a2a3a })); wtr.rotation.x = -Math.PI / 2; wtr.position.set(X, .26, Z); root!.add(wtr);
     }
     else if (t === 'h') { box(.95, .1, .45, flat(0x3f6fb0), X, .42, Z); box(.95, .4, .08, flat(0x5b8fd0), X, .65, Z - .2); box(.08, .4, .4, flat(0x5b5f6e), X - .4, .2, Z); box(.08, .4, .4, flat(0x5b5f6e), X + .4, .2, Z); }
     else if (t === 'N') {

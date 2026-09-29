@@ -29,6 +29,13 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
   - ☕ Kafe: pesan menu katakana dengan 〜を ください. 🍜 Ramen: beli tiket makan (しょっけん), ucapkan いただきます.
   - 📚 Toko buku: kosakata buku (まんが, じしょ, えほん) + rak buku cerita. 👮 Pos polisi: belajar arah (みぎ, ひだり, まっすぐ).
 
+**Jalur kereta ke seluruh "Jepang mini"** (beli きっぷ di stasiun: baca nama tujuan & harga dalam bahasa Jepang)
+- 🏖 **うみ** (pantai): kerang berhuruf, memancing ikan laut, es serut.
+- ⛰ **やま** (desa gunung): **penginapan onsen** (resepsionis, aturan mandi ○×, yukata, susu kopi, telur onsen), toko soba, sawah (こめ/ごはん), orang-orangan sawah, patung jizo, pemandian kaki, daun もみじ berhuruf.
+- 🏙 **まち** (kota besar): **lampu penyeberangan** (menyeberang saat あお!), department store (lantai いっかい/にかい/さんがい), **sushi putar** (mini-game ambil piring sesuai pesanan), karaoke (lengkapi lirik lagu tradisional), toko baju (warna & ukuran), プリクラ (foto stiker), patung Hachiko.
+- ⛩ **てら** (kota kuil kuno): kuil Buddha (bedanya dengan jinja), **lonceng かね** (mini-game ketepatan), **upacara teh** (susun urutan langkah), jimat おまもり, rusa yang membungkuk (おじぎ), lentera batu, kolam koi.
+- 🍱 **Menu & Buku Makanan**: pesan makanan dengan 〜を ください / 〜に します, dengar harga dalam bahasa Jepang (さんびゃく えん…), kumpulkan 20 makanan Jepang.
+
 **Bermain & bersantai**
 - Hari penuh dengan pilihan: makan siang di atap/kelas/perpustakaan (+ menu spesial harian), klub (kaligrafi, karuta, memasak, sains) dengan klub unggulan ★.
 - **Kejadian harian ★** yang berbeda tiap hari (anak hilang, turis tersesat, payung saat hujan, kembang api, dompet jatuh…) & cuaca cerah/berawan/hujan.
@@ -97,7 +104,8 @@ src/ui/Friends.tsx          halaman Teman (React)
 src/ui/pages.tsx, mount.ts  jembatan React ↔ panel lama (dimuat saat dibutuhkan)
 src/legacy.d.ts             tipe untuk modul lama
 public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian
-public/js/places.js         ★ tempat baru (konbini, stasiun, kafe, ramen, toko buku, pos polisi, pantai) & adegannya
+public/js/places.js         ★ tempat di kota (konbini, stasiun, kafe, ramen, toko buku, pos polisi, pantai)
+public/js/places2.js        ★ jalur kereta (やま, まち, てら), menu restoran, Buku Makanan, mini-game dunia Jepang
 public/js/pixel.js, portrait.js   ★ karakter pixel art & potret (dibuat dari kode)
 public/js/game.js           alur hari, dialog, menu, lemari, pengaturan
 public/js/lesson.js, games.js, video.js   pelajaran, mini-game, video sensei

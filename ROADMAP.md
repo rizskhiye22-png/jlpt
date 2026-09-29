@@ -195,6 +195,14 @@ Tidak semua waktu harus belajar keras. Aktivitas santai membuat dunia terasa sep
 4. ✅ Adegan belajar di tiap tempat (belanja, tiket, gerbang, memesan, arah) + stempel & poin harian.
 5. 🔜 Berikutnya: kota kedua lewat kereta (やま/gunung), rumah teman, festival di taman, interior sekolah lebih banyak (UKS, kantin, gym).
 
+### Fase 1.7 — Jalur kereta & Jepang yang lebih luas ✅
+1. ✅ 3 peta tujuan baru: やま (desa gunung + onsen), まち (kota besar), てら (kota kuil) + interior onsen & sushi.
+2. ✅ Mesin tiket banyak tujuan (baca nama stasiun & harga), pengumuman kereta.
+3. ✅ Sistem menu restoran + angka/harga Jepang + **Buku Makanan** (20 hidangan).
+4. ✅ Mini-game aktif: sushi putar, lampu penyeberangan, lonceng kuil, upacara teh, karaoke lirik, プリクラ.
+5. ✅ Adegan budaya: aturan onsen, kuil Buddha vs Shinto, lantai department store, warna & ukuran baju, jimat, rusa おじぎ.
+6. 🔜 Berikutnya: festival musim panas (まつり) di taman, salju & musim dingin di やま, kota pelabuhan (みなと), rumah teman, menginap semalam di onsen.
+
 ### Fase 2 🔜
 Bab 3 (dakuten, angka, konbini penuh), latihan bicara, memancing kana, musim panas & kembang api, grafik kemajuan.
 

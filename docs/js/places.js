@@ -327,6 +327,7 @@ const Places = (() => {
       await say({ jp: 'はい、おねがいします。', ro: 'hai, onegai shimasu.', id: 'Ya, tolong.' });
       await say({ n: 'ピッ… ブーン… チン！ Microwave berbunyi. Bekalmu hangat.' });
       await say({ w: 'tenin', e: 'happy', jp: 'おまたせ しました。', ro: 'omatase shimashita.', id: 'Maaf menunggu.' });
+      Places.eat && Places.eat('bento');
       if (once('bento', 10, 'belanja di konbini')) H().addStamp('konbini', 'Belanja di konbini');
     }
     if (a === 2) await Games.shop({ count: 3, title: 'Latihan Belanja' });
@@ -414,6 +415,7 @@ const Places = (() => {
     ] }], ['mama']);
     await say({ w: 'mama', e: 'happy', jp: 'かしこまりました。', ro: 'kashikomarimashita.', id: 'Baik, dimengerti. (bahasa sopan pelayan)' });
     await say({ n: `${m.jp} datang. Kamu menikmatinya pelan-pelan. おいしい！` });
+    Places.eat && Places.eat(['kohi', 'keki', 'jusu', 'pafe'][i]);
     await say({ jp: 'ごちそうさまでした！', ro: 'gochisousama deshita!', id: 'Terima kasih atas hidangannya!' });
     if (once('kafe', 10, 'memesan di kafe')) H().addStamp('kafe', 'Memesan di kafe');
   }
@@ -441,6 +443,7 @@ const Places = (() => {
       { jp: 'おやすみ！', ro: 'oyasumi!', why: 'おやすみ = selamat tidur. Sebelum makan: いただきます.' },
     ] }], ['taisho']);
     await say({ n: 'ずるずる… Kuahnya gurih, minya kenyal. あつい けど おいしい！(panas tapi enak!)' });
+    Places.eat && Places.eat('misoramen');
     await say({ w: 'taisho', e: 'happy', jp: 'まいど！', ro: 'maido!', id: 'Terima kasih, datang lagi ya!' });
     if (once('ramen', 12, 'makan ramen')) H().addStamp('ramen', 'Makan ramen');
   }

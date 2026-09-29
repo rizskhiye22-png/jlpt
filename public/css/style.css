@@ -648,3 +648,33 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .fr-item.on { background: #fff1c4; box-shadow: inset 0 0 0 2px var(--red); }
 .fr-thumb { width: 44px; height: 44px; border-radius: 4px; background: #f3e3c7; image-rendering: pixelated; }
 @media (max-width: 380px) { .friends .fr-main { flex-direction: column; } .fr-view { flex-basis: auto; } }
+
+/* ---------- mini-game dunia Jepang (places2.js) ---------- */
+.mg { text-align: center; }
+.sg-order { font-size: 16px; margin: 6px 0 10px; }
+.sg-order b { font-size: 20px; }
+.sg-lane { position: relative; height: 96px; border: 3px solid var(--ink); border-radius: 8px; background: #d9b98a; overflow: hidden; }
+.sg-belt { position: absolute; left: 0; right: 0; top: 50%; height: 56px; transform: translateY(-50%); background: repeating-linear-gradient(90deg, #c9ccd3 0 18px, #b9bcc4 18px 20px); }
+.sg-plate { position: absolute; top: 50%; transform: translateY(-50%); width: 21%; min-width: 64px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border: 2px solid var(--ink); border-radius: 50%/40%; background: #fbf7ef; font: inherit; font-size: 13px; }
+.sg-plate i { width: 30px; height: 12px; border-radius: 6px; background: var(--c); border: 2px solid var(--ink); }
+.sg-plate.good { background: #c8f0c8; }
+.sg-plate.bad { background: #f6c6c6; }
+.sg-info { min-height: 20px; }
+.cg-light { width: 140px; height: 140px; margin: 8px auto 14px; border-radius: 50%; border: 6px solid #2a1f2d; background: radial-gradient(circle at 40% 35%, #fff8, transparent 60%), var(--c, #9aa0aa); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 24px var(--c, transparent); transition: background .15s; }
+.cg-word { font-size: 34px; font-weight: 700; color: #fff; text-shadow: 0 2px 0 #2a1f2d; }
+.bg-bar { position: relative; height: 34px; margin: 14px 4px 16px; border: 3px solid var(--ink); border-radius: 17px; background: #efe2cf; overflow: hidden; }
+.bg-zone { position: absolute; left: 41%; width: 18%; top: 0; bottom: 0; background: #f6d44a; }
+.bg-cur { position: absolute; top: 2px; bottom: 2px; width: 10px; margin-left: -5px; border-radius: 5px; background: #6a4228; }
+.tg-done { text-align: left; margin: 6px 0 10px 18px; padding: 0; font-size: 14px; }
+.tg-opts { display: flex; flex-direction: column; gap: 6px; }
+.tg-o { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.tg-o.bad { background: #f6c6c6; }
+.pk-photo { display: flex; justify-content: center; margin: 8px 0; }
+.pk-photo canvas { width: 240px; height: 180px; image-rendering: pixelated; border: 4px solid #fff; box-shadow: 0 0 0 3px var(--ink); border-radius: 6px; }
+.fb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin: 10px 0 12px; }
+.fb-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font: inherit; text-align: center; }
+.fb-item:not(.on) { opacity: .6; background: var(--paper2); }
+.fb-item .jp { font-size: 14px; }
+.fb-item small { font-size: 11px; color: #7a6a7a; }
+.fb-item em { font-size: 10px; font-style: normal; color: var(--red); }
+.fb-dish { width: 44px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, var(--c) 0 45%, #fbf7ef 47% 100%); border: 2px solid var(--ink); }
