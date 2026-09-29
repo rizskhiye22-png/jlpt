@@ -678,3 +678,22 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .fb-item small { font-size: 11px; color: #7a6a7a; }
 .fb-item em { font-size: 10px; font-style: normal; color: var(--red); }
 .fb-dish { width: 44px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, var(--c) 0 45%, #fbf7ef 47% 100%); border: 2px solid var(--ink); }
+
+/* ---------- konbini lengkap ---------- */
+.snack .temp { font-style: normal; font-size: 10px; padding: 0 5px; border-radius: 6px; color: #fff; }
+.snack .temp.hot { background: #e0475f; }
+.snack .temp.cold { background: #3f6fb0; }
+.badge-rec, .badge-lim { position: absolute; top: -8px; left: -4px; font-style: normal; font-size: 10px; padding: 1px 5px; border-radius: 6px; border: 2px solid var(--ink); background: #f6d44a; }
+.badge-lim { background: #f28fb0; }
+.kago-line { margin: 10px 0 4px; font-size: 14px; }
+.arb-cust { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 4px 0 8px; }
+.arb-cust canvas { width: 64px; height: 64px; image-rendering: pixelated; border: 2px solid var(--ink); border-radius: 6px; background: #f3e3c7; }
+.arb-say { flex: 1; text-align: left; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px; font-size: 14px; }
+.arb-say b { font-size: 17px; } .arb-say small { display: block; color: #7a6a7a; font-size: 11px; }
+.arb-timer { height: 8px; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; margin-bottom: 8px; background: #fff; }
+.arb-timer i { display: block; height: 100%; width: 100%; background: #5bb3a0; }
+.arb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.arb-o { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font: inherit; font-size: 12px; min-height: 64px; justify-content: center; }
+.arb-o.serv { background: #eaf4ff; }
+.arb-o.bad { background: #f6c6c6; }
+.arb-o .snack-ic { image-rendering: pixelated; }

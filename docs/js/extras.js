@@ -175,7 +175,7 @@ const Extras = (() => {
       <p class="muted">Baca nama jajanan dalam bahasa Jepang, lalu beli dengan poin sakura. Ketuk ♪ untuk mendengar.</p>
       <div class="snack-grid">${items.map(s => {
         const readable = [...s.jp].every(c => knownChar(c, known) || !KANA[c]);
-        return `<div class="snack" data-id="${s.id}">${SnackArt.img(s.id, 48)}<b class="jp">${s.jp}</b><small>${readable || Save.d.settings.romaji ? s.ro : '???'}</small>
+        return `<div class="snack" data-id="${s.id}">${SnackArt.img(s.id, 48)}<b class="jp">${s.jp}</b><small>${readable || Save.d.settings.romaji ? s.ro : '???'}</small>${s.temp ? `<i class="temp ${s.temp}">${s.temp === 'hot' ? 'あたたかい' : 'つめたい'}</i>` : ''}
           <div class="snack-row"><button class="say" data-say="${s.jp}" type="button">♪</button><button class="buy" type="button">🌸${s.price}</button></div>
           <em class="own">${S().bag[s.id] ? '×' + S().bag[s.id] : ''}</em></div>`;
       }).join('')}</div>

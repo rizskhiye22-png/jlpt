@@ -664,7 +664,7 @@ const Maps = (() => {
       return null;
     }
     return { b: { type: 'bed' }, d: { type: 'desk' }, C: { type: 'closet' }, K: { type: 'board' }, S: { type: 'shelf' }, F: { type: 'fridge' },
-      G: { type: 'goods', x }, I: { type: 'cooler' }, J: { type: 'machine' }, Z: { type: 'train' }, h: { type: 'bench' }, N: { type: 'notice' },
+      G: { type: 'goods', x, y }, I: { type: 'cooler' }, J: { type: 'machine' }, Z: { type: 'train' }, h: { type: 'bench' }, N: { type: 'notice' },
       y: { type: 'conveyor' }, o: { type: 'bath' } }[t] || null;
   }
   // Bisa bicara melewati ubin ini (meja, konter)
