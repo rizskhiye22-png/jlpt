@@ -51,7 +51,9 @@ const Music = (() => {
   function ensure() {
     if (ctx) return true;
     try {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // satu AudioContext bersama dengan efek suara (penting di iOS)
+      ctx = (typeof Sound !== 'undefined' && Sound.getCtx && Sound.getCtx()) || new (window.AudioContext || window.webkitAudioContext)();
+      if (!ctx) return false;
       master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
       // gema lembut supaya terdengar hangat
       const d = ctx.createDelay(1); d.delayTime.value = 0.32;
@@ -114,7 +116,7 @@ const Music = (() => {
     if (!THEMES[name] || name === current) return;
     current = name;
     if (!ensure()) return;
-    if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state !== 'running') { try { ctx.resume().catch(() => {}); } catch (e) {} }
     const start = () => {
       if (bus) { const old = bus; setTimeout(() => old.disconnect(), 1500); }
       bus = ctx.createGain(); bus.gain.value = 1; bus.connect(master);
@@ -131,11 +133,12 @@ const Music = (() => {
   function setVolume() { if (ctx && song) fadeTo(level(), .3); }
   // Kecilkan musik saat sensei bicara, agar penjelasan terdengar jelas di HP
   function duck(on) { if (ducked === !!on) return; ducked = !!on; setVolume(); }
-  function unlock() { if (ensure() && ctx.state === 'suspended') ctx.resume(); }
+  function unlock() { if (ensure() && ctx.state !== 'running') { try { ctx.resume().catch(() => {}); } catch (e) {} } }
 
+  // Hemat baterai saat aplikasi di latar belakang; audio dibangunkan lagi oleh Sound (ketukan berikutnya)
   document.addEventListener('visibilitychange', () => {
     if (!ctx) return;
-    if (document.hidden) ctx.suspend(); else ctx.resume();
+    try { if (document.hidden) ctx.suspend().catch(() => {}); else ctx.resume().catch(() => {}); } catch (e) {}
   });
 
   return { play, stop, setVolume, duck, unlock, get current() { return current; } };

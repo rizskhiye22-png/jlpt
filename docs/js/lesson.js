@@ -128,10 +128,14 @@ const Lesson = (() => {
     if (poolKind && typeof POOL_FILTER !== 'undefined' && POOL_FILTER[poolKind]) pool = pool.filter(POOL_FILTER[poolKind]);
     else if (poolKind === 'kata') pool = pool.filter(IS_KATA);
     else if (poolKind === 'hira') pool = pool.filter(k => !IS_KATA(k));
+    if (typeof NO_QUIZ !== 'undefined') { pool = pool.filter(k => !NO_QUIZ(k)); focus = focus.filter(k => !NO_QUIZ(k)); }
     if (!pool.length) pool = focus.slice();
-    const words = knownWords(new Set(pool));
+    const words = knownWords(new Set(Save.d.kana.length ? Save.d.kana : pool));
     const types = ['read', 'read', 'write', 'write', 'word'];
     if (Sound.hasJa()) types.push('listen', 'listen');
+    // katakana: cocokkan dengan pasangan hiragananya (pemain sudah hafal hiragana)
+    const hasTwin = k => IS_KATA(k) && KANA[twin(k)] && Save.d.kana.includes(twin(k));
+    if (focus.some(hasTwin)) types.push('twin', 'twin');
     // setiap huruf baru muncul minimal sekali
     const seeds = shuffle(focus).slice(0, count);
     const out = [];
@@ -146,6 +150,7 @@ const Lesson = (() => {
       if (type === 'word') type = 'read';
       let k = seeds[i] || (focus.length && Math.random() < .5 ? pick(focus) : weightedKana(pool));
       for (let t = 0; t < 5 && k === last && pool.length > 1; t++) k = weightedKana(pool);
+      if (type === 'twin' && !hasTwin(k)) type = 'read';
       last = k; out.push({ type, kana: k });
     }
     return shuffle(out);
@@ -169,7 +174,11 @@ const Lesson = (() => {
           .forEach(c => { if (KANA[c] && c !== correct && KANA[c].ro !== KANA[correct].ro) confuse.push(c); });
       }
     }
-    const others = [...confuse, ...shuffle(learned).concat(shuffle(same.filter(k => k !== correct && !learned.includes(k)))).filter(k => !confuse.includes(k))];
+    // huruf rawan (ね/れ/わ, シ/ツ, ソ/ン…): pengecoh paling berguna, asal sudah dipelajari
+    if (typeof SIMILAR !== 'undefined' && SIMILAR[correct]) {
+      shuffle([...SIMILAR[correct]]).forEach(c => { if (c !== correct && KANA[c] && KANA[c].ro !== KANA[correct].ro && Save.d.kana.includes(c) && !confuse.includes(c)) confuse.push(c); });
+    }
+    const others = [...confuse.slice(0, n - 2 > 0 ? n - 2 : 1), ...shuffle(learned).concat(shuffle(same.filter(k => k !== correct && !learned.includes(k)))).filter(k => !confuse.includes(k))];
     return shuffle([correct, ...others.slice(0, n - 1)]).map(source);
   }
 
@@ -186,6 +195,11 @@ const Lesson = (() => {
     } else if (q.type === 'write') {
       prompt = 'Pilih huruf untuk bunyi ini:'; main = KANA[q.kana].ro; mainCls = 'roma';
       answer = q.kana; opts = options(q.kana, k => ({ label: k, value: k, jp: true }));
+    } else if (q.type === 'twin') {
+      const tw = twin(q.kana);
+      prompt = 'Mana pasangan hiragananya?'; main = q.kana; mainCls = 'kana';
+      answer = tw; opts = options(tw, k => ({ label: k, value: k, jp: true }));
+      explain = `<b>${q.kana}</b> = <b>${tw}</b> (${KANA[q.kana].ro})<br><small>${KANA[q.kana].tip}</small>`;
     } else if (q.type === 'listen') {
       prompt = 'Dengarkan, lalu pilih hurufnya:'; main = '<button class="q-listen" type="button" aria-label="Putar suara">♪</button>'; mainCls = 'listen';
       answer = q.kana; opts = options(q.kana, k => ({ label: k, value: k, jp: true }));
@@ -193,7 +207,8 @@ const Lesson = (() => {
       const w = q.word;
       prompt = 'Apa arti kata ini?'; main = w.jp; mainCls = 'word';
       answer = w.id;
-      const others = shuffle(WORDS.filter(x => x.id !== w.id)).slice(0, 3);
+      const seenId = new Set([w.id]);
+      const others = shuffle(WORDS).filter(x => !seenId.has(x.id) && seenId.add(x.id)).slice(0, 3);
       opts = shuffle([w, ...others]).map(x => ({ label: x.id, value: x.id }));
       explain = `<b>${w.jp}</b> (${w.ro}) = ${w.id}`; sayAfter = w.jp;
     }

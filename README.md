@@ -8,7 +8,21 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
-## Baru di v3.0 — Bab 3 「てんてん と すうじ」 (Suara Baru & Angka)
+## Baru di v3.6 — Sinkron Bab 1–2 (Hiragana & Katakana)
+- **Contoh kata di video sensei** kini hanya memakai huruf yang sudah dipelajari (31 kata baru disusun per baris). Katakana yang belum diajarkan dibantu hiragana kecil di papan tulis (アイス → あいす).
+- 👀 **Mata Jeli**: latihan huruf kembar (ね/れ/わ, シ/ツ, ソ/ン, ク/ケ/タ, コ/ロ/ユ…) di Hari 10 & 21. Kuis biasa juga selalu memasukkan huruf kembar sebagai pengecoh, dan tips 26 huruf menjelaskan bedanya.
+- 🔁 Soal baru **"Mana pasangan hiragananya?"** untuk katakana.
+- **Romaji Otomatis** (bawaan): romaji hilang sendiri kalau semua huruf di kalimat sudah kamu pelajari; tombol **Aa** untuk mengintip.
+- Kakek Mori & NPC kota disesuaikan dengan cerita. Rincian audit: [design/14-AUDIT-SINKRON-BAB1-2.md](design/14-AUDIT-SINKRON-BAB1-2.md).
+
+## v3.5 — Bab 4 「なつやすみ」 (Musim Panas & Rahasia Gunung)
+- **12 hari baru (Hari 35–46)**: **yōon** (きゃ しゅ ちょ … 66 bunyi), **っ kecil**, **bunyi panjang**, dan kanji **上 下 中 右 左**. Goresan yōon disusun otomatis dari data KanjiVG, jadi video & penilaian tulisan tetap jalan.
+- 🎧 **Latihan Telinga**: きて/きって, かこ/かっこ, おばさん/おばあさん, ゆき/ゆうき.
+- ♨ **Menginap di onsen desa gunung** tiga sore berturut-turut, dan 🎞 **kilas balik pertama**: bermain sebagai Dewi muda di musim panas 1976 (layar sepia) dengan mini-game **Tangkap Kunang-kunang**.
+- 🎋 **Tanabata** (mini-game menyusun tanzaku), 🥁 **Natsu Matsuri** (mini-game **Taiko**), Surat #7 & #8, halaman buku #5 & #6, rahasia 「さとちゃん」.
+- Tokoh baru: Pak Pos, Sato/Mori/Dewi muda. 4 kejadian musim panas, 6 pencapaian, tab **Yōon** di Buku Catatan. Naskah sensei **910 klip**.
+
+## v3.0 — Bab 3 「てんてん と すうじ」 (Suara Baru & Angka)
 - **12 hari baru (Hari 23–34)** di musim hujan: huruf ber-**tenten ゛ & maru ゜** (50 huruf) dan **14 kanji pertama** (一〜十, 百, 円, 千, 万) lengkap dengan video, urutan goresan KanjiVG, dan penilaian tulisan.
 - Kuis & mini-game memakai pengecoh yang pas: が dilawankan dengan か, ぱ dengan ば & は.
 - 🧾 **Kerja paruh waktu di Kafe Hanamizuki**: mini-game **Kasir Kafe** (baca pesanan katakana, harga dalam kanji 三百五十円, hitung kembalian) dengan 4 level.
@@ -29,7 +43,7 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 ## Fitur utama
 
 **Belajar**
-- **Bab 1 Hiragana** (11 hari), **Bab 2 Katakana** (11 hari) & **Bab 3 Tenten & Angka** (12 hari): 142 huruf + 14 kanji, ulangan, dan ujian.
+- **Bab 1 Hiragana** (11 hari), **Bab 2 Katakana** (11 hari) & **Bab 3 Tenten & Angka** & **Bab 4 Musim Panas** (masing-masing 12 hari): 142 huruf + 66 yōon + 19 kanji, ulangan, dan ujian.
 - **Video pelajaran animasi** dari sensei: urutan goresan asli, subtitle, narasi suara sensei yang santai, putar/jeda/ulang/kecepatan.
 - **Latihan menulis bertahap** per goresan (langkah 1 → 1+2 → …), dinilai otomatis dengan stempel hanko.
 - **Ulasan Harian** (spaced repetition): huruf muncul lagi tepat sebelum lupa.
@@ -75,8 +89,14 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 ## Suara di HP
 Suara memakai Text-to-Speech bawaan perangkat. Jika video sensei tidak bersuara:
 - **Android**: Pengaturan → Aksesibilitas/Sistem → *Text-to-Speech* → mesin **Google** → pasang data suara **日本語 (Jepang)** dan **Bahasa Indonesia**.
-- **iPhone**: Pengaturan → Aksesibilitas → Konten Lisan → Suara → unduh suara Jepang (mis. Kyoko/O-ren) & Indonesia (Damayanti).
-- Matikan mode senyap, lalu di game buka **Menu → Pengaturan → Suara** untuk memilih suara paling alami dan tekan *Tes*.
+- **iPhone/iPad**: Pengaturan → Aksesibilitas → Konten Lisan → Suara → unduh suara Jepang (Kyoko/Otoya, pilih versi *Ditingkatkan/Premium* agar tidak kaku) & Indonesia (Damayanti). Tutup game sepenuhnya lalu buka lagi.
+- Di game buka **Menu → Pengaturan → Suara** untuk memilih suara paling alami dan tekan *Tes*.
+
+**Kenapa di iPhone berbeda dengan Android? (diperbaiki di v3.6.1)**
+- iOS membisukan Web Audio (efek & musik) saat tombol senyap aktif, sedangkan Android tidak. Game kini meminta sesi audio "playback" (iOS 17+: `navigator.audioSession`, iOS lama: audio senyap yang diputar berulang), jadi efek & musik tetap terdengar seperti di Android.
+- iOS menghentikan audio ("interrupted") setelah sensei berbicara lewat TTS, setelah telepon, atau saat pindah aplikasi. Dulu efek & musik bisa hilang setelah video pertama; kini audio dibangunkan lagi setelah setiap kalimat TTS dan di setiap ketukan.
+- Efek suara & musik kini memakai satu AudioContext bersama, dan rekaman suara memakai satu elemen audio yang dibuka saat ketukan pertama (iOS menolak memutar audio baru di luar ketukan).
+- Suara TTS iPhone memang berbeda dengan Google di Android; unduh versi *Ditingkatkan/Premium* agar lebih alami.
 
 ## Cara main
 - **HP**: ketuk layar untuk berjalan (atau tombol arah). Ketuk orang/benda atau tekan **A** untuk bicara. **B/MENU** membuka menu.
@@ -95,6 +115,7 @@ npm run build      # hasil siap terbit di folder dist/
 npm run preview    # coba hasil build
 npm run typecheck  # cek TypeScript
 npm run build:pages  # hasil build ke folder docs/ (untuk GitHub Pages tanpa Actions)
+npm run test:bab4    # uji browser Bab 4 (yōon, onsen, kilas balik, Tanabata, matsuri)
 npm run test:bab3    # uji browser Bab 3 (kuis tenten, kasir, pantai, Pasar Pagi)
 npm run test:story   # uji browser alur cerita (butuh: pip install playwright && python -m playwright install chromium; jalankan `npm run preview` dulu di port 4173)
 ```
@@ -131,6 +152,7 @@ design/                     dokumen desain lengkap v3 (cerita Bab 1–6, kurikul
 public/js/data*.js          ★ materi pelajaran, cerita, tokoh, kejadian harian (data4.js = Bab 3)
 public/js/strokes3.js       urutan goresan tenten & kanji angka (KanjiVG, CC BY-SA 3.0)
 src/story/scenes3.ts, kasir.ts  cerita Bab 3 & mini-game Kasir Kafe
+src/story/scenes4.ts, games4.ts cerita Bab 4 & mini-game (latihan telinga, kunang-kunang, tanzaku, taiko)
 scripts/sensei-vo.mjs       pembuat naskah suara sensei dari data pelajaran
 public/js/places.js         ★ tempat di kota (konbini, stasiun, kafe, ramen, toko buku, pos polisi, pantai)
 public/js/places2.js        ★ jalur kereta (やま, まち, てら), menu restoran, Buku Makanan, mini-game dunia Jepang

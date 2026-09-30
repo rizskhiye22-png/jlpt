@@ -192,7 +192,7 @@ const Game = (() => {
     if (npc.id === 'yuki') return runLines([{ w: 'yuki', t: 'Sst! Sensei sudah mau mulai. Ayo ke depan!' }], ['yuki']);
     if (npc.id === 'kenta') return runLines([{ w: 'kenta', e: 'happy', t: 'Semoga pelajarannya seru hari ini!' }], ['kenta']);
     if (npc.id === 'hana') return runLines([{ w: 'hana', e: 'happy', t: 'Semangat belajar, ya! Kalau bingung, tanya aku.' }], ['hana']);
-    const pool = AMBIENT[npc.id];
+    const pool = npc.id === 'ojii' && q('mochi').state === 'done' && AMBIENT.ojii_soft ? AMBIENT.ojii_soft : AMBIENT[npc.id];
     if (pool) return runLines(pool[(S().day - 1) % pool.length], [npc.id]);
   }
 
@@ -324,7 +324,7 @@ const Game = (() => {
         <div class="r-title">Tamat — Terima kasih!</div>
         <div class="big-jp" style="font-size:24px;line-height:1.6">${CHAPTERS.map(c => c.jp).join('<br>')}</div>
         <p>Kamu sudah mempelajari <b>${S().kana.length}</b> huruf & kanji dan banyak kalimat sehari-hari bersama teman-temanmu.</p>
-        <p class="muted">Bab ${CHAPTERS.length + 1} (musim panas di gunung やま) sedang disiapkan! Sementara itu, terus latihan lewat <b>Latihan Bebas</b> dan buka 📮 Kotak Surat.</p>
+        <p class="muted">Bab ${CHAPTERS.length + 1} sedang disiapkan! Sementara itu, terus latihan lewat <b>Latihan Bebas</b> dan buka 📮 Kotak Surat.</p>
         <button class="btn" type="button">Lanjut ▶</button>
       </div>`, 'center');
     Sound.star();
@@ -432,9 +432,9 @@ const Game = (() => {
     const d = day(), n = S().day;
     Music.play('school');
     if (d.type === 'lesson') {
-      await UI.say({ w: 'sensei', t: 'Pelajaran kedua: latihan soal. Tidak apa-apa kalau salah!' });
+      await UI.say({ w: 'sensei', t: d.drill === 'rawan' ? 'Pelajaran kedua: latihan Mata Jeli! Huruf-huruf ini sering tertukar, jadi perhatikan bentuknya baik-baik.' : d.drill ? 'Pelajaran kedua: latihan telinga. Dengarkan baik-baik!' : 'Pelajaran kedua: latihan soal. Tidak apa-apa kalau salah!' });
       UI.hideDialog();
-      const r = await Lesson.quiz({ focus: d.kana, count: 10, title: 'Latihan Soal' });
+      const r = d.drill && window.Story ? await Story.drill(d.drill) : await Lesson.quiz({ focus: d.kana, count: 10, title: 'Latihan Soal' });
       const g = await Lesson.results(r, false);
       S().days[n] = { stars: g.stars, correct: r.correct, total: r.total };
       const react = g.stars === 3 ? { e: 'happy', jp: 'すばらしい！', ro: 'subarashii!', id: 'Luar biasa!' }
@@ -731,11 +731,11 @@ const Game = (() => {
 
   function book(tab = 'hira') {
     const learned = new Set(S().kana);
-    const extraTabs = typeof DAKU_GRID !== 'undefined' && S().kana.some(k => DAKU_GRID.flat().includes(k) || KANJI_GRID.flat().includes(k)) ? [['daku', 'Tenten'], ['kanji', 'Kanji']] : [];
+    const extraTabs = typeof DAKU_GRID !== 'undefined' && S().kana.some(k => DAKU_GRID.flat().includes(k) || KANJI_GRID.flat().includes(k)) ? [['daku', 'Tenten'], ...(typeof YOUON_GRID !== 'undefined' && S().kana.some(k => YOUON_GRID.flat().includes(k)) ? [['youon', 'Yōon']] : []), ['kanji', 'Kanji']] : [];
     const tabs = `<div class="tabs">${[['hira', 'Hiragana'], ['kata', 'Katakana'], ...extraTabs, ['words', 'Kata'], ['phrases', 'Kalimat']].map(([k, l]) => `<button class="tab ${k === tab ? 'on' : ''}" data-tab="${k}" type="button">${l}</button>`).join('')}</div>`;
     let body = '';
-    if (tab === 'hira' || tab === 'kata' || tab === 'daku' || tab === 'kanji') {
-      const grid = { hira: HIRAGANA_GRID, kata: KATAKANA_GRID, daku: typeof DAKU_GRID !== 'undefined' ? DAKU_GRID : [], kanji: typeof KANJI_GRID !== 'undefined' ? KANJI_GRID : [] }[tab];
+    if (tab === 'hira' || tab === 'kata' || tab === 'daku' || tab === 'kanji' || tab === 'youon') {
+      const grid = { hira: HIRAGANA_GRID, kata: KATAKANA_GRID, daku: typeof DAKU_GRID !== 'undefined' ? DAKU_GRID : [], kanji: typeof KANJI_GRID !== 'undefined' ? KANJI_GRID : [], youon: typeof YOUON_GRID !== 'undefined' ? YOUON_GRID : [] }[tab];
       const n = grid.flat().filter(k => k && learned.has(k)).length;
       body = `<p class="muted">${n} / ${grid.flat().filter(Boolean).length} ${tab === 'kanji' ? 'kanji' : 'huruf'} dipelajari. Ketuk huruf untuk detail.</p><div class="kgrid">` +
         grid.flat().map(k => {
@@ -893,7 +893,7 @@ const Game = (() => {
       <div class="win settings">
         <div class="w-title">Pengaturan</div>
         <div class="sec-h">Belajar</div>
-        ${tog('romaji', 'Tampilkan romaji', 'Cara baca huruf latin di bawah teks Jepang')}
+        <div class="set col"><span>Romaji<small>Otomatis = romaji hilang sendiri kalau semua hurufnya sudah kamu pelajari (ketuk Aa untuk mengintip)</small></span><div class="seg">${[['auto', 'Otomatis'], ['on', 'Selalu'], ['off', 'Mati']].map(([v, l]) => `<button type="button" class="${(s.romaji === 'auto' ? 'auto' : s.romaji ? 'on' : 'off') === v ? 'on' : ''}" data-ro="${v}">${l}</button>`).join('')}</div></div>
         ${tog('relax', 'Mode santai', 'Tanpa batas waktu di permainan')}
         ${seg('text', 'Kecepatan teks', [['slow', 'Pelan'], ['fast', 'Cepat'], ['instant', 'Langsung']])}
         <div class="sec-h">Suara</div>
@@ -905,7 +905,8 @@ const Game = (() => {
         ${vsel('ja', 'Suara bahasa Jepang', 'Pilih yang paling alami (Natural / Google / Online biasanya terbaik)')}
         ${vsel('id', 'Suara narasi sensei', 'Suara bahasa Indonesia untuk penjelasan video')}
         <div class="row"><button class="btn ghost small" data-a="test" type="button">♪ Tes Jepang</button><button class="btn ghost small" data-a="testid" type="button">♪ Tes narasi</button></div>
-        ${Sound.hasJa() ? '' : '<p class="warn">Suara bahasa Jepang belum ditemukan. Di Android: Pengaturan → Text-to-Speech → Google → pasang data suara 日本語 (Jepang) & Bahasa Indonesia, lalu muat ulang game.</p>'}
+        ${Sound.hasJa() ? '' : Sound.isIOS ? '<p class="warn">Suara bahasa Jepang belum ditemukan. Di iPhone/iPad: Pengaturan → Aksesibilitas → Konten Lisan → Suara → Jepang (dan Indonesia), unduh suaranya, lalu muat ulang game.</p>' : '<p class="warn">Suara bahasa Jepang belum ditemukan. Di Android: Pengaturan → Text-to-Speech → Google → pasang data suara 日本語 (Jepang) & Bahasa Indonesia, lalu muat ulang game.</p>'}
+        ${Sound.isIOS ? '<p class="muted small">iPhone/iPad: suara bawaan (Kyoko, Damayanti) terdengar kaku. Untuk suara yang lebih alami, buka Pengaturan → Aksesibilitas → Konten Lisan → Suara, unduh versi <b>Ditingkatkan/Premium</b> (Jepang: Kyoko atau Otoya, Indonesia: Damayanti), tutup game sepenuhnya lalu buka lagi, dan pilih suaranya di atas.</p>' : ''}
         <div class="sec-h">Grafik</div>
         ${seg('quality', 'Kualitas 3D', [['low', 'Hemat'], ['normal', 'Normal'], ['high', 'Tinggi']])}
         ${tog('fx', 'Kelopak sakura', 'Efek kelopak berjatuhan di kota')}
@@ -922,6 +923,10 @@ const Game = (() => {
         s[i.dataset.k] = i.checked; Save.write();
         if (i.dataset.k === 'fx') World.setQuality && World.setQuality(s.quality === 'normal' ? 'normal' : s.quality);
         if (i.dataset.k === 'force2d') UI.toast('Muat ulang halaman untuk menerapkan.');
+      });
+      p.querySelectorAll('[data-ro]').forEach(b => b.onclick = () => {
+        s.romaji = b.dataset.ro === 'auto' ? 'auto' : b.dataset.ro === 'on'; Save.write(); Sound.blip();
+        p.querySelectorAll('[data-ro]').forEach(x => x.classList.toggle('on', x === b));
       });
       p.querySelectorAll('input[type=range]').forEach(i => i.oninput = () => { s[i.dataset.r] = +i.value; Save.write(); if (i.dataset.r === 'music') Music.setVolume(); });
       p.querySelectorAll('[data-seg]').forEach(b => b.onclick = () => {

@@ -259,6 +259,10 @@ export const SCENES: Scene[] = [
 
 /** Buku harian cerita (ditampilkan di buku harian malam itu bila flag-nya ada). */
 export const DIARY: Array<{ flag: string; text: string }> = [
+  { flag: 'ch4_done', text: 'Kakek Mori mengangguk pada Nenek di bawah kembang api. Dan Nenek akhirnya mengaku: orang ketiga itu Mori-kun.' },
+  { flag: 'flashback1', text: 'Aku bermimpi menjadi Eyang di musim panas 1976. Kunang-kunang, gambar tiga kelopak… begitulah buku itu lahir.' },
+  { flag: 'sato_mori_argue', text: 'Kakek Mori bilang "sudah kukirim". Tapi kenapa tangannya gemetar?' },
+  { flag: 'chan_revealed', text: 'さとちゃん. Eyang dulu memanggil Nenek begitu.' },
   { flag: 'ch3_done', text: 'Kafe Hana selamat! Dan aku hampir yakin: orang ketiga di foto adalah Kakek Mori.' },
   { flag: 'page3', text: 'Nenek Sato berdiri di tempat yang sama dengan foto sepia. 50 tahun kemudian.' },
   { flag: 'market_plan', text: 'Warga akan mengadakan Pasar Pagi. Hana berani bicara di depan semua orang!' },

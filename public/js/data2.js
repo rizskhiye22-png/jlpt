@@ -7,50 +7,50 @@
 
 /* ---------- Katakana ---------- */
 Object.assign(KANA, {
-  'ア': { ro: 'a',   tip: 'Seperti kapak (axe) yang miring: "A".' },
+  'ア': { ro: 'a',   tip: 'Seperti kapak (axe) yang miring: "A". Kakinya panjang ke kiri bawah; マ hanya punya goresan pendek ke dalam.' },
   'イ': { ro: 'i',   tip: 'Seperti orang bersandar ke tiang: "I".' },
   'ウ': { ro: 'u',   tip: 'Mirip う versi bersudut, dengan titik di atas: "U".' },
   'エ': { ro: 'e',   tip: 'Seperti balok besi (I-beam) untuk bangunan: "E".' },
   'オ': { ro: 'o',   tip: 'Seperti orang berolahraga dengan tangan terbuka: "O".' },
   'カ': { ro: 'ka',  tip: 'Mirip か hiragana tanpa titik: "KA".' },
   'キ': { ro: 'ki',  tip: 'Mirip き versi lurus, seperti anak kunci: "KI".' },
-  'ク': { ro: 'ku',  tip: 'Seperti paruh burung dilihat dari samping: "KU".' },
-  'ケ': { ro: 'ke',  tip: 'Seperti huruf "K" yang miring: "KE".' },
-  'コ': { ro: 'ko',  tip: 'Seperti sudut kotak yang terbuka: "KO".' },
+  'ク': { ro: 'ku',  tip: 'Seperti paruh burung dilihat dari samping: "KU". Hanya 2 goresan; ケ garisnya menembus ke kanan, タ ada garis kecil di dalam.' },
+  'ケ': { ro: 'ke',  tip: 'Seperti huruf "K" yang miring: "KE". Garis mendatarnya menembus ke kanan, beda dengan ク.' },
+  'コ': { ro: 'ko',  tip: 'Seperti kotak yang terbuka di kiri: "KO". Kotak tertutup = ロ, garis bawah menjulur = ユ.' },
   'サ': { ro: 'sa',  tip: 'Seperti rak dengan dua tiang, mirip さ: "SA".' },
   'シ': { ro: 'shi', tip: 'Dua titik di kiri, goresan panjang NAIK dari bawah: "SHI". Beda dengan ツ!' },
   'ス': { ro: 'su',  tip: 'Seperti orang berseluncur dengan kaki terbuka: "SU".' },
   'セ': { ro: 'se',  tip: 'Mirip せ hiragana: "SE".' },
   'ソ': { ro: 'so',  tip: 'Dua goresan, yang panjang TURUN dari atas: "SO". Beda dengan ン!' },
   'タ': { ro: 'ta',  tip: 'Seperti ク dengan garis tambahan di tengah: "TA".' },
-  'チ': { ro: 'chi', tip: 'Mirip angka 千 (seribu) versi miring: "CHI".' },
+  'チ': { ro: 'chi', tip: 'Topi miring di atas, lalu tanda tambah: "CHI". テ topinya lurus mendatar.' },
   'ツ': { ro: 'tsu', tip: 'Dua titik di atas, goresan panjang TURUN dari atas: "TSU". Beda dengan シ!' },
-  'テ': { ro: 'te',  tip: 'Seperti tiang telepon dengan kabel: "TE".' },
+  'テ': { ro: 'te',  tip: 'Seperti tiang telepon dengan kabel: "TE". Garis atasnya lurus; kalau miring, itu チ.' },
   'ト': { ro: 'to',  tip: 'Seperti tongkat dengan cabang kecil: "TO".' },
-  'ナ': { ro: 'na',  tip: 'Seperti tanda tambah yang miring: "NA".' },
+  'ナ': { ro: 'na',  tip: 'Seperti tanda tambah dengan kaki miring: "NA". Garis mendatarnya lurus; kalau dua garis saling silang miring, itu メ.' },
   'ニ': { ro: 'ni',  tip: 'Dua garis, sama seperti angka 二 (dua = "ni")!' },
-  'ヌ': { ro: 'nu',  tip: 'Seperti sumpit yang menjepit mi (noodle): "NU".' },
+  'ヌ': { ro: 'nu',  tip: 'Seperti sumpit yang menjepit mi (noodle): "NU". Mirip ス, tapi ada goresan kecil yang memotong di tengah.' },
   'ネ': { ro: 'ne',  tip: 'Seperti nenek berdiri dengan tongkat: "NE".' },
-  'ノ': { ro: 'no',  tip: 'Satu goresan miring, seperti menulis "NO" terburu-buru.' },
+  'ノ': { ro: 'no',  tip: 'Satu goresan miring, seperti menulis "NO" terburu-buru. Tambah satu titik = ソ.' },
   'ハ': { ro: 'ha',  tip: 'Dua garis seperti atap terbuka, orang tertawa "HAha": "HA".' },
   'ヒ': { ro: 'hi',  tip: 'Seperti orang duduk bersandar sambil terkekeh "HIhi".' },
-  'フ': { ro: 'fu',  tip: 'Seperti bendera kecil yang tertiup angin "FUuu".' },
+  'フ': { ro: 'fu',  tip: 'Seperti bendera kecil yang tertiup angin "FUuu". Cuma satu goresan; ワ punya tiang kecil di kiri.' },
   'ヘ': { ro: 'he',  tip: 'Sama persis dengan へ hiragana: "HE".' },
   'ホ': { ro: 'ho',  tip: 'Seperti salib dengan dua kaki kecil, mirip ほ: "HO".' },
-  'マ': { ro: 'ma',  tip: 'Seperti kepala maskot dengan dagu runcing: "MA".' },
+  'マ': { ro: 'ma',  tip: 'Seperti kepala maskot dengan dagu runcing: "MA". Goresan keduanya pendek masuk ke dalam (ア kakinya panjang).' },
   'ミ': { ro: 'mi',  tip: 'Tiga garis miring, seperti angka 3 (mittsu): "MI".' },
   'ム': { ro: 'mu',  tip: 'Seperti lengan berotot (muscle): "MU".' },
-  'メ': { ro: 'me',  tip: 'Seperti tanda silang ✕, tutup mata (me): "ME".' },
+  'メ': { ro: 'me',  tip: 'Seperti tanda silang ✕, tutup mata (me): "ME". ナ garis mendatarnya lurus seperti tanda tambah.' },
   'モ': { ro: 'mo',  tip: 'Mirip も hiragana tanpa lengkungan: "MO".' },
   'ヤ': { ro: 'ya',  tip: 'Mirip や hiragana: "YA".' },
-  'ユ': { ro: 'yu',  tip: 'Seperti kursi atau gagang pintu: "YU".' },
+  'ユ': { ro: 'yu',  tip: 'Seperti kursi atau gagang pintu: "YU". Garis bawahnya menjulur keluar ke kanan, beda dengan コ.' },
   'ヨ': { ro: 'yo',  tip: 'Seperti huruf E yang dibalik: "YO".' },
   'ラ': { ro: 'ra',  tip: 'Garis pendek di atas + フ: "RA".' },
   'リ': { ro: 'ri',  tip: 'Mirip り hiragana versi lurus: "RI".' },
   'ル': { ro: 'ru',  tip: 'Seperti dua kaki, satu menendang ke kanan: "RU".' },
   'レ': { ro: 're',  tip: 'Seperti huruf "L" yang miring: "RE".' },
-  'ロ': { ro: 'ro',  tip: 'Kotak seperti mulut. Jangan tertukar dengan ろ hiragana: "RO".' },
-  'ワ': { ro: 'wa',  tip: 'Seperti ウ tanpa titik di atas: "WA".' },
+  'ロ': { ro: 'ro',  tip: 'Kotak tertutup seperti mulut: "RO". Bunyinya sama dengan ろ. Jangan tertukar dengan コ yang terbuka di kiri.' },
+  'ワ': { ro: 'wa',  tip: 'Seperti ウ tanpa titik di atas: "WA". Ada titik = ウ, tanpa tiang kiri = フ.' },
   'ヲ': { ro: 'wo',  tip: 'Seperti ワ dengan garis tambahan. Jarang sekali dipakai: "WO".' },
   'ン': { ro: 'n',   tip: 'Dua goresan, yang panjang NAIK dari bawah: "N". Beda dengan ソ!' },
 });
@@ -60,6 +60,14 @@ const KATAKANA_GRID = [
   ['ナ','ニ','ヌ','ネ','ノ'], ['ハ','ヒ','フ','ヘ','ホ'], ['マ','ミ','ム','メ','モ'], ['ヤ','','ユ','','ヨ'],
   ['ラ','リ','ル','レ','ロ'], ['ワ','','','','ヲ'], ['ン','','','',''],
 ];
+// Huruf rawan tertukar (dipakai video sensei, pengecoh soal, dan latihan Mata Jeli).
+// Nilai = daftar huruf mirip (yang pertama dipakai di video). Hanya pasangan yang BUNYINYA BEDA.
+const SIMILAR = {
+  'あ': 'お', 'お': 'あ', 'い': 'り', 'り': 'い', 'う': 'つ', 'つ': 'う', 'き': 'さ', 'さ': 'ちき', 'ち': 'さ',
+  'た': 'な', 'な': 'た', 'は': 'ほ', 'ほ': 'は', 'ぬ': 'め', 'め': 'ぬ', 'ね': 'れわ', 'れ': 'ねわ', 'わ': 'ねれ', 'る': 'ろ', 'ろ': 'る',
+  'シ': 'ツ', 'ツ': 'シ', 'ソ': 'ンノ', 'ン': 'ソ', 'ノ': 'ソ', 'ク': 'ケタ', 'ケ': 'ク', 'タ': 'ク', 'ウ': 'ワ', 'ワ': 'ウフ', 'フ': 'ワ',
+  'ア': 'マ', 'マ': 'ア', 'チ': 'テ', 'テ': 'チ', 'ヌ': 'ス', 'ス': 'ヌ', 'ユ': 'コ', 'コ': 'ロユ', 'ロ': 'コ', 'ナ': 'メ', 'メ': 'ナ',
+};
 const IS_KATA = c => c >= '゠' && c <= 'ヿ' && c !== 'ー';
 // Tanda "ー" (bunyi panjang) selalu dianggap sudah dikenal
 const knownChar = (c, set) => c === 'ー' || c === ' ' || set.has(c);
@@ -98,6 +106,30 @@ WORDS.push(
   { jp: 'アメリカ', ro: 'amerika', id: 'Amerika' },
   { jp: 'ワイン', ro: 'wain', id: 'anggur (minuman)' },
   { jp: 'ナース', ro: 'naasu', id: 'perawat' },
+  // Sinkron v3.6: kata yang bisa dibaca per baris katakana (Hari 13–21)
+  { jp: 'カカオ', ro: 'kakao', id: 'kakao' },
+  { jp: 'キウイ', ro: 'kiui', id: 'buah kiwi' },
+  { jp: 'オーケー', ro: 'ookee', id: 'oke' },
+  { jp: 'サーカス', ro: 'saakasu', id: 'sirkus' },
+  { jp: 'シーソー', ro: 'shiisoo', id: 'jungkat-jungkit' },
+  { jp: 'ソース', ro: 'soosu', id: 'saus' },
+  { jp: 'チーター', ro: 'chiitaa', id: 'cheetah' },
+  { jp: 'ツアー', ro: 'tsuaa', id: 'tur wisata' },
+  { jp: 'テスト', ro: 'tesuto', id: 'ulangan / tes' },
+  { jp: 'トースト', ro: 'toosuto', id: 'roti panggang' },
+  { jp: 'ツナ', ro: 'tsuna', id: 'tuna' },
+  { jp: 'カヌー', ro: 'kanuu', id: 'kano' },
+  { jp: 'ハート', ro: 'haato', id: 'hati (bentuk ♥)' },
+  { jp: 'コーヒー', ro: 'koohii', id: 'kopi' },
+  { jp: 'ヘア', ro: 'hea', id: 'rambut (gaya rambut)' },
+  { jp: 'トマト', ro: 'tomato', id: 'tomat' },
+  { jp: 'ミキサー', ro: 'mikisaa', id: 'blender' },
+  { jp: 'チーム', ro: 'chiimu', id: 'tim' },
+  { jp: 'モーター', ro: 'mootaa', id: 'motor (mesin)' },
+  { jp: 'タイヤ', ro: 'taiya', id: 'ban' },
+  { jp: 'ユニホーム', ro: 'yunihoomu', id: 'seragam olahraga' },
+  { jp: 'エアコン', ro: 'eakon', id: 'AC (pendingin udara)' },
+  { jp: 'ワニ', ro: 'wani', id: 'buaya' },
 );
 
 /* ---------- Bab ---------- */
@@ -398,7 +430,7 @@ DAYS.push(
     ],
   },
   { // HARI 21
-    title: 'Katakana Terakhir', sub: 'ワ ヲ ン', type: 'lesson', chapter: 2,
+    title: 'Katakana Terakhir', sub: 'ワ ヲ ン', type: 'lesson', chapter: 2, drill: 'rawan',
     kana: ['ワ','ヲ','ン'],
     morning: { npc: 'yuki', at: 'gate', lines: [
       { w: 'yuki', e: 'happy', jp: 'ぶんかさい まで あと いちにち！', ro: 'bunkasai made ato ichinichi!', id: 'Festival tinggal satu hari lagi!' },
@@ -409,6 +441,7 @@ DAYS.push(
     ]},
     cls: [
       { w: 'sensei', t: 'Huruf terakhir: ワ ヲ ン. ヲ hampir tidak pernah dipakai.' },
+      { w: 'sensei', t: 'ン dan ソ, シ dan ツ… katakana punya banyak huruf kembar. Pelajaran kedua nanti: "Mata Jeli"!' },
       { w: 'sensei', e: 'happy', t: 'Setelah ini kamu bisa membaca SEMUA hiragana dan katakana dasar. Hebat!' },
     ],
     brk: { npc: 'kenta', with: 'hana', at: 'park', lines: [
