@@ -66,7 +66,7 @@ Huruf yang sudah dipelajari harus **muncul lagi tepat sebelum lupa**.
 - **Kamus bergambar**: setiap kata di Buku Catatan punya ilustrasi pixel & contoh kalimat.
 
 ### 3.3b Simulasi kerja — ✅
-- 💼 **Simulasi Kerja** (Menu → Kerja): pabrik makanan, kaigo, genba konstruksi, restoran. Atasan memandu satu shift, kuis situasi, urutkan langkah, pilih APD, cek cepat ヨシ/NG, nilai S–C, kosakata kerja, info kerja nyata (tugas, jadwal, visa SSW).
+- 💼 **Simulasi Kerja** (Menu → Kerja, atau kereta ke **しごとまち**): pabrik makanan, panti wreda (kaigo), genba konstruksi, izakaya sebagai bangunan yang bisa dimasuki. Ruangan kerja bergambar: atasan berjalan ke pos, memberi instruksi lewat balon kata, panah menunjuk tujuan, pemain berjalan ke pos lalu mengerjakan tugas (kuis situasi, urutkan langkah, pilih APD, cek cepat ヨシ/NG). Tamu/penghuni/teman kerja ikut bergerak, petunjuk saat diam, nilai S–C, kosakata kerja, info kerja nyata.
 - 🔜 Bidang lain: pertanian (農業), perawatan gedung (ビルクリーニング), manufaktur (製造業), dan latihan wawancara kerja (めんせつ).
 
 ### 3.4 Pelacakan kemampuan — 🔜

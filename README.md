@@ -14,14 +14,13 @@ Pelajaran **hiragana & katakana** kini memutar video guru sungguhan dari YouTube
 - **⚙ Atur waktu bagian ini**: tandai detik mulai/selesai tiap baris sambil menonton (tersimpan di HP). **📋 Salin kode waktu** menghasilkan kode untuk diisi ke `SEG` di `public/js/ytvideo.js`, supaya semua pemain mendapat waktu yang pas.
 - Tanpa internet, atau kalau dimatikan di **Pengaturan → Video sensei YouTube**, game otomatis memakai video animasi.
 
-## Baru: 💼 Simulasi Kerja (しごと たいけん)
-Rasakan **satu hari kerja di Jepang** di bidang yang banyak diisi pekerja Indonesia (Tokutei Ginou / magang). Buka **Menu → 💼 Kerja**.
-- 🍙 **Pabrik Makanan** (食品製造): cek penampilan, urutan cuci tangan, rol perekat, apel pagi & cek kesehatan, cek onigiri di conveyor (**ヨシ！/NG**), lapor benda asing (ほうれんそう), suhu pemanasan 75℃ 1 menit, 5S.
-- 🧓 **Kaigo** (介護): serah terima shift, **声かけ** sopan, cek demam, cara bantu makan supaya tidak tersedak (誤嚥), pindah ke kursi roda, suhu air mandi, lansia terjatuh, cara melapor.
-- 🏗 **Genba** (建設): salam **ご安全に！**, alat pelindung diri, tali dagu helm, **KY活動** 4 ronde, patroli bahaya, **指差呼称**「足元ヨシ！」, bahasa lapangan (ねこ = gerobak!), heat stroke, おつかれさま vs ごくろうさま.
-- 🍶 **Restoran / Izakaya** (外食): alur melayani tamu, いらっしゃいませ, 〜名様, 「とりあえず生！」, alergi tamu, cek piring, kasir & kembalian.
-
-Atasan (hanchō, leader, mandor, tenchō) memandu shift seperti bot: memberi instruksi dalam bahasa Jepang, bertanya, lalu menjelaskan **kenapa** jawabanmu benar atau salah. Di akhir shift ada **nilai S/A/B/C**, gaji poin 🌸, stempel, dan **kosakata kerja** yang bisa didengarkan. Tombol **ℹ Info** berisi gambaran kerja nyata: tugas harian, contoh jadwal, kondisi kerja, jalur visa & ujian, serta tips.
+## Baru: 💼 Simulasi Kerja (しごと たいけん) & kawasan kerja しごとまち
+Rasakan **satu hari kerja di Jepang** di bidang yang banyak diisi pekerja Indonesia (Tokutei Ginou / magang).
+- 🚃 **Kawasan kerja しごとまち**: beli tiket di stasiun → naik kereta. Ada 4 bangunan yang bisa dimasuki: 🍙 **こうじょう** (pabrik makanan), 🧓 **かいご ホーム** (panti wreda), 🏗 **けんせつ** (proyek konstruksi), 🍶 **いざかや** (restoran). Bu Rina (pembimbing kerja) menyambut di depan stasiun. Bisa juga dari **Menu → 💼 Kerja**.
+- 🎮 **Simulasi aktif, bukan cuma bacaan**: ruangan kerja bergambar dengan pos-pos kerja berlabel Jepang (ロッカー, てあらいば, ライン, しょくどう, KYボード, レジ…). Atasan **berjalan ke pos berikutnya**, memberi instruksi lewat **balon kata** (「てあらいば へ いこう！」), **panah menunjuk tujuan**, lalu kamu mengetuk pos itu dan karaktermu berjalan ke sana untuk mengerjakan tugasnya.
+- Atasan **bereaksi langsung** (いいね！/ちがう よ…), memberi **petunjuk kalau kamu diam terlalu lama**, dan teman kerja, penghuni panti, atau tamu ikut bergerak di ruangan (tamu izakaya masuk, duduk, lalu ke kasir). Ada conveyor yang berjalan, crane yang berayun, dan lentera izakaya.
+- Jam kerja berjalan (07:50 → 17:00), ruangan makin gelap di malam hari, ada daftar **📋 Tugas shift** dengan ✅/❌, dan skor ⭐.
+- 🍙 **Pabrik**: penampilan, cuci tangan, rol perekat, apel pagi, cek onigiri **ヨシ！/NG**, lapor benda asing, suhu 75℃ 1 menit, 5S. 🧓 **Kaigo**: serah terima, **声かけ**, demam, bantu makan (誤嚥), kursi roda, mandi, lansia jatuh, laporan. 🏗 **Genba**: **ご安全に！**, APD, **KY活動**, patroli bahaya, **指差呼称**, ねこ = gerobak, heat stroke. 🍶 **Izakaya**: alur melayani, 〜名様, 「とりあえず生！」, alergi, cek piring, kembalian.
 
 ## v3.6 — Sinkron Bab 1–2 (Hiragana & Katakana)
 - **Contoh kata di video sensei** kini hanya memakai huruf yang sudah dipelajari (31 kata baru disusun per baris). Katakana yang belum diajarkan dibantu hiragana kecil di papan tulis (アイス → あいす).

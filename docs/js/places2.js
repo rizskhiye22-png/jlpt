@@ -478,6 +478,7 @@ const Places2 = (() => {
     { id: 'yama', jp: 'やま', ro: 'yama', name: 'desa gunung', price: 300, map: 'yama', at: [5, 5], dir: 'down', desc: 'Desa gunung: penginapan onsen, toko soba, sawah, daun momiji.' },
     { id: 'tera', jp: 'てら', ro: 'tera', name: 'kota kuil', price: 400, map: 'tera', at: [5, 19], dir: 'right', desc: 'Kota kuil kuno: kuil Buddha, lonceng, upacara teh, rusa.' },
     { id: 'machi', jp: 'まち', ro: 'machi', name: 'kota besar', price: 500, map: 'machi', at: [6, 6], dir: 'down', desc: 'Kota besar: sushi putar, department store, karaoke, purikura.' },
+    { id: 'shigoto', jp: 'しごとまち', ro: 'shigotomachi', name: 'kawasan kerja', price: 200, map: 'shigoto', at: [5, 5], dir: 'down', desc: 'Kawasan kerja: pabrik makanan, panti wreda (kaigo), proyek konstruksi, izakaya. Coba simulasi kerja!' },
   ];
   const DEST = Object.fromEntries(DESTS.map(d => [d.id, d]));
   async function ticketMachine() {
