@@ -665,6 +665,7 @@ const Game = (() => {
             <button class="mi tile-mi" data-a="drill" type="button"><i>✏️</i><span>Latihan</span></button>
             <button class="mi tile-mi" data-a="bag" type="button"><i>🎒</i><span>Tas</span></button>
             <button class="mi tile-mi" data-a="friends" type="button"><i>👥</i><span>Teman</span></button>
+            <button class="mi tile-mi" data-a="kerja" type="button"><i>💼</i><span>Kerja</span></button>
             <button class="mi tile-mi" data-a="food" type="button"><i>🍱</i><span>Makanan</span></button>
             <button class="mi tile-mi" data-a="pets" type="button"><i>🐱</i><span>Hewan</span></button>
             <button class="mi tile-mi" data-a="fish" type="button"><i>🎣</i><span>Ikan</span></button>
@@ -692,6 +693,7 @@ const Game = (() => {
         if (a === 'friends') { if (window.ReactUI) await window.ReactUI.friends(); }
         if (a === 'letters') { if (window.ReactUI) await window.ReactUI.letters(); }
         if (a === 'food' && window.Places && Places.foodBook) await Places.foodBook();
+        if (a === 'kerja' && typeof Kerja !== 'undefined') { await Kerja.open(); UI.hideDialog(); }
         if (a === 'pets') await Relax.petShop();
         if (a === 'fish') await Relax.fishBook();
         if (a === 'ach') await Extras.achPage();

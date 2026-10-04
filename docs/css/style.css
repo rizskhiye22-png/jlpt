@@ -834,3 +834,39 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .tk-drum.ka { background: #4f7fb0; color: #fff; }
 .tk-drum small { font: 700 16px "DotGothic16", monospace; }
 .tk-drum.hit { transform: scale(.94); }
+
+/* ---------- Simulasi Kerja (kerja.js) ---------- */
+.kj .sec-h { margin-top: 12px; }
+.kj-jobs { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.kj-job { display: flex; gap: 10px; align-items: center; border: 2px solid var(--ink); border-radius: 10px; background: #fff; padding: 8px; text-align: left; }
+.kj-ic { font-size: 34px; width: 46px; text-align: center; flex: none; }
+.kj-jt { flex: 1; min-width: 0; font-size: 14px; line-height: 1.35; }
+.kj-jb { display: flex; flex-direction: column; gap: 4px; width: 92px; flex: none; }
+.kj-jb .btn.small { margin-top: 0; min-height: 34px; padding: 5px 6px; font-size: 13px; }
+.kj-best b { padding: 0 5px; border-radius: 4px; background: #f6d44a; }
+.kj-opts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.kj-o, .kj-t { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font: inherit; font-size: 15px; cursor: pointer; }
+.kj-o small, .kj-t small { color: #7a6a7a; font-size: 11px; }
+.kj-o.bad { background: #f6c6c6; animation: kjShake .3s; }
+@keyframes kjShake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.kj-seq { text-align: left; margin: 6px 0 0 18px; padding: 0; font-size: 14px; }
+.kj-seq li { margin: 2px 0; } .kj-seq small { color: #7a6a7a; }
+.kj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; }
+.kj-t.sel { background: #fff3c4; box-shadow: inset 0 0 0 2px #e0a800; }
+.kj-t.right { background: #d4f0dd; } .kj-t.wrong { background: #f6c6c6; }
+.kj-ro { font-size: 11px; color: #7a6a7a; }
+.kj-msg { min-height: 1.4em; text-align: left; line-height: 1.45; margin: 6px 0; }
+.kj-card { border: 2px solid var(--ink); border-radius: 12px; background: #fffaf0; padding: 12px 8px; margin: 6px 0; }
+.kj-emo { font-size: 64px; line-height: 1.1; position: relative; display: inline-block; }
+.kj-b { position: absolute; right: -14px; bottom: -4px; font-size: 30px; }
+.kj-d { font-size: 15px; margin-top: 6px; min-height: 2.6em; }
+.kj-yn { display: flex; gap: 10px; } .kj-yn .btn { flex: 1; font-size: 18px; }
+.kj-res { display: flex; gap: 14px; align-items: center; text-align: left; margin: 8px 0; }
+.kj-rank { font: 700 54px "DotGothic16", sans-serif; width: 78px; height: 78px; display: grid; place-items: center; border: 3px solid var(--ink); border-radius: 12px; background: #fff; flex: none; }
+.kj-rank.rS { background: #f6d44a; } .kj-rank.rA { background: #bfe3c9; } .kj-rank.rB { background: #cfe0f4; } .kj-rank.rC { background: #eadfe8; }
+.kj-voc { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.kj-v { position: relative; display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 6px 22px 6px 8px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+.kj-v b { font-size: 16px; } .kj-v small { color: #7a6a7a; font-size: 11px; }
+.kj-v i { position: absolute; right: 6px; top: 6px; font-style: normal; color: #6b5a9a; }
+.kj-ul { text-align: left; margin: 0 0 0 18px; padding: 0; font-size: 14px; line-height: 1.5; }
+@media (max-width: 380px) { .kj-voc, .kj-grid { grid-template-columns: 1fr; } }

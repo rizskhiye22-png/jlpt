@@ -65,6 +65,10 @@ Huruf yang sudah dipelajari harus **muncul lagi tepat sebelum lupa**.
 - **Tes penempatan**: pemain yang sudah bisa hiragana bisa langsung loncat ke Bab 2.
 - **Kamus bergambar**: setiap kata di Buku Catatan punya ilustrasi pixel & contoh kalimat.
 
+### 3.3b Simulasi kerja — ✅
+- 💼 **Simulasi Kerja** (Menu → Kerja): pabrik makanan, kaigo, genba konstruksi, restoran. Atasan memandu satu shift, kuis situasi, urutkan langkah, pilih APD, cek cepat ヨシ/NG, nilai S–C, kosakata kerja, info kerja nyata (tugas, jadwal, visa SSW).
+- 🔜 Bidang lain: pertanian (農業), perawatan gedung (ビルクリーニング), manufaktur (製造業), dan latihan wawancara kerja (めんせつ).
+
 ### 3.4 Pelacakan kemampuan — 🔜
 - Grafik kemajuan mingguan (huruf dikuasai, ketepatan, menit belajar).
 - "Huruf rawan": huruf yang sering tertukar (シ/ツ, ソ/ン, ぬ/め) mendapat mini-latihan khusus. ✅ v3.6: Mata Jeli (Hari 10 & 21) + huruf kembar selalu jadi pengecoh di kuis. 🔜 versi adaptif.

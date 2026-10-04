@@ -21,7 +21,7 @@ const Save = (() => {
     lunch: { yuki: 0, kenta: 0, hana: 0 },
     omikuji: 0,          // hari terakhir menarik omikuji
     bag: {}, tried: [], ach: [], stats: {}, streak: { last: '', count: 0 }, srs: {},   // fitur tambahan
-    fish: {}, pets: [], petActive: null, books: [], daily: {},
+    fish: {}, pets: [], petActive: null, books: [], daily: {}, kerja: {},
     settings: { romaji: 'auto', romajiV: 1, voice: true, sfx: true, rate: 0.85, music: 0.5, relax: false, quality: 'normal', fx: true, text: 'fast', force2d: false, narr: true, server: '', online: false },
   });
 
