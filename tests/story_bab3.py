@@ -9,7 +9,7 @@ HIRA = list('あいうえおかきくけこさしすせそたちつてとなに�
 KATA = list('アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン')
 DAKU = list('がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ')
 KANJI = list('一二三四五六七八九十百円千万')
-FAST = {'romaji': True, 'voice': False, 'sfx': False, 'rate': 0.85, 'music': 0, 'relax': True, 'quality': 'low', 'fx': False, 'text': 'instant', 'force2d': True, 'narr': False, 'yt': False, 'server': '', 'online': False}
+FAST = {'romaji': True, 'voice': False, 'sfx': False, 'rate': 0.85, 'music': 0, 'relax': True, 'quality': 'low', 'fx': False, 'text': 'instant', 'force2d': True, 'narr': False, 'yt': False, 'chat': False, 'server': '', 'online': False}
 errors = []
 CTX = {}
 

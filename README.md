@@ -8,6 +8,12 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
+## Baru: 🗨️ Chat semua pemain
+Ngobrol dengan pemain lain secara langsung, **tanpa server game sendiri**: pesan dikirim lewat broker MQTT publik gratis (EMQX, cadangan HiveMQ) langsung dari browser. Buka lewat tombol **🗨️ di HUD** atau **Menu → Chat**.
+- Kanal **🌏 Semua** dan **📍 Di sini** (hanya pemain di peta yang sama), jumlah pemain aktif, dan tombol frasa Jepang siap kirim (こんにちは！, いっしょに べんきょう しよう！…).
+- Keamanan: filter kata kasar (Indonesia, Inggris, Jepang), link / nomor HP / email / akun medsos otomatis disembunyikan, maksimal 120 huruf, jeda 2,5 detik antar-pesan, dan **ketuk nama pemain untuk membisukan** (tersimpan di HP).
+- Bisa dimatikan di **Pengaturan → Chat semua pemain**. Broker publik bisa dibaca siapa saja dan tidak menyimpan riwayat, jadi jangan bagikan data pribadi.
+
 ## Baru: ▶ Video sensei asli (YouTube)
 Pelajaran kini memutar video guru sungguhan dari YouTube (J-Class: [hiragana](https://youtu.be/icK6kVTegDA), [katakana](https://youtu.be/5lC9rhjrHxU)), dan **hanya bagian yang dipelajari hari itu**, dari penjelasan tiap huruf sampai latihan baca:
 - Hari あいうえお → 7:55–10:35 saja, hari アイウエオ → 5:00–7:57, dan seterusnya untuk semua baris hiragana & katakana.

@@ -969,3 +969,19 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .kj-comment { display: flex; gap: 8px; align-items: flex-start; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px; margin: 6px 0; text-align: left; }
 .kj-comment canvas { width: 48px; height: 48px; image-rendering: pixelated; border: 2px solid var(--ink); border-radius: 6px; background: #f3e3c7; flex: none; }
 .kj-comment p { margin: 2px 0 0; font-size: 13px; }
+
+/* ---------- Chat semua pemain ---------- */
+.hud-chat.new { background: #ffd24a; animation: wsBlink 1s infinite; }
+.chat { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 6px; }
+.chat-tabs { display: flex; gap: 6px; } .chat-tabs button { flex: 1; padding: 6px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font: inherit; font-size: 14px; }
+.chat-tabs button.on { background: #ffd24a; }
+.chat-list { height: 38vh; min-height: 180px; overflow-y: auto; background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.cm { display: flex; flex-direction: column; align-self: flex-start; max-width: 86%; background: #f3ecdf; border-radius: 10px; padding: 4px 8px; }
+.cm.me { align-self: flex-end; background: #d4f0dd; }
+.cm-n { align-self: flex-start; border: 0; background: none; padding: 0; font: inherit; font-size: 11px; font-weight: 700; color: #6b5a9a; cursor: pointer; }
+.cm-t { font-size: 14px; word-break: break-word; } .cm small { font-size: 10px; color: #8a7a6a; }
+.chat-empty { margin: auto; text-align: center; }
+.chat-quick { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px; } .cq { flex: none; border: 2px solid var(--ink); border-radius: 99px; background: #fff; padding: 3px 9px; font: inherit; font-size: 12px; white-space: nowrap; }
+.chat-form { display: flex; gap: 6px; } .chat-form input { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 8px; border: 2px solid var(--ink); border-radius: 8px; }
+.chat-form .btn.small { width: auto; margin-top: 0; }
+.chat-note { margin: 0; text-align: left; }

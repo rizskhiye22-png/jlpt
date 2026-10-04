@@ -673,6 +673,7 @@ const Game = (() => {
             <button class="mi tile-mi" data-a="quests" type="button"><i>🗺️</i><span>Misi</span></button>
             <button class="mi tile-mi" data-a="report" type="button"><i>📊</i><span>Rapor</span></button>
             <button class="mi tile-mi" data-a="wardrobe" type="button"><i>👕</i><span>Lemari</span></button>
+            <button class="mi tile-mi" data-a="chat" type="button"><i>🗨️</i><span>Chat</span></button>
             <button class="mi tile-mi" data-a="online" type="button"><i>💬</i><span>Online</span></button>
             <button class="mi tile-mi" data-a="settings" type="button"><i>⚙️</i><span>Atur</span></button>
           </div>
@@ -698,6 +699,7 @@ const Game = (() => {
         if (a === 'fish') await Relax.fishBook();
         if (a === 'ach') await Extras.achPage();
         if (a === 'online') { Online.palette(); break; }
+        if (a === 'chat' && typeof Chat !== 'undefined') await Chat.panel();
         if (a === 'report') await report();
         if (a === 'quests') await questLog();
         if (a === 'settings') await settings();
@@ -915,6 +917,7 @@ const Game = (() => {
         ${tog('fx', 'Kelopak sakura', 'Efek kelopak berjatuhan di kota')}
         ${tog('force2d', 'Mode 2D klasik', 'Untuk HP lama (muat ulang game)')}
         <div class="sec-h">Online (opsional)</div>
+        ${tog('chat', 'Chat semua pemain', 'Ngobrol dengan pemain lain (tanpa server game, lewat broker MQTT publik). Jangan bagikan data pribadi.')}
         <label class="set col"><span>Alamat server<small>Kosongkan untuk pakai server bawaan game</small></span><input class="srv" type="text" autocomplete="off" placeholder="server bawaan (otomatis)" value="${UI.esc(s.server || '')}"></label>
         <div class="row"><button class="btn ghost small" data-a="conn" type="button">${Online.status === 'on' ? 'Putuskan' : 'Sambungkan'}</button></div>
         <p class="muted small online-st">Status: ${{ on: 'terhubung ✓', off: 'offline', connecting: 'menghubungkan…', error: 'gagal terhubung' }[Online.status]}${World.online ? '' : ' (online hanya di mode 3D)'}</p>
@@ -926,6 +929,7 @@ const Game = (() => {
         s[i.dataset.k] = i.checked; Save.write();
         if (i.dataset.k === 'fx') World.setQuality && World.setQuality(s.quality === 'normal' ? 'normal' : s.quality);
         if (i.dataset.k === 'force2d') UI.toast('Muat ulang halaman untuk menerapkan.');
+        if (i.dataset.k === 'chat' && typeof Chat !== 'undefined') { if (i.checked) Chat.connect(); else Chat.disconnect(); }
       });
       p.querySelectorAll('[data-ro]').forEach(b => b.onclick = () => {
         s.romaji = b.dataset.ro === 'auto' ? 'auto' : b.dataset.ro === 'on'; Save.write(); Sound.blip();

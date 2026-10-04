@@ -19,7 +19,8 @@
     "test:bab12": "python3 tests/story_bab12.py",
     "test:audio": "python3 tests/audio_ios.py",
     "test:kerja": "python3 tests/kerja_sim.py",
-    "test:yt": "python3 tests/yt_video.py"
+    "test:yt": "python3 tests/yt_video.py",
+    "test:chat": "python3 tests/chat_test.py"
   },
   "dependencies": {
     "react": "^19.3.0",
