@@ -147,6 +147,10 @@ const Video = (() => {
 
   /* ---------- pemutar ---------- */
   function play(opts) {
+    // Video guru sungguhan (YouTube) untuk baris hiragana/katakana; 🎨 = kembali ke animasi
+    if (!opts.anim && typeof YTSensei !== 'undefined' && Save.d.settings.yt !== false && YTSensei.available(opts.kana)) {
+      return YTSensei.play(opts).then(r => (r === 'anim' ? play(Object.assign({}, opts, { anim: true })) : undefined));
+    }
     const shots = buildScript(opts);
     const total = shots.reduce((a, s) => a + s.dur, 0);
     Music.play('home');

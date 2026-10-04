@@ -34,7 +34,7 @@ def boot(page, save=None):
     pg = ctx.new_page(); CTX['ctx'] = ctx
     pg.on('pageerror', lambda e: errors.append('pageerror: ' + str(e)))
     pg.on('console', lambda m: m.type == 'error' and 'Failed to load resource' not in m.text and errors.append('console: ' + m.text))
-    fast = {'settings': {'romaji': True, 'voice': False, 'sfx': False, 'rate': 0.85, 'music': 0, 'relax': True, 'quality': 'low', 'fx': False, 'text': 'instant', 'force2d': True, 'narr': False, 'server': '', 'online': False}}
+    fast = {'settings': {'romaji': True, 'voice': False, 'sfx': False, 'rate': 0.85, 'music': 0, 'relax': True, 'quality': 'low', 'fx': False, 'text': 'instant', 'force2d': True, 'narr': False, 'yt': False, 'server': '', 'online': False}}
     pg.goto(URL)
     if not save: save = {}
     save = {**save, **fast}

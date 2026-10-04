@@ -903,6 +903,7 @@ const Game = (() => {
         <label class="set col"><span>Kecepatan suara<small>Lebih lambat = lebih jelas</small></span><input type="range" min="0.6" max="1.1" step="0.05" value="${s.rate}" data-r="rate"></label>
         <label class="set col"><span>Volume musik</span><input type="range" min="0" max="1" step="0.05" value="${s.music}" data-r="music"></label>
         ${tog('sfx', 'Efek suara', 'Bunyi saat memilih')}
+        ${tog('yt', 'Video sensei YouTube', 'Pelajaran hiragana & katakana memakai video guru sungguhan, langsung ke bagian baris hari itu (butuh internet)')}
         ${tog('narr', 'Narasi video', 'Sensei menjelaskan dengan suara di video pelajaran')}
         ${vsel('ja', 'Suara bahasa Jepang', 'Pilih yang paling alami (Natural / Google / Online biasanya terbaik)')}
         ${vsel('id', 'Suara narasi sensei', 'Suara bahasa Indonesia untuk penjelasan video')}

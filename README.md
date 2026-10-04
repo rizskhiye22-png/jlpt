@@ -8,6 +8,12 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
+## Baru: ▶ Video sensei asli (YouTube)
+Pelajaran **hiragana & katakana** kini memutar video guru sungguhan dari YouTube ([hiragana](https://youtu.be/icK6kVTegDA), [katakana](https://youtu.be/5lC9rhjrHxU)), dan **hanya bagian baris hari itu** (hari あいうえお → bagian あ い う え お saja).
+- Tombol **↺ Ulang bagian**, **🎨 Video animasi** (video papan tulis lama), dan **Selesai ▶** untuk lanjut latihan menulis.
+- **⚙ Atur waktu bagian ini**: tandai detik mulai/selesai tiap baris sambil menonton (tersimpan di HP). **📋 Salin kode waktu** menghasilkan kode untuk diisi ke `SEG` di `public/js/ytvideo.js`, supaya semua pemain mendapat waktu yang pas.
+- Tanpa internet, atau kalau dimatikan di **Pengaturan → Video sensei YouTube**, game otomatis memakai video animasi.
+
 ## Baru: 💼 Simulasi Kerja (しごと たいけん)
 Rasakan **satu hari kerja di Jepang** di bidang yang banyak diisi pekerja Indonesia (Tokutei Ginou / magang). Buka **Menu → 💼 Kerja**.
 - 🍙 **Pabrik Makanan** (食品製造): cek penampilan, urutan cuci tangan, rol perekat, apel pagi & cek kesehatan, cek onigiri di conveyor (**ヨシ！/NG**), lapor benda asing (ほうれんそう), suhu pemanasan 75℃ 1 menit, 5S.
