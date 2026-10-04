@@ -139,7 +139,7 @@
       const opts = shuffle(t.opts.map((o, i) => ({ ...o, i })));
       best += Math.max(...t.opts.map(o => o.d));
       B.innerHTML = head(st.title, ti === 0 ? esc(st.hint || 'Pilih kata-kata yang menenangkan dan menghormati lawan bicara.') : '') +
-        `<div class="kj-talk"><div class="kj-face">${face}<span>${faceOf(mood)}</span></div><div class="kj-say">${jpLine(t.jp, t.ro, t.id)}</div></div>
+        `<div class="kj-talk"><div class="kj-face">${face}<span>${faceOf(mood)}</span></div><div class="kj-tline">${jpLine(t.jp, t.ro, t.id)}</div></div>
         <div class="kj-mood"><span>😠</span><div><i style="width:${mood}%"></i></div><span>😊</span></div>
         <div class="ws-opts">${opts.map(o => `<button class="ws-o" type="button" data-d="${o.d}">${o.jp ? `<span class="jp">${esc(o.jp)}</span>${ro(o.jp, o.ro)}` : esc(o.label)}</button>`).join('')}</div><p class="kj-msg small"></p>`;
       say(W, k, t.jp);

@@ -445,6 +445,7 @@ const Kerja = (() => {
   /* =========================================================
      MESIN SIMULASI: ruangan + aktor + balon kata + kotak tugas
      ========================================================= */
+  const CAST_ID = { c1: 'emma', c2: 'ryo', c3: 'ojii', c4: 'mai', c5: 'hana', w1: 'tenin', w2: 'emma', r: 'riyosha' };
   const TSY = 42;   // ubin dibuat lebih tinggi supaya ruangan terlihat lebih besar di HP
   // seragam kerja: dipakai setelah ganti baju di pos pertama
   const UNIFORM = {
@@ -685,7 +686,11 @@ const Kerja = (() => {
         (list || []).forEach(c => {
           const a = actors.get(c.k);
           if (c.gone) { if (a) a.gone = true; return; }
-          if (!a) { add(c.k, c.id, c.x, c.y, c.dir || 'down'); return; }
+          if (!a) {   // aktor belum ada (mis. adegan sebelumnya dilewati): pakai tokoh bawaan untuk kunci itu
+            const id = c.id || CAST_ID[c.k];
+            if (id && CHARACTERS[id]) add(c.k, id, c.x, c.y, c.dir || 'down');
+            return;
+          }
           a.gone = false; walk(c.k, c.x, c.y).then(() => { if (c.dir) a.dir = c.dir; });
         });
       },

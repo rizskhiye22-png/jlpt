@@ -1071,7 +1071,7 @@ img.emo { height: 1.15em; width: 1.15em; margin: 0 .05em; vertical-align: -0.2em
 .kj-vt tr.good { background: #e3f5e8; } .kj-vt tr.wrong { background: #fbe1e1; }
 .kj-talk { display: flex; gap: 8px; align-items: center; margin: 6px 0; text-align: left; }
 .kj-face { position: relative; font-size: 40px; line-height: 1; flex: none; } .kj-face span { position: absolute; right: -6px; bottom: -4px; font-size: 20px; }
-.kj-say { flex: 1; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 6px 9px; }
+.kj-tline { flex: 1; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 6px 9px; }
 .kj-mood { display: flex; align-items: center; gap: 6px; margin: 2px 0 8px; } .kj-mood div { flex: 1; height: 9px; background: #eadfc8; border-radius: 5px; overflow: hidden; }
 .kj-mood i { display: block; height: 100%; background: linear-gradient(90deg, #e0475f, #f6c90e, #5bb3a0); transition: width .4s; }
 .kj-body { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0; }
