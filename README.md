@@ -9,9 +9,11 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
 ## Baru: ▶ Video sensei asli (YouTube)
-Pelajaran **hiragana & katakana** kini memutar video guru sungguhan dari YouTube ([hiragana](https://youtu.be/icK6kVTegDA), [katakana](https://youtu.be/5lC9rhjrHxU)), dan **hanya bagian baris hari itu** (hari あいうえお → bagian あ い う え お saja).
+Pelajaran kini memutar video guru sungguhan dari YouTube (J-Class: [hiragana](https://youtu.be/icK6kVTegDA), [katakana](https://youtu.be/5lC9rhjrHxU)), dan **hanya bagian yang dipelajari hari itu**, dari penjelasan tiap huruf sampai latihan baca:
+- Hari あいうえお → 7:55–10:35 saja, hari アイウエオ → 5:00–7:57, dan seterusnya untuk semua baris hiragana & katakana.
+- Hari tenten (が…), maru (ぱ…), yōon (きゃ…), っ kecil, dan bunyi panjang memutar bagian aturan tambahan di video hiragana. Kanji tetap memakai video animasi.
 - Tombol **↺ Ulang bagian**, **🎨 Video animasi** (video papan tulis lama), dan **Selesai ▶** untuk lanjut latihan menulis.
-- **⚙ Atur waktu bagian ini**: tandai detik mulai/selesai tiap baris sambil menonton (tersimpan di HP). **📋 Salin kode waktu** menghasilkan kode untuk diisi ke `SEG` di `public/js/ytvideo.js`, supaya semua pemain mendapat waktu yang pas.
+- Waktu bagian ada di `SEG` (`public/js/ytvideo.js`), diambil dari peta waktu video (±2–10 detik). Kalau ada yang meleset, **⚙ Atur waktu bagian ini** bisa menandai ulang waktunya di HP, dan **📋 Salin kode waktu** menyalin kodenya.
 - Tanpa internet, atau kalau dimatikan di **Pengaturan → Video sensei YouTube**, game otomatis memakai video animasi.
 
 ## Baru: 💼 Simulasi Kerja (しごと たいけん) & kawasan kerja しごとまち

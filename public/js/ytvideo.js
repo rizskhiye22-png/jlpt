@@ -14,16 +14,33 @@ const YTSensei = (() => {
     hira: { id: 'icK6kVTegDA', title: 'Video Sensei: Hiragana' },
     kata: { id: '5lC9rhjrHxU', title: 'Video Sensei: Katakana ("Kana Card", WaGoMu #JapaneseClass)' },
   };
-  // Urutan baris di video (gojūon) + jumlah hurufnya
+  // Bagian video, urut sesuai waktu tayang: [kunci, huruf yang dibahas].
+  // Kunci khusus: ゛ tenten · ゜ maru · ゃ yōon (huruf + ゃゅょ kecil) · っ tsu kecil · ー bunyi panjang
   const ROWS = {
-    hira: [['あ', 'あいうえお'], ['か', 'かきくけこ'], ['さ', 'さしすせそ'], ['た', 'たちつてと'], ['な', 'なにぬねの'], ['は', 'はひふへほ'], ['ま', 'まみむめも'], ['や', 'やゆよ'], ['ら', 'らりるれろ'], ['わ', 'わをん']],
-    kata: [['ア', 'アイウエオ'], ['カ', 'カキクケコ'], ['サ', 'サシスセソ'], ['タ', 'タチツテト'], ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'], ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン']],
+    hira: [['゛', 'がぎぐげござじずぜぞだぢづでどばびぶべぼ'], ['゜', 'ぱぴぷぺぽ'], ['ゃ', ''], ['っ', 'っッ'], ['ー', 'ー'],
+      ['あ', 'あいうえお'], ['か', 'かきくけこ'], ['さ', 'さしすせそ'], ['た', 'たちつてと'], ['な', 'なにぬねの'], ['は', 'はひふへほ'], ['ま', 'まみむめも'], ['や', 'やゆよ'], ['ら', 'らりるれろ'], ['わ', 'わをん']],
+    kata: [['゛', 'ガギグゲゴザジズゼゾダヂヅデドバビブベボ'], ['゜', 'パピプペポ'], ['ゃ', ''],
+      ['ア', 'アイウエオ'], ['カ', 'カキクケコ'], ['サ', 'サシスセソ'], ['タ', 'タチツテト'], ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'], ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン']],
   };
-  // Waktu tiap baris dalam detik: 'あ': [mulai, selesai]. Isi dari kode "📋 Salin kode waktu".
+  const LABEL = { '゛': 'Tenten ゛', '゜': 'Maru ゜', 'ゃ': 'Yōon ゃゅょ', 'っ': 'っ kecil', 'ー': 'Bunyi panjang' };
+  // Waktu tiap bagian dalam detik: [mulai, selesai].
+  // Baris huruf: dari awal baris (penjelasan tiap huruf) sampai akhir latihan baca.
+  // Sumber: peta waktu video J-Class (huruf ±2 detik, awal baris & aturan tambahan ±5–10 detik).
   const SEG = {
-    hira: {},
-    kata: {},
+    hira: {
+      '゛': [358, 382], '゜': [378, 397], 'ゃ': [393, 422], 'っ': [418, 447], 'ー': [443, 475],
+      'あ': [475, 635], 'か': [640, 827], 'さ': [835, 1016], 'た': [1020, 1190], 'な': [1195, 1382],
+      'は': [1385, 1559], 'ま': [1560, 1726], 'や': [1730, 1860], 'ら': [1863, 2031], 'わ': [2035, 2190],
+    },
+    kata: {
+      '゛': [98, 162], '゜': [158, 182], 'ゃ': [178, 212],
+      'ア': [300, 477], 'カ': [480, 685], 'サ': [690, 901], 'タ': [902, 1119], 'ナ': [1120, 1358],
+      'ハ': [1360, 1596], 'マ': [1600, 1841], 'ヤ': [1842, 2017], 'ラ': [2020, 2241], 'ワ': [2242, 2420],
+    },
   };
+  // Huruf k dibahas di bagian row?
+  const YOON = /[ゃゅょャュョ]/;
+  const inRow = (k, [key, chars]) => (key === 'ゃ' ? YOON.test(k) && k.length > 1 : k.length === 1 && chars.includes(k));
 
   const S = () => Save.d;
   const user = () => (S().ytSeg = S().ytSeg || { hira: {}, kata: {} });
@@ -33,7 +50,7 @@ const YTSensei = (() => {
   // Baris-baris video yang memuat huruf pelajaran ini
   function rowsFor(kana) {
     for (const kind of ['hira', 'kata']) {
-      const rows = ROWS[kind].filter(([, chars]) => kana.some(k => chars.includes(k)));
+      const rows = ROWS[kind].filter(r => kana.some(k => inRow(k, r)));
       if (rows.length) return { kind, rows: rows.map(r => r[0]) };
     }
     return null;
@@ -42,7 +59,7 @@ const YTSensei = (() => {
 
   // Perkiraan posisi baris: video dibagi rata per huruf, dengan pembuka & penutup
   function estimate(kind, key, dur) {
-    const all = ROWS[kind], total = all.reduce((a, [, c]) => a + c.length, 0);
+    const all = ROWS[kind].filter(([k]) => !LABEL[k]), total = all.reduce((a, [, c]) => a + c.length, 0);
     const pad = Math.min(30, dur * .04), body = dur - pad * 2;
     let cum = 0;
     for (const [k, c] of all) { if (k === key) return [Math.max(0, pad + body * cum / total - 2), pad + body * (cum + c.length) / total]; cum += c.length; }
@@ -77,7 +94,7 @@ const YTSensei = (() => {
   function play(opts) {
     const info = rowsFor(opts.kana || []);
     const V = VIDEOS[info.kind];
-    const label = info.rows.map(k => ROWS[info.kind].find(r => r[0] === k)[1].split('').join(' ')).join(' · ');
+    const label = info.rows.map(k => LABEL[k] || ROWS[info.kind].find(r => r[0] === k)[1].split('').join(' ')).join(' · ');
     if (window.Music) Music.duck(true);
     Sound.stop();
     const p = UI.panel(`
