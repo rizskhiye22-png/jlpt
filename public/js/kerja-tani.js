@@ -274,9 +274,9 @@
       c.strokeStyle = '#7a5a36'; c.lineWidth = 3;
       for (let x = 3; x <= 8; x++) { c.beginPath(); c.moveTo(x * TS, yy(2) - 4); c.lineTo(x * TS, yy(2) + 30); c.stroke(); }
       c.font = '22px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-      [3, 4, 6, 7].forEach((x, i) => c.fillText('🐄', x * TS + 16 + Math.sin(t / 1200 + i) * 1.5, yy(2) + 12));
+      [3, 4, 6, 7].forEach((x, i) => Emo.draw(c, '🐄', x * TS + 16 + Math.sin(t / 1200 + i) * 1.5, yy(2) + 12, 24));
       // ayam berjalan
-      for (let i = 0; i < 3; i++) { const x = 8 * TS + ((t / 40 + i * 30) % (3 * TS)); c.font = '14px sans-serif'; c.fillText('🐓', x, yy(6) + 10); }
+      for (let i = 0; i < 3; i++) { const x = 8 * TS + ((t / 40 + i * 30) % (3 * TS)); Emo.draw(c, '🐓', x, yy(6) + 10, 15); }
       // tumpukan jerami
       c.fillStyle = '#e9c46a'; c.fillRect(10 * TS - 6, yy(1) + 18, 26, 12);
     },

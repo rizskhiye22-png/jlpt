@@ -1029,3 +1029,33 @@ body[data-weather="rain"] #game { filter: brightness(.8) saturate(.75); }
 .kj-vq b { font-size: 30px; } .kj-vq .jp { font-size: 16px; } .kj-vq small { color: #7a6a7a; }
 @media (max-width: 380px) { .kj-act { flex-direction: column; } .kj-toolbox { grid-template-columns: repeat(2, 1fr); } .kj-days { grid-template-columns: repeat(2, 1fr); } }
 .ws-bubble { width: max-content; }
+
+/* Emoji SVG (Twemoji) */
+img.emo { height: 1.15em; width: 1.15em; margin: 0 .05em; vertical-align: -0.2em; display: inline-block; pointer-events: none; }
+
+/* ---------- Finishing: tata letak rapi tanpa tumpukan ---------- */
+/* Spanduk pencapaian: di atas layar, ramping, tidak menutupi isi */
+.ach-banner { top: calc(6px + env(safe-area-inset-top)); left: 50%; min-width: 0; width: max-content; max-width: calc(100% - 70px); padding: 5px 10px; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+.ach-banner .ach-ic { width: 30px; height: 30px; font-size: 16px; }
+.ach-banner small { font-size: 10px; } .ach-banner b { font-size: 13px; } .ach-banner em { font-size: 11px; }
+/* Tombol ✕ di kegiatan: HUD & judul tidak tertutup */
+.panel.gamep .ws-hud, .panel.quizp .w-title, .panel.gamep > .win > .w-title, .panel.videop .v-top { margin-right: 46px; }
+.panel.gamep .ws-hud { min-height: 40px; }
+.ws-hud .ws-title { font-size: 13px; line-height: 1.25; }
+/* Kartu tempat kerja: teks di atas, tombol satu baris di bawah */
+.kj-job { display: grid; grid-template-columns: 46px 1fr; grid-template-areas: 'ic tx' 'bt bt'; gap: 6px 10px; align-items: start; }
+.kj-job .kj-ic { grid-area: ic; font-size: 30px; }
+.kj-job .kj-jt { grid-area: tx; }
+.kj-job .kj-jb { grid-area: bt; width: auto; flex-direction: row; flex-wrap: wrap; gap: 5px; }
+.kj-job .kj-jb .btn.small { width: auto; flex: 1 1 auto; min-width: 72px; margin: 0; padding: 6px 8px; font-size: 12px; min-height: 34px; }
+.kj-job .kj-jb [data-day] { flex-basis: 100%; font-size: 14px; }
+/* Teks panjang tidak meluber */
+.win, .ws-box, .kj-cap, .ws-cap { overflow-wrap: anywhere; }
+.kj-v small, .kj-dayb span { overflow-wrap: anywhere; }
+/* Kepala kegiatan (judul + skor) tidak tertutup tombol ✕ */
+.panel .g-head, .panel .q-top, .panel.lesson .b-top:first-of-type { padding-right: 50px; }
+.panel .g-head { gap: 8px; } .panel .g-head .g-info { text-align: right; }
+/* Saat panel/modal terbuka, HUD kota disembunyikan supaya tidak bertabrakan dengan judul kegiatan */
+#app:has(> .panels.on) .hud, #app:has(> .modals.on) .hud { opacity: 0; pointer-events: none; transition: opacity .15s; }
+.panel { background: rgba(22, 15, 26, .9); }
+.panel.title-p { background: linear-gradient(rgba(22, 15, 26, .15), rgba(22, 15, 26, .78) 70%); }

@@ -8,6 +8,10 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
+## Baru: ✨ Tampilan rapi & emoji SVG seragam
+- Semua emoji di game (menu, simulasi kerja, chat, kamus, kanvas ruangan kerja) memakai **SVG Twemoji** dari GitHub, jadi tampil sama di semua HP, termasuk HP lama yang tidak punya emoji berwarna. Asetnya disimpan lokal (±1 MB, 258 file), jadi tetap jalan offline.
+- Audit tampilan otomatis di 3 ukuran HP (`tests/tampilan.py`): tidak ada elemen yang meluber atau tertutup tombol ✕. Spanduk pencapaian pindah ke atas, HUD kota disembunyikan saat panel terbuka, dan kartu kerja tersusun rapi.
+
 ## Baru: ⏭ Lewati materi yang sudah dikuasai
 Sudah bisa hiragana/katakana? Sebelum pelajaran, sensei menawarkan **⏭ Saya sudah bisa**. Cukup lulus **tes cepat (≥80%)**, video & latihan menulis hari itu dilewati, dan latihan soal pelajaran kedua otomatis selesai. Kalau belum lulus, materi diajarkan seperti biasa. Latihan mini-game juga bisa dilewati. Saklar: **Pengaturan → Tawarkan lewati materi**. Di karier kerja, **semua hari terbuka**, jadi bisa langsung pilih hari mana pun.
 
@@ -204,3 +208,4 @@ server/                     server online (Node.js + WebSocket)
 ## Lisensi data
 - Data urutan goresan: **KanjiVG** © Ulrich Apel, CC BY-SA 3.0 (http://kanjivg.tagaini.net). File `js/strokes.js` dibagikan dengan lisensi yang sama.
 - Three.js, React: lisensi MIT (lihat `node_modules/*/LICENSE`).
+- Emoji SVG: **Twemoji** © Twitter, Inc. dan kontributor, dari [github.com/jdecked/twemoji](https://github.com/jdecked/twemoji). Grafis berlisensi **CC-BY 4.0** (https://creativecommons.org/licenses/by/4.0/), kode MIT. Hanya emoji yang dipakai game yang disalin ke `public/assets/emoji/` (`npm run emoji:aset`).

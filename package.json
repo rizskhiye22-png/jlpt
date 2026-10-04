@@ -22,7 +22,9 @@
     "test:yt": "python3 tests/yt_video.py",
     "test:chat": "python3 tests/chat_test.py",
     "test:hari": "python3 tests/kerja_hari.py",
-    "cek:kerja": "node scripts/cek-kerja.mjs"
+    "cek:kerja": "node scripts/cek-kerja.mjs",
+    "emoji:aset": "npm i --no-save @twemoji/svg && node scripts/emoji-aset.mjs",
+    "test:tampilan": "python3 tests/tampilan.py"
   },
   "dependencies": {
     "react": "^19.3.0",

@@ -465,6 +465,7 @@ const Kerja = (() => {
       <p class="ws-help muted small">Ketuk ruangan atau pakai D-pad untuk berjalan · A = lanjut / periksa pos</p>
     </div>`, 'gamep');
     const cv = p.querySelector('canvas'), ctx = cv.getContext('2d');
+    if (window.Emo) Emo.preload([...Object.values(R.st).map(x => x.e), '🍙', '🐄', '🐓', '👍', '💦', '⭕', '❌', '✨', '♪', '👕', '❗', '💭']);
     const bub = p.querySelector('.ws-bubble'), banner = p.querySelector('.ws-banner'), obj = p.querySelector('.ws-obj'), box = p.querySelector('.ws-box');
     const listEl = p.querySelector('.ws-list'), list = listEl.querySelector('ol'), clockEl = p.querySelector('.ws-clock'), scoreEl = p.querySelector('.ws-score');
     const actors = new Map();
@@ -522,7 +523,7 @@ const Kerja = (() => {
           ctx.beginPath(); ctx.roundRect ? ctx.roundRect(X + 3, Y + 3, TS - 6, TS - 6, 6) : ctx.rect(X + 3, Y + 3, TS - 6, TS - 6); ctx.fill(); ctx.stroke();
           ctx.fillStyle = '#2a1f2d';
           ctx.font = '22px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(s.e, X + TS / 2, Y + TS / 2 + 1);
+          Emo.draw(ctx, s.e, X + TS / 2, Y + TS / 2 + 1, 22);
         }
       }
       // tujuan: cincin & panah
@@ -538,7 +539,7 @@ const Kerja = (() => {
         ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(X + TS / 2, Y + TS - 3, 10, 4, 0, 0, 7); ctx.fill();
         ctx.drawImage(Pix.sprite(a.id, a.dir, moving ? (a.frame % 2 ? 1 : 2) : 0), X, Y - 6 - bob, TS, TS);
         if (a.k === 'you') { ctx.fillStyle = '#ffd24a'; ctx.beginPath(); ctx.moveTo(X + TS / 2 - 4, Y - 12); ctx.lineTo(X + TS / 2 + 4, Y - 12); ctx.lineTo(X + TS / 2, Y - 7); ctx.fill(); }
-        if (a.emo && a.emoT > 0) { ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(a.emo, X + TS / 2, Y - 16 - Math.sin(t / 100) * 2); }
+        if (a.emo && a.emoT > 0) { Emo.draw(ctx, a.emo, X + TS / 2, Y - 18 - Math.sin(t / 100) * 2, 18); }
       });
       ctx.imageSmoothingEnabled = true;
       // label pos digambar paling atas supaya tidak tertutup apa pun di kanvas
@@ -565,7 +566,7 @@ const Kerja = (() => {
         const tt = stop ? 0 : t;
         for (let x = x0 + ((tt / 20) % 16); x < x1; x += 16) ctx.fillRect(x, y + 2, 3, 16);
         ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        for (let i = 0; i < 6; i++) { const x = x0 + ((tt / 20 + i * 44) % (x1 - x0)); ctx.fillText('🍙', x, y + 10); }
+        for (let i = 0; i < 6; i++) { const x = x0 + ((tt / 20 + i * 44) % (x1 - x0)); Emo.draw(ctx, '🍙', x, y + 10, 16); }
         // keran: air mengalir saat sedang cuci tangan
         if (R._water) { ctx.fillStyle = 'rgba(120,180,255,.8)'; for (let i = 0; i < 4; i++) ctx.fillRect(3 * TS + 14 + (i % 2), yy(1) + 26 + ((t / 8 + i * 6) % 14), 3, 5); }
       }
@@ -1029,8 +1030,8 @@ const Kerja = (() => {
         live.forEach(o => {
           if (o.gone) return;
           o.x += speed * dt / 1000;
-          c.font = '30px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(o.e, o.x, 46);
-          if (o.b) { c.font = '16px sans-serif'; c.fillText(o.b, o.x + 12, 58); }
+          Emo.draw(c, o.e, o.x, 46, 30);
+          if (o.b) Emo.draw(c, o.b, o.x + 12, 58, 16);
           if (o.x > 300) judge(o, false);
         });
         raf = requestAnimationFrame(loop);
@@ -1240,7 +1241,7 @@ const Kerja = (() => {
     const draw = () => {
       const c = P.ctx; c.fillStyle = '#d8c79a'; c.fillRect(0, 0, 320, 160); c.fillStyle = '#9fc4e8'; c.fillRect(0, 0, 320, 26);
       c.strokeStyle = '#7a7f88'; c.lineWidth = 2; for (let x = 20; x < 320; x += 60) { c.beginPath(); c.moveTo(x, 26); c.lineTo(x, 70); c.stroke(); }
-      items.forEach(it => { c.font = '28px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(it.e, it.x, it.y); if (it.found) { c.strokeStyle = it.ok ? '#3b8a78' : '#e0475f'; c.lineWidth = 3; c.beginPath(); c.arc(it.x, it.y, 20, 0, 7); c.stroke(); } });
+      items.forEach(it => { Emo.draw(c, it.e, it.x, it.y, 28); if (it.found) { c.strokeStyle = it.ok ? '#3b8a78' : '#e0475f'; c.lineWidth = 3; c.beginPath(); c.arc(it.x, it.y, 20, 0, 7); c.stroke(); } });
     };
     draw();
     const stop = W.watch('あし もと、あたま の うえ、まわり を よく みて。');
