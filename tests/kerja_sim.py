@@ -1,6 +1,7 @@
-"""Uji Simulasi Kerja aktif: Menu → Kerja (4 shift) + kawasan しごとまち (kereta, pintu bangunan).
+"""Uji Simulasi Kerja: 4 shift lewat Menu → Kerja (tugas fisik dikerjakan sungguhan dengan mouse),
+D-pad di ruangan, pintu bangunan di しごとまち, dan tombol pad tetap bisa dipencet saat panel terbuka.
 Jalankan: npm run build && npx vite preview --port 4173 &  lalu  python3 tests/kerja_sim.py [folder_screenshot]"""
-import sys, os, functools
+import sys, os, re, functools
 print = functools.partial(print, flush=True)
 sys.path.insert(0, os.path.dirname(__file__))
 from playwright.sync_api import sync_playwright
@@ -9,45 +10,126 @@ import helpers as H
 OUT = sys.argv[1] if len(sys.argv) > 1 else '.'
 GOAL_JS = """() => {
   const t = (document.querySelector('.ws-obj.on') || {}).textContent || ''; if (!t) return null;
-  for (const R of Object.values(Kerja.ROOMS)) for (const s of Object.values(R.st)) if (t.includes(s.jp)) {
+  for (const R of Object.values(Kerja.ROOMS)) for (const s of Object.values(R.st)) if (t.includes(s.jp + ' ')) {
     const cv = document.querySelector('.ws-stage canvas').getBoundingClientRect();
     return [cv.left + (s.x + .5) / 12 * cv.width, cv.top + (s.y + .5) / 7 * cv.height];
   }
   return null; }"""
 
 def tap(pg, sel):
-    try: pg.locator(sel).first.click(timeout=2500)
-    except Exception: pass
+    try: pg.locator(sel).first.click(timeout=2500); return True
+    except Exception: return False
+
+def canvas_pt(pg, sel, x, y, w, h):
+    r = pg.locator(sel).bounding_box()
+    return r['x'] + x / w * r['width'], r['y'] + y / h * r['height']
+
+def do_wash(pg):
+    for k in ['water', 'soap', 'rub']: tap(pg, f'.kj-tool[data-k={k}]'); pg.wait_for_timeout(150)
+    zones = pg.evaluate("JSON.parse(document.querySelector('.kj-pad').dataset.zones)")
+    for _ in range(40):
+        for (x, y, w, h) in zones:
+            pg.mouse.move(*canvas_pt(pg, '.kj-pad', x + 4, y + 4, 300, 140)); pg.mouse.down()
+            for i in range(6): pg.mouse.move(*canvas_pt(pg, '.kj-pad', x + w - 4 if i % 2 == 0 else x + 4, y + h * (i + 1) / 7, 300, 140), steps=3)
+            pg.mouse.up()
+        sec = int(pg.locator('.kj-timer b').inner_text() or 0)
+        if sec >= 30 and all(v >= 100 for v in pg.evaluate("[...document.querySelectorAll('.kj-pad')].length && JSON.parse('[0]')")) or sec >= 30:
+            break
+        pg.wait_for_timeout(300)
+    for k in ['rinse', 'dry', 'alc']:
+        tap(pg, f'.kj-tool[data-k={k}]'); pg.wait_for_timeout(200)
+        if k == 'rinse' and pg.locator('.kj-tool[data-k=rinse]:not([disabled])').count():   # belum bersih: gosok lagi
+            for (x, y, w, h) in zones:
+                pg.mouse.move(*canvas_pt(pg, '.kj-pad', x + 4, y + 4, 300, 140)); pg.mouse.down()
+                for i in range(10): pg.mouse.move(*canvas_pt(pg, '.kj-pad', x + w - 4 if i % 2 == 0 else x + 4, y + h * (i + 1) / 11, 300, 140), steps=3)
+                pg.mouse.up()
+            tap(pg, '.kj-tool[data-k=rinse]')
+
+def do_roller(pg):
+    pts = pg.evaluate("JSON.parse(document.querySelector('.kj-pad').dataset.specks)")
+    box = pg.locator('.kj-pad').bounding_box()
+    pt = lambda x, y: (box['x'] + x / 300 * box['width'], box['y'] + y / 160 * box['height'])
+    for (x, y) in pts:
+        if not pg.locator('.kj-pad[data-specks]').count(): return
+        pg.mouse.move(*pt(x - 6, y)); pg.mouse.down(); pg.mouse.move(*pt(x + 6, y), steps=2); pg.mouse.up()
+    if pg.locator('.kj-pad[data-specks]').count(): tap(pg, '.ws-box .btn.ghost')
+
+def do_belt(pg):
+    for _ in range(400):
+        if not pg.locator('.kj-pad.belt').count(): return
+        its = pg.evaluate("(document.querySelector('.ws-box')._belt || []).filter(o => !o.gone && !o.ok && o.x > 30 && o.x < 290).map(o => o.x)")
+        for x in its: pg.mouse.click(*canvas_pt(pg, '.kj-pad.belt', x, 46, 320, 90))
+        pg.wait_for_timeout(120)
+
+def do_thermo(pg):
+    for _ in range(2):
+        if not pg.locator('.kj-zone.mid').count(): return
+        tap(pg, '.kj-zone.mid'); pg.wait_for_timeout(200)
+        b = pg.locator('.kj-hold').bounding_box(); pg.mouse.move(b['x'] + 20, b['y'] + 10); pg.mouse.down(); pg.wait_for_timeout(2400); pg.mouse.up()
+        v = str(round(float(pg.locator('.kj-read b').inner_text())))
+        for d in v: tap(pg, f'.kj-keys button[data-n="{d}"]')
+        tap(pg, '.kj-keys button[data-n="✓"]'); pg.wait_for_timeout(200)
+        tap(pg, '.kj-pass' if int(v) >= 75 else '.kj-re'); pg.wait_for_timeout(1900)
+
+def do_dial(pg):
+    pg.evaluate("(() => { const r = document.querySelector('.kj-dial input'); r.value = 40; r.dispatchEvent(new Event('input')); })()")
+    tap(pg, '.kj-hand')
+
+def do_feed(pg):
+    tap(pg, '.kj-say')
+    for _ in range(200):
+        if not pg.locator('.kj-spoon').count(): return
+        cue = pg.locator('.kj-cue').inner_text()
+        if 'ごっくん' in cue or 'いただきます' in cue: tap(pg, '.kj-spoon'); pg.wait_for_timeout(200)
+        pg.wait_for_timeout(150)
+
+def do_cash(pg):
+    q = pg.locator('.ws-box .ws-q').inner_text().replace(',', '')
+    total, paid = [int(n) for n in re.findall(r'(\d+)えん', q)][:2]
+    ch = paid - total
+    for v in [1000, 500, 100, 50, 10]:
+        while ch >= v: tap(pg, f'.kj-coin[data-v="{v}"]'); ch -= v
+    tap(pg, '.kj-give')
+
+def do_shisa(pg):
+    for _ in range(3):
+        p = pg.locator('.kj-pt:not(.done)')
+        if not p.count(): return
+        p.first.click(); b = pg.locator('.kj-yoshi').bounding_box()
+        pg.mouse.move(b['x'] + 20, b['y'] + 10); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up(); pg.wait_for_timeout(200)
+
+PHYS = [('.kj-tool', do_wash, 'cuci'), ('.kj-pad[data-specks]', do_roller, 'rol'), ('.kj-pad.belt', do_belt, 'conveyor'), ('.kj-zone.mid', do_thermo, 'termometer'),
+        ('.kj-dial', do_dial, 'dial'), ('.kj-say:not([disabled])', do_feed, 'suap'), ('.kj-drawer', do_cash, 'kasir'), ('.kj-points', do_shisa, 'shisa')]
 
 def play(pg, tag):
     shots = set()
-    for it in range(5000):
-        pg.wait_for_timeout(50)
-        if it % 150 == 0: print('  ..', tag, it, pg.evaluate("(document.querySelector('.ws-box')||{}).innerText?.slice(0,60)||''").replace('\n',' '))
+    for it in range(4000):
+        pg.wait_for_timeout(60)
+        if it % 200 == 0: print('  ..', tag, it, pg.evaluate("(document.querySelector('.ws-box')||{}).innerText?.slice(0,50)||''").replace('\n', ' '))
         if pg.locator('.kj-rank').count():
             rank = pg.locator('.kj-rank').inner_text()
-            pg.screenshot(path=f'{OUT}/kerja_{tag}_hasil.png'); pg.click('.kj [data-a=close]'); pg.wait_for_timeout(700)
+            pg.screenshot(path=f'{OUT}/kerja_{tag}_hasil.png', full_page=True); tap(pg, '.kj [data-a=close]'); pg.wait_for_timeout(700)
             return rank
         g = pg.evaluate(GOAL_JS)
         if g and pg.locator('.ws-obj.on').count():
             if 'goal' not in shots: shots.add('goal'); pg.wait_for_timeout(300); pg.screenshot(path=f'{OUT}/kerja_{tag}_tujuan.png')
             pg.mouse.click(*g); pg.wait_for_timeout(250); continue
+        hit = False
+        for sel, fn, name in PHYS:
+            if pg.locator('.ws-box ' + sel).count():
+                pg.wait_for_timeout(200); pg.screenshot(path=f'{OUT}/kerja_{tag}_{name}.png')
+                fn(pg); print('     fisik:', name); hit = True; break
+        if hit: continue
+        if pg.locator('.ws-box .kj-next').count(): tap(pg, '.ws-box .kj-next'); continue
         if pg.locator('.ws-next').count():
             if 'say' not in shots: shots.add('say'); pg.screenshot(path=f'{OUT}/kerja_{tag}_instruksi.png')
             tap(pg, '.ws-next'); continue
-        if pg.locator('.ws-o:not([disabled])').count():
-            if 'quiz' not in shots: shots.add('quiz'); pg.screenshot(path=f'{OUT}/kerja_{tag}_kuis.png')
-            tap(pg, '.ws-o:not([disabled])'); continue
+        if pg.locator('.ws-o:not([disabled])').count(): tap(pg, '.ws-o:not([disabled])'); continue
         if pg.locator('.ws-box .kj-o').count():
-            if 'order' not in shots: shots.add('order'); pg.screenshot(path=f'{OUT}/kerja_{tag}_urut.png')
             b = pg.locator('.ws-box .kj-o'); i = min(int(b.nth(k).get_attribute('data-i')) for k in range(b.count()))
             tap(pg, f'.ws-box .kj-o[data-i="{i}"]'); continue
-        if pg.locator('.ws-box [data-a=check]').count():
-            if 'pick' not in shots: shots.add('pick'); pg.locator('.kj-t').first.click(); pg.click('[data-a=check]'); pg.screenshot(path=f'{OUT}/kerja_{tag}_pilih.png')
-            tap(pg, '.ws-box [data-a=check]'); continue
-        if pg.locator('.ws-box .kj-ok').count():
-            if 'spot' not in shots: shots.add('spot'); pg.screenshot(path=f'{OUT}/kerja_{tag}_cek.png')
-            tap(pg, '.kj-ok' if pg.evaluate("Math.random()<.5") else '.kj-ng'); pg.wait_for_timeout(1450); continue
+        if pg.locator('.ws-box [data-a=check]').count(): tap(pg, '.ws-box [data-a=check]'); continue
+        if pg.locator('.ws-box .kj-ok').count(): tap(pg, '.kj-ok' if pg.evaluate("Math.random()<.5") else '.kj-ng'); pg.wait_for_timeout(1450); continue
         if pg.locator('.choices .choice').count(): tap(pg, '.choices .choice'); continue
         if pg.locator('.dialog:not(.hide)').count(): tap(pg, '.dialog'); continue
     pg.screenshot(path=f'{OUT}/kerja_{tag}_TIMEOUT.png'); print(pg.evaluate("document.querySelector('.panels').innerText.slice(0,400)"))
@@ -56,23 +138,28 @@ def play(pg, tag):
 with sync_playwright() as p:
     H.CTX['br'] = p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
     pg = H.boot(H.base(12, 'after'))
+    # pad tidak tertutup panel: tombol MENU/B tetap bisa dipencet
     pg.evaluate("setTimeout(() => Game.menu()); 0"); pg.wait_for_timeout(400)
-    pg.click('.mi[data-a=kerja]'); pg.wait_for_timeout(400)
-    pg.screenshot(path=f'{OUT}/kerja_menu.png')
-    for j in ['food', 'kaigo', 'genba', 'gaishoku']:
+    pg.click('.mi[data-a=settings]'); pg.wait_for_timeout(300)
+    hitB = pg.evaluate("(() => { const b = document.querySelector('.pad [data-btn=b]').getBoundingClientRect(); const e = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2); return !!(e && e.closest('.pad')); })()")
+    print('pad bisa dipencet saat Pengaturan terbuka:', hitB)
+    pg.click('.settings [data-a=close]'); pg.wait_for_timeout(300)
+    pg.locator('.pad [data-btn=b]').dispatch_event('pointerdown'); pg.wait_for_timeout(300)
+    print('B menutup menu:', pg.locator('.modals.on').count() == 0)
+    # D-pad di ruangan kerja: dari (2,3) ke loker (1,2) dengan ← lalu ↑
+    pg.wait_for_timeout(300)
+    pg.evaluate("setTimeout(() => Kerja.run('food')); 0"); pg.wait_for_selector('.ws-obj.on', timeout=10000)
+    pg.keyboard.press('ArrowLeft'); pg.wait_for_timeout(450); pg.keyboard.press('ArrowUp'); pg.wait_for_timeout(1200)
+    print('D-pad sampai ke pos:', pg.locator('.ws-obj.on').count() == 0)
+    print('food (D-pad) → rank', play(pg, 'food'))
+    pg.evaluate("setTimeout(() => Kerja.open()); 0"); pg.wait_for_timeout(500)
+    for j in ['kaigo', 'genba', 'gaishoku']:
         pg.click(f'[data-go={j}]')
         print(j, '→ rank', play(pg, j))
-    pg.click('.kj [data-a=close]'); pg.wait_for_timeout(300)
-    for _ in range(10):
-        if pg.locator('.modals.on .mi[data-a=close]').count(): pg.click('.modals.on .mi[data-a=close]'); break
-        pg.wait_for_timeout(200)
-    pg.wait_for_timeout(500)
-    # kawasan kerja: tiket kereta punya tujuan baru, lalu masuk lewat pintu bangunan
-    print('tujuan kereta:', pg.evaluate("Places2.DESTS.map(d => d.id).join(',')"))
+    pg.click('.kj [data-a=close]'); pg.wait_for_timeout(500)
     pg.evaluate("setTimeout(() => Game.h.goTo('shigoto', 13, 5, 'up')); 0"); pg.wait_for_timeout(1500)
-    pg.screenshot(path=f'{OUT}/kerja_shigotomachi.png')
-    print('peta:', pg.evaluate("World.map"), '| npc rina:', pg.evaluate("Places.npcs('shigoto').some(n => n.id === 'rina')"))
-    pg.evaluate("setTimeout(() => Places.interact({ type: 'door', door: { id: 'kerja_kaigo' } })); 0"); pg.wait_for_timeout(500)
-    print('pintu panti → rank', play(pg, 'pintu'))
-    rec = pg.evaluate("JSON.stringify(Save.d.kerja)"); print('save', rec)
+    print('peta:', pg.evaluate("World.map"), '| tujuan kereta:', pg.evaluate("Places2.DESTS.map(d => d.id).join(',')"))
+    pg.evaluate("setTimeout(() => Places.interact({ type: 'door', door: { id: 'kerja_gaishoku' } })); 0"); pg.wait_for_timeout(500)
+    print('pintu izakaya → rank', play(pg, 'pintu'))
+    print('evaluasi tersimpan:', pg.evaluate("JSON.stringify(Save.d.kerja.food.stars)"))
     print('ERRORS:', H.errors or 'none')

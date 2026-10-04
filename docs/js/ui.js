@@ -272,7 +272,7 @@ const UI = (() => {
   function setPoints(n) { if (els.pts) els.pts.textContent = n; }
   function setReview(n, onTap) { els.rev.style.display = n ? '' : 'none'; els.rev.querySelector('b').textContent = n; els.rev.onclick = onTap; els.rev.title = `${n} huruf perlu diulas hari ini`; }
   function setOnline(n, status) { els.onl.style.display = status === 'on' || status === 'connecting' ? '' : 'none'; els.onl.querySelector('b').textContent = status === 'on' ? n : '…'; els.onl.onclick = () => typeof Online !== 'undefined' && Online.palette(); }
-  function showGame(on) { els.app.classList.toggle('in-game', on); }
+  function showGame(on) { els.app.classList.toggle('in-game', on); setTimeout(() => window.dispatchEvent(new Event('resize')), 0); }
 
   return { readableJP, showRo,
     init, wait, abortAll, sleep, esc, fmt,

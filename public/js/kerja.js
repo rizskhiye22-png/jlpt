@@ -74,19 +74,8 @@ const Kerja = (() => {
           { jp: 'ヘアピン', ro: 'heapin', id: 'jepit rambut', ok: false, why: 'Jepit rambut termasuk benda asing yang sering ditemukan.' },
         ] },
         { t: 'say', w: 'hancho', jp: 'つぎ は てあらい。せっけん で 30びょう いじょう あらって ね。', ro: 'tsugi wa tearai. sekken de sanjuu-byou ijou aratte ne.', id: 'Berikutnya cuci tangan. Pakai sabun, minimal 30 detik.' },
-        { t: 'order', title: 'てあらい · Urutkan langkah cuci tangan', items: [
-          { jp: 'みず で ぬらす', id: 'basahi tangan dengan air' },
-          { jp: 'せっけん を つける', id: 'pakai sabun' },
-          { jp: '30びょう あらう', id: 'gosok 30 detik: sela jari, kuku, pergelangan' },
-          { jp: 'みず で ながす', id: 'bilas dengan air' },
-          { jp: 'ペーパー で ふく', id: 'keringkan dengan tisu' },
-          { jp: 'アルコール で しょうどく', id: 'semprot alkohol (disinfeksi)' },
-        ] },
-        { t: 'quiz', w: 'hancho', jp: 'ローラー を かけて ください。', ro: 'rooraa wo kakete kudasai.', id: 'Tolong pakai rol perekat (ローラー).', q: 'Cara pakai rol perekat yang benar?', opts: [
-          { label: 'Gulirkan ke seluruh baju dari atas ke bawah, depan & belakang' },
-          { label: 'Cukup bagian depan saja' },
-          { label: 'Hanya kalau bajunya terlihat kotor' },
-        ], why: 'Rambut & debu di baju (termasuk punggung dan lengan) harus diambil semua sebelum masuk. Biasanya teman saling bantu menggulirkan rol di punggung.' },
+        { t: 'wash', title: 'てあらい · Cuci tangan seperti di pabrik' },
+        { t: 'roller', title: 'ローラー · Gulirkan rol perekat ke seluruh baju', why: 'Rambut & debu di baju (termasuk punggung dan lengan) harus diambil semua sebelum masuk. Biasanya teman saling bantu menggulirkan rol di punggung, lalu masuk air shower.' },
         { t: 'clock', time: '08:00', title: 'ちょうれい · Apel pagi' },
         { t: 'say', w: 'hancho', jp: 'きょう の もくひょう は おにぎり 3000こ です。', ro: 'kyou no mokuhyou wa onigiri sanzen-ko desu.', id: 'Target hari ini 3.000 onigiri. Sekarang cek kesehatan.' },
         { t: 'quiz', w: 'hancho', jp: 'たいちょう は どう？', ro: 'taichou wa dou?', id: 'Bagaimana kondisi badanmu?', q: 'Pagi ini kamu diare. Apa yang kamu katakan?', opts: [
@@ -96,7 +85,7 @@ const Kerja = (() => {
         ], why: 'Diare/muntah bisa jadi tanda norovirus yang menular lewat makanan. Wajib lapor; kamu akan dipindah ke tugas lain atau disuruh istirahat. Jujur itu justru dihargai.' },
         { t: 'clock', time: '08:15', title: 'ライン · Kerja di lini produksi' },
         { t: 'say', w: 'hancho', jp: 'ふりょうひん は NG、いい もの は ヨシ！ で ながして ね。', ro: 'furyouhin wa NG, ii mono wa yoshi! de nagashite ne.', id: 'Barang cacat = NG (singkirkan). Barang bagus = ヨシ! (loloskan).' },
-        { t: 'spot', title: 'Cek onigiri di conveyor', okLabel: 'ヨシ！', ngLabel: 'NG', count: 10, limit: 6000, items: [
+        { t: 'belt', title: 'ライン · Singkirkan onigiri NG di conveyor', count: 12, items: [
           { e: '🍙', d: 'Onigiri rapi, nori menempel, label ada', ok: true },
           { e: '🍙', d: 'Bentuk segitiga sempurna, kemasan rapat', ok: true },
           { e: '🍙', d: 'Label tanggal tercetak jelas', ok: true },
@@ -111,11 +100,8 @@ const Kerja = (() => {
           { jp: '（だまって すてる）', ro: '(diam-diam dibuang)' },
           { jp: 'あとで いいます。', ro: 'ato de iimasu.' },
         ], why: 'Logam bisa berarti ada bagian mesin yang patah, jadi produk lain mungkin ikut tercemar. Ini ほうれんそう: ほうこく (lapor), れんらく (kabari), そうだん (konsultasi). Lapor SEGERA, jangan dibuang diam-diam.' },
-        { t: 'quiz', w: 'hancho', jp: 'からあげ の ちゅうしん おんど を はかって。', ro: 'karaage no chuushin ondo wo hakatte.', id: 'Ukur suhu bagian tengah karaage.', q: 'Termometer menunjukkan 68℃. Standar: 75℃ selama 1 menit. Apa yang kamu lakukan?', opts: [
-          { jp: '68ど です。もう いちど かねつ します。', ro: 'rokujuuhachi-do desu. mou ichido kanetsu shimasu.' },
-          { jp: 'だいたい OK です。', ro: 'daitai OK desu.' },
-          { jp: '（そのまま ながす）', ro: '(diloloskan saja)' },
-        ], why: 'Di Jepang standar umum pemanasan adalah suhu tengah 75℃ selama 1 menit atau lebih, supaya bakteri mati. Kurang dari itu: laporkan angkanya & panaskan ulang, lalu catat.' },
+        { t: 'say', w: 'hancho', jp: 'からあげ の ちゅうしん おんど を はかって。', ro: 'karaage no chuushin ondo wo hakatte.', id: 'Ukur suhu bagian tengah karaage. Standarnya 75℃ selama 1 menit atau lebih.' },
+        { t: 'thermo', title: 'おんど チェック · Ukur suhu tengah karaage', why: 'Di Jepang standar umum pemanasan adalah suhu tengah 75℃ selama 1 menit atau lebih, supaya bakteri mati. Ukur di bagian paling tebal, catat angkanya, dan panaskan ulang kalau kurang.' },
         { t: 'clock', time: '16:30', title: 'せいそう · Bersih-bersih & 5S' },
         { t: 'order', title: '5S · Urutkan 5S (budaya kerja pabrik Jepang)', items: [
           { jp: 'せいり', id: 'Seiri: buang yang tidak perlu' },
@@ -173,7 +159,7 @@ const Kerja = (() => {
           { jp: 'いそいで たべさせる', ro: 'isoide tabesaseru', id: 'menyuapi cepat-cepat', ok: false, why: 'Terburu-buru = risiko ごえん (tersedak).' },
           { jp: 'ねた まま たべさせる', ro: 'neta mama tabesaseru', id: 'makan sambil berbaring', ok: false, why: 'Berbaring membuat makanan mudah masuk ke saluran napas.' },
         ] },
-        { t: 'say', n: 'ごえん (tersedak sampai makanan masuk ke paru) bisa menyebabkan radang paru, salah satu penyebab sakit serius pada lansia di Jepang. Karena itu posisi tubuh sangat penting.' },
+        { t: 'feed', title: 'しょくじ かいじょ · Suapi Nenek Kimura', why: 'ごえん (tersedak sampai makanan masuk ke paru) bisa menyebabkan radang paru, salah satu penyebab sakit serius pada lansia di Jepang. Karena itu: posisi duduk tegak, suapan kecil, dan selalu tunggu sampai menelan.' },
         { t: 'quiz', w: 'riyosha', e: 'happy', jp: 'もう おなか いっぱい だ わ。', ro: 'mou onaka ippai da wa.', id: '', q: 'Nenek Kimura berkata begitu. Artinya…', opts: [
           { label: 'Sudah kenyang' }, { label: 'Masih lapar, minta tambah' }, { label: 'Perutnya sakit' },
         ], why: 'おなか いっぱい = perut penuh/kenyang. Jangan dipaksa makan; catat berapa banyak yang dimakan (misal 8わり = 80%).' },
@@ -187,9 +173,7 @@ const Kerja = (() => {
           { jp: 'ふかく すわる', id: 'duduk dalam, kaki di pijakan kaki' },
         ] },
         { t: 'clock', time: '15:00', title: 'にゅうよく · Membantu mandi' },
-        { t: 'quiz', w: 'leader', q: 'Suhu air mandi yang tepat untuk lansia sekitar…', opts: [
-          { jp: '40ど ぐらい', ro: 'yonjuu-do gurai' }, { jp: '50ど ぐらい', ro: 'gojuu-do gurai' }, { jp: '25ど ぐらい', ro: 'nijuugo-do gurai' },
-        ], why: 'Umumnya 38–41℃. Cek dulu dengan tanganmu sendiri, lalu tanya: "おゆ の かげん は どう ですか？" (airnya pas?). Kulit lansia sensitif dan mudah melepuh.' },
+        { t: 'dial', title: 'にゅうよく · Atur suhu air mandi', why: 'Umumnya 38–41℃. Cek dulu dengan tanganmu sendiri, lalu tanya: 「おゆ の かげん は どう ですか？」 Kulit lansia sensitif dan mudah melepuh.' },
         { t: 'quiz', w: 'leader', q: 'Nenek Kimura terjatuh (てんとう) di lorong. Apa yang pertama kamu lakukan?', opts: [
           { jp: 'だれか きて ください！きむら さん が ころびました！', ro: 'dareka kite kudasai! kimura-san ga korobimashita!' },
           { jp: '（ひとり で すぐ だきあげる）', ro: '(langsung diangkat sendirian)' },
@@ -264,9 +248,7 @@ const Kerja = (() => {
           { e: '🧗', d: 'Kerja di ketinggian 3 m tanpa harness', ok: false, why: 'Ketinggian 2 m ke atas wajib harness' },
           { e: '🏗️', d: 'Orang lewat di bawah beban crane', ok: false, why: 'つりに の した に はいるな! Dilarang di bawah beban' },
         ] },
-        { t: 'quiz', w: 'oyakata', q: 'Sebelum naik tangga, kamu menunjuk ke bawah sambil berseru…', opts: [
-          { jp: 'あしもと、ヨシ！', ro: 'ashimoto, yoshi!' }, { jp: 'おなか すいた！', ro: 'onaka suita!' }, { jp: 'まあ、いい か。', ro: 'maa, ii ka.' },
-        ], why: 'しさこしょう (tunjuk & seru): mata melihat, jari menunjuk, mulut berseru "〇〇 ヨシ！". Cara ini terbukti mengurangi kesalahan, dipakai juga oleh masinis kereta Jepang.' },
+        { t: 'shisa', title: 'しさこしょう · Tunjuk & seru sebelum naik tangga', why: 'しさこしょう (tunjuk & seru): mata melihat, jari menunjuk, mulut berseru 「〇〇 ヨシ！」. Cara ini terbukti mengurangi kesalahan, dipakai juga oleh masinis kereta Jepang.' },
         { t: 'clock', time: '09:30', title: 'さぎょう · Bekerja' },
         { t: 'quiz', w: 'oyakata', jp: 'おい、ねこ もって きて！', ro: 'oi, neko motte kite!', id: '', q: 'Pak Kondo minta "ねこ". Apa yang kamu bawa?', opts: [
           { label: '🛒 Gerobak dorong satu roda' }, { label: '🐱 Kucing' }, { label: '🔨 Palu' },
@@ -348,11 +330,7 @@ const Kerja = (() => {
           { jp: 'あ、ごめん。', ro: 'a, gomen.' },
           { jp: '（だまって いく）', ro: '(pergi diam-diam)' },
         ], why: 'Kepada tamu pakai bahasa sopan: たいへん しつれい しました / もうしわけ ございません. "ごめん" hanya untuk teman.' },
-        { t: 'quiz', w: 'tencho', q: 'Total 3.500 えん. Tamu membayar 5.000 えん. Kamu bilang…', opts: [
-          { jp: '1,500えん の おかえし です。', ro: 'sen-gohyaku en no okaeshi desu.' },
-          { jp: '2,500えん の おかえし です。', ro: 'nisen-gohyaku en no okaeshi desu.' },
-          { jp: '500えん の おかえし です。', ro: 'gohyaku en no okaeshi desu.' },
-        ], why: '5.000 − 3.500 = 1.500. おかえし (お返し) = kembalian, cara sopan di kasir. Hitung kembalian di depan tamu.' },
+        { t: 'cash', title: 'レジ · Kembalian', why: 'おかえし (お返し) = kembalian, cara sopan di kasir. Hitung kembalian di depan tamu, uang kertas dulu baru koin.' },
         { t: 'quiz', w: 'tencho', q: 'Tamu pulang. Kamu bilang…', opts: [
           { jp: 'ありがとう ございました！また おこし くださいませ。', ro: 'arigatou gozaimashita! mata okoshi kudasaimase.' },
           { jp: 'いってらっしゃい！', ro: 'itterasshai!' },
@@ -385,8 +363,9 @@ const Kerja = (() => {
         clean:  { x: 10, y: 5, e: '🧹', jp: 'そうじ', id: 'alat bersih-bersih' },
         exit:   { x: 1, y: 5, e: '🚪', jp: 'でぐち', id: 'pintu keluar' },
       },
-      at: { 0: 'locker', 4: 'sink', 6: 'air', 7: 'board', 10: 'line', 14: 'fryer', 15: 'clean', 17: 'exit' },
-      cast: { 10: [{ k: 'w1', id: 'tenin', x: 4, y: 3, dir: 'down' }, { k: 'w2', id: 'emma', x: 8, y: 3, dir: 'down' }], 15: [{ k: 'w1', x: 9, y: 5 }, { k: 'w2', x: 2, y: 3 }] },
+      at: { 0: 'locker', 4: 'sink', 6: 'air', 7: 'board', 10: 'line', 14: 'fryer', 16: 'clean', 18: 'exit' },
+      cast: { 10: [{ k: 'w1', id: 'tenin', x: 4, y: 3, dir: 'down' }, { k: 'w2', id: 'emma', x: 8, y: 3, dir: 'down' }], 16: [{ k: 'w1', x: 9, y: 5 }, { k: 'w2', x: 2, y: 3 }] },
+      block: [[2, 4, 9, 4]],
       start: { player: [2, 3], boss: [1, 2] },
     },
     kaigo: {
@@ -402,6 +381,7 @@ const Kerja = (() => {
       },
       at: { 0: 'staff', 3: 'room', 5: 'dining', 9: 'wheel', 11: 'bath', 13: 'hall', 14: 'record', 16: 'room', 18: 'staff' },
       cast: { 0: [{ k: 'r', id: 'riyosha', x: 5, y: 2, dir: 'left' }], 5: [{ k: 'r', x: 9, y: 3, dir: 'left' }], 9: [{ k: 'r', x: 6, y: 4, dir: 'left' }], 11: [{ k: 'r', x: 11, y: 2, dir: 'left' }], 13: [{ k: 'r', x: 10, y: 6, dir: 'left' }], 16: [{ k: 'r', x: 5, y: 2, dir: 'left' }] },
+      block: [[5, 1], [8, 2, 9, 2], [11, 1]],
       start: { player: [2, 3], boss: [1, 2] },
     },
     genba: {
@@ -418,6 +398,7 @@ const Kerja = (() => {
       },
       at: { 0: 'plaza', 3: 'ppe', 5: 'ky', 8: 'scaffold', 10: 'ladder', 11: 'material', 14: 'tent', 16: 'gate' },
       cast: { 0: [{ k: 'w1', id: 'ryo', x: 2, y: 3, dir: 'up' }, { k: 'w2', id: 'kenta', x: 3, y: 3, dir: 'up' }], 8: [{ k: 'w1', x: 8, y: 3, dir: 'up' }, { k: 'w2', x: 9, y: 4, dir: 'left' }], 14: [{ k: 'w1', x: 7, y: 6, dir: 'left' }] },
+      block: [[7, 1, 9, 1], [9, 2]],
       start: { player: [2, 4], boss: [1, 2] },
     },
     gaishoku: {
@@ -438,6 +419,7 @@ const Kerja = (() => {
         11: [{ k: 'c1', x: 3, y: 6, dir: 'right' }, { k: 'c2', x: 2, y: 6, dir: 'right' }, { k: 'c3', x: 5, y: 6, dir: 'left' }],
         13: [{ k: 'c1', gone: true }, { k: 'c2', gone: true }, { k: 'c3', gone: true }, { k: 'c4', gone: true }, { k: 'c5', gone: true }],
       },
+      block: [[3, 2, 5, 2], [7, 2, 9, 2], [9, 3, 11, 3]],
       start: { player: [9, 2], boss: [11, 2] },
     },
   };
@@ -459,78 +441,95 @@ const Kerja = (() => {
   /* =========================================================
      MESIN SIMULASI: ruangan + aktor + balon kata + kotak tugas
      ========================================================= */
+  const TSY = 42;   // ubin dibuat lebih tinggi supaya ruangan terlihat lebih besar di HP
+  // seragam kerja: dipakai setelah ganti baju di pos pertama
+  const UNIFORM = {
+    food: { at: 'locker', after: 3, look: { uniform: 'blazer', uniformColor: '#f4f6fa', accessory: 'cap', accColor: '#f4f6fa' }, say: 'Seragam putih, penutup rambut, dan sepatu bot sudah dipakai.' },
+    kaigo: { at: 'staff', look: { uniform: 'blazer', uniformColor: '#f2a7bf', accessory: 'none' }, say: 'Kaus polo kerja & papan nama sudah dipakai.' },
+    genba: { at: 'ppe', after: 3, look: { uniform: 'blazer', uniformColor: '#f29b38', accessory: 'cap', accColor: '#f6c90e' }, say: 'Helm kuning & rompi sudah dipakai.' },
+    gaishoku: { at: 'back', look: { uniform: 'blazer', uniformColor: '#2b2b38', accessory: 'headband', accColor: '#f7f3ea' }, say: 'Seragam izakaya & ikat kepala sudah dipakai.' },
+  };
+
   function stage(job) {
     const R = ROOMS[job.id], boss = BOSS[job.id];
     const p = UI.panel(`<div class="ws">
       <div class="ws-hud"><span class="ws-clock">🕒 --:--</span><b class="ws-title">${job.icon} ${esc(R.name)}</b><span class="ws-score">⭐ 0</span></div>
-      <div class="ws-stage"><canvas width="${GW * TS}" height="${GH * TS}"></canvas><div class="ws-bubble" hidden></div><div class="ws-banner" hidden></div></div>
+      <div class="ws-stage"><canvas width="${GW * TS}" height="${GH * TSY}"></canvas><div class="ws-bubble" hidden></div><div class="ws-banner" hidden></div></div>
       <div class="ws-obj"></div>
       <div class="ws-box"></div>
-      <details class="ws-list"><summary>📋 Tugas shift</summary><ol></ol></details>
+      <details class="ws-list"><summary>📋 Tugas shift <small class="muted">(MENU)</small></summary><ol></ol></details>
+      <p class="ws-help muted small">Ketuk ruangan atau pakai D-pad untuk berjalan · A = lanjut / periksa pos</p>
     </div>`, 'gamep');
     const cv = p.querySelector('canvas'), ctx = cv.getContext('2d');
     const bub = p.querySelector('.ws-bubble'), banner = p.querySelector('.ws-banner'), obj = p.querySelector('.ws-obj'), box = p.querySelector('.ws-box');
-    const list = p.querySelector('.ws-list ol'), clockEl = p.querySelector('.ws-clock'), scoreEl = p.querySelector('.ws-score');
+    const listEl = p.querySelector('.ws-list'), list = listEl.querySelector('ol'), clockEl = p.querySelector('.ws-clock'), scoreEl = p.querySelector('.ws-score');
     const actors = new Map();
     const add = (k, id, x, y, dir = 'down') => actors.set(k, { k, id, x, y, dir, path: [], frame: 0, walkT: 0, emo: null, emoT: 0 });
     add('you', 'player', ...R.start.player); add('boss', boss, ...R.start.boss);
     let goal = null, onTap = null, light = 0, bubbleOf = null, hot = null;
 
-    // jalan: mendatar dulu, lalu tegak
+    /* ---------- tabrakan & jalur (perabot tidak bisa ditembus) ---------- */
+    const blocked = new Set();
+    for (let x = 0; x < GW; x++) blocked.add(x + ',0');
+    Object.values(R.st).forEach(s => { if (!s.noIcon) blocked.add(s.x + ',' + s.y); });
+    (R.block || []).forEach(([x0, y0, x1 = x0, y1 = y0]) => { for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) blocked.add(x + ',' + y); });
+    const free = (x, y) => x >= 0 && y >= 0 && x < GW && y < GH && !blocked.has(x + ',' + y);
+    function route(sx, sy, tx, ty) {
+      if (sx === tx && sy === ty) return [];
+      const key = (x, y) => x + ',' + y, prev = new Map([[key(sx, sy), null]]), q = [[sx, sy]];
+      while (q.length) {
+        const [x, y] = q.shift();
+        if (x === tx && y === ty) break;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = x + dx, ny = y + dy, k = key(nx, ny);
+          if (prev.has(k) || !(free(nx, ny) || (nx === tx && ny === ty))) continue;
+          prev.set(k, [x, y]); q.push([nx, ny]);
+        }
+      }
+      if (!prev.has(key(tx, ty))) return [[tx, ty]];
+      const out = []; let c = [tx, ty];
+      while (c && !(c[0] === sx && c[1] === sy)) { out.unshift(c); c = prev.get(key(...c)); }
+      return out;
+    }
     function walk(k, tx, ty) {
       const a = actors.get(k); if (!a) return Promise.resolve();
-      const pts = [];
-      const sx = Math.round(a.x), sy = Math.round(a.y);
-      for (let x = sx; x !== tx; x += Math.sign(tx - x)) pts.push([x + Math.sign(tx - x), sy]);
-      for (let y = sy; y !== ty; y += Math.sign(ty - y)) pts.push([tx, y + Math.sign(ty - y)]);
-      a.path = pts;
-      return new Promise(res => { a.done = res; if (!pts.length) { a.done = null; res(); } });
+      a.path = route(Math.round(a.x), Math.round(a.y), tx, ty);
+      return new Promise(res => { if (a.done) a.done(); a.done = res; if (!a.path.length) { a.done = null; res(); } });
     }
-    function face(k, x, y) { const a = actors.get(k); if (!a) return; const dx = x - a.x, dy = y - a.y; a.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'); }
+    function face(k, x, y) { const a = actors.get(k); if (!a) return; const dx = x - a.x, dy = y - a.y; if (!dx && !dy) return; a.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'); }
     function emote(k, e, ms = 1400) { const a = actors.get(k); if (a) { a.emo = e; a.emoT = ms; } }
 
     /* ---------- menggambar ---------- */
     function draw(t) {
-      const W = GW * TS, Hh = GH * TS;
+      const W = GW * TS, Hh = GH * TSY;
       for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
-        ctx.fillStyle = R.floor[(x + y) % 2]; ctx.fillRect(x * TS, y * TS, TS, TS);
-        if (R.outdoor && (x * 7 + y * 13) % 5 === 0) { ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(x * TS + 8, y * TS + 12, 4, 3); }
+        ctx.fillStyle = R.floor[(x + y) % 2]; ctx.fillRect(x * TS, y * TSY, TS, TSY);
+        if (R.outdoor && (x * 7 + y * 13) % 5 === 0) { ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(x * TS + 8, y * TSY + 14, 4, 3); }
       }
-      // dinding atas
-      ctx.fillStyle = R.wall; ctx.fillRect(0, 0, W, TS * .9);
+      ctx.fillStyle = R.wall; ctx.fillRect(0, 0, W, TSY * .9);
       ctx.fillStyle = R.wallTop; ctx.fillRect(0, 0, W, 6);
-      if (R.outdoor) { for (let x = 0; x < W; x += 24) { ctx.fillStyle = (x / 24) % 2 ? '#f6c90e' : '#2a2a2a'; ctx.fillRect(x, TS * .9 - 6, 24, 6); } }
+      if (R.outdoor) { for (let x = 0; x < W; x += 24) { ctx.fillStyle = (x / 24) % 2 ? '#f6c90e' : '#2a2a2a'; ctx.fillRect(x, TSY * .9 - 6, 24, 6); } }
       extra(t);
-      // benda di pos
       for (const [key, s] of Object.entries(R.st)) {
-        const X = s.x * TS, Y = s.y * TS;
+        const X = s.x * TS, Y = s.y * TSY + (TSY - TS);
         if (!s.noIcon) {
           ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(X + TS / 2, Y + TS - 3, 12, 4, 0, 0, 7); ctx.fill();
-          // alas benda (tetap terlihat walau HP tidak punya emoji berwarna)
           ctx.fillStyle = key === hot ? '#ffe9a8' : '#fbf7ef'; ctx.strokeStyle = '#2a1f2d'; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.roundRect ? ctx.roundRect(X + 3, Y + 3, TS - 6, TS - 6, 6) : ctx.rect(X + 3, Y + 3, TS - 6, TS - 6); ctx.fill(); ctx.stroke();
           ctx.fillStyle = '#2a1f2d';
-          ctx.font = '24px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(s.e, X + TS / 2, Y + TS / 2);
+          ctx.font = '22px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(s.e, X + TS / 2, Y + TS / 2 + 1);
         }
-        // label
-        ctx.font = '700 11px "Zen Maru Gothic","Noto Sans JP",sans-serif';
-        const tw = ctx.measureText(s.jp).width + 8, lx = Math.max(2, Math.min(W - tw - 2, X + TS / 2 - tw / 2)), ly = s.noIcon ? Y - 14 : Y - 6;
-        ctx.fillStyle = key === hot ? '#ffd24a' : 'rgba(255,255,255,.85)'; ctx.fillRect(lx, ly, tw, 14);
-        ctx.fillStyle = '#2a1f2d'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(s.jp, lx + 4, ly + 7.5);
       }
       // tujuan: cincin & panah
       if (goal) {
         const s = R.st[goal], [gx, gy] = standOf(s), r = 12 + Math.sin(t / 180) * 3;
-        ctx.strokeStyle = '#ffd24a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(gx * TS + TS / 2, gy * TS + TS - 6, r + 4, r / 2.2, 0, 0, 7); ctx.stroke();
-        const ay = s.y * TS - 16 + Math.sin(t / 150) * 4;
-        ctx.fillStyle = '#ffd24a'; ctx.strokeStyle = '#2a1f2d'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(s.x * TS + TS / 2 - 8, ay - 8); ctx.lineTo(s.x * TS + TS / 2 + 8, ay - 8); ctx.lineTo(s.x * TS + TS / 2, ay + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#ffd24a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(gx * TS + TS / 2, gy * TSY + TSY - 6, r + 4, r / 2.2, 0, 0, 7); ctx.stroke();
       }
       // aktor (urut dari atas ke bawah)
       ctx.imageSmoothingEnabled = false;
       [...actors.values()].filter(a => !a.gone).sort((a, b) => a.y - b.y).forEach(a => {
-        const X = a.x * TS, Y = a.y * TS, moving = a.path.length > 0;
+        const X = a.x * TS, Y = a.y * TSY + (TSY - TS), moving = a.path.length > 0;
         const bob = moving ? 0 : (a.k === bubbleOf ? Math.abs(Math.sin(t / 120)) * 2 : Math.sin(t / 600 + a.x) * .8);
         ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(X + TS / 2, Y + TS - 3, 10, 4, 0, 0, 7); ctx.fill();
         ctx.drawImage(Pix.sprite(a.id, a.dir, moving ? (a.frame % 2 ? 1 : 2) : 0), X, Y - 6 - bob, TS, TS);
@@ -538,42 +537,59 @@ const Kerja = (() => {
         if (a.emo && a.emoT > 0) { ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(a.emo, X + TS / 2, Y - 16 - Math.sin(t / 100) * 2); }
       });
       ctx.imageSmoothingEnabled = true;
+      // label pos digambar paling atas supaya tidak tertutup apa pun di kanvas
+      for (const [key, s] of Object.entries(R.st)) {
+        const X = s.x * TS, Y = s.y * TSY + (TSY - TS);
+        ctx.font = '700 11px "Zen Maru Gothic","Noto Sans JP",sans-serif';
+        const tw = ctx.measureText(s.jp).width + 8, lx = Math.max(2, Math.min(W - tw - 2, X + TS / 2 - tw / 2)), ly = s.noIcon ? Y - 14 : Y - 10;
+        ctx.fillStyle = key === hot || key === goal ? '#ffd24a' : 'rgba(255,255,255,.88)'; ctx.fillRect(lx, ly, tw, 14);
+        ctx.fillStyle = '#2a1f2d'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(s.jp, lx + 4, ly + 7.5);
+      }
+      if (goal) {
+        const s = R.st[goal], ay = s.y * TSY + (TSY - TS) - 22 + Math.sin(t / 150) * 4, ax = s.x * TS + TS / 2;
+        ctx.fillStyle = '#ffd24a'; ctx.strokeStyle = '#2a1f2d'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(ax - 8, ay - 8); ctx.lineTo(ax + 8, ay - 8); ctx.lineTo(ax, ay + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
       if (light) { ctx.fillStyle = `rgba(40,30,80,${light})`; ctx.fillRect(0, 0, W, Hh); }
     }
-    // detail bergerak tiap tempat
+    const yy = y => y * TSY + (TSY - TS);   // posisi y (piksel) untuk benda setinggi 1 ubin
     function extra(t) {
       if (job.id === 'food') {
-        const y = 4 * TS + 6, x0 = 2 * TS, x1 = 10 * TS;
+        const y = yy(4) + 6, x0 = 2 * TS, x1 = 10 * TS, stop = R._stop;
         ctx.fillStyle = '#4a4f5a'; ctx.fillRect(x0, y, x1 - x0, 20); ctx.fillStyle = '#2f333b';
-        for (let x = x0 + ((t / 20) % 16); x < x1; x += 16) ctx.fillRect(x, y + 2, 3, 16);
+        const tt = stop ? 0 : t;
+        for (let x = x0 + ((tt / 20) % 16); x < x1; x += 16) ctx.fillRect(x, y + 2, 3, 16);
         ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        for (let i = 0; i < 6; i++) { const x = x0 + ((t / 20 + i * 44) % (x1 - x0)); ctx.fillText('🍙', x, y + 10); }
+        for (let i = 0; i < 6; i++) { const x = x0 + ((tt / 20 + i * 44) % (x1 - x0)); ctx.fillText('🍙', x, y + 10); }
+        // keran: air mengalir saat sedang cuci tangan
+        if (R._water) { ctx.fillStyle = 'rgba(120,180,255,.8)'; for (let i = 0; i < 4; i++) ctx.fillRect(3 * TS + 14 + (i % 2), yy(1) + 26 + ((t / 8 + i * 6) % 14), 3, 5); }
       }
       if (job.id === 'kaigo') {
-        ctx.fillStyle = '#fbf7ef'; ctx.fillRect(4 * TS + 2, 1 * TS + 4, TS * 1.8, TS - 8); ctx.fillStyle = '#9fc4e8'; ctx.fillRect(4 * TS + TS * .7, 1 * TS + 6, TS * 1.1, TS - 12);
-        ctx.fillStyle = '#c9a070'; ctx.fillRect(8 * TS - 6, 2 * TS + 22, TS * 2 + 12, 8);
-        ctx.fillStyle = '#cfe6f2'; ctx.fillRect(10 * TS - 4, 1 * TS + 2, TS + 30, TS - 4);
+        ctx.fillStyle = '#fbf7ef'; ctx.fillRect(4 * TS + 2, yy(1) + 4, TS * 1.8, TS - 8); ctx.fillStyle = '#9fc4e8'; ctx.fillRect(4 * TS + TS * .7, yy(1) + 6, TS * 1.1, TS - 12);
+        ctx.fillStyle = '#c9a070'; ctx.fillRect(8 * TS - 6, yy(2) + 22, TS * 2 + 12, 8);
+        ctx.fillStyle = R._water ? '#9fd0f2' : '#cfe6f2'; ctx.fillRect(10 * TS - 4, yy(1) + 2, TS + 30, TS - 4);
+        if (R._call) { ctx.fillStyle = Math.floor(t / 300) % 2 ? '#e0475f' : '#ffd24a'; ctx.beginPath(); ctx.arc(9 * TS + 16, yy(5) - 4, 6, 0, 7); ctx.fill(); }
       }
       if (job.id === 'genba') {
         ctx.strokeStyle = '#7a7f88'; ctx.lineWidth = 3;
-        for (let x = 7; x <= 9; x++) { ctx.beginPath(); ctx.moveTo(x * TS + 4, TS); ctx.lineTo(x * TS + 4, 4 * TS); ctx.stroke(); }
-        for (let y = 1.4; y < 4; y += .9) { ctx.beginPath(); ctx.moveTo(7 * TS, y * TS); ctx.lineTo(10 * TS, y * TS); ctx.stroke(); }
+        for (let x = 7; x <= 9; x++) { ctx.beginPath(); ctx.moveTo(x * TS + 4, TSY); ctx.lineTo(x * TS + 4, 3 * TSY); ctx.stroke(); }
+        for (let y = 1.3; y < 3; y += .6) { ctx.beginPath(); ctx.moveTo(7 * TS, y * TSY); ctx.lineTo(10 * TS, y * TSY); ctx.stroke(); }
         const sw = Math.sin(t / 900) * 18;
-        ctx.strokeStyle = '#2a2a2a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(11 * TS + 10, 0); ctx.lineTo(11 * TS + 10 + sw, 3 * TS); ctx.stroke();
-        ctx.fillStyle = '#c9752b'; ctx.fillRect(11 * TS + sw, 3 * TS, 20, 12);
+        ctx.strokeStyle = '#2a2a2a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(11 * TS + 10, 0); ctx.lineTo(11 * TS + 10 + sw, 3 * TSY); ctx.stroke();
+        ctx.fillStyle = '#c9752b'; ctx.fillRect(11 * TS + sw, 3 * TSY, 20, 12);
       }
       if (job.id === 'gaishoku') {
-        ctx.fillStyle = '#c99a62'; [[3, 2], [7, 2]].forEach(([x, y]) => ctx.fillRect(x * TS, y * TS + 8, TS * 3, TS - 8));
-        ctx.fillStyle = '#d9c4a0'; ctx.fillRect(9 * TS, 3 * TS, TS * 3, 10);
+        ctx.fillStyle = '#c99a62'; [[3, 2], [7, 2]].forEach(([x, y]) => ctx.fillRect(x * TS, yy(y) + 8, TS * 3, TS - 8));
+        ctx.fillStyle = '#d9c4a0'; ctx.fillRect(9 * TS, yy(3) + 12, TS * 3, 10);
         ctx.fillStyle = '#e0475f'; for (let i = 0; i < 4; i++) { const x = 1 * TS + i * 2.6 * TS, sw = Math.sin(t / 700 + i) * 2; ctx.beginPath(); ctx.ellipse(x + 16 + sw, 14, 7, 9, 0, 0, 7); ctx.fill(); }
-        ctx.fillStyle = 'rgba(255,255,255,.5)'; for (let i = 0; i < 3; i++) { const yy = (t / 30 + i * 12) % 30; ctx.fillRect(10 * TS + 12 + i * 6, 4 * TS - yy, 3, 3); }
+        ctx.fillStyle = 'rgba(255,255,255,.5)'; for (let i = 0; i < 3; i++) { const q = (t / 30 + i * 12) % 30; ctx.fillRect(10 * TS + 12 + i * 6, yy(4) - q, 3, 3); }
       }
     }
 
     /* ---------- loop ---------- */
     let last = 0, raf = 0;
     function loop(t) {
-      if (!cv.isConnected) return;
+      if (!cv.isConnected) { held = null; return; }
       const dt = Math.min(50, t - (last || t)); last = t;
       for (const a of actors.values()) {
         if (a.emoT > 0) a.emoT -= dt;
@@ -590,31 +606,74 @@ const Kerja = (() => {
     }
     raf = requestAnimationFrame(loop);
 
-    // balon kata mengikuti aktor
+    // balon kata: tidak menutupi pos tujuan, pindah ke bawah kalau tokoh di dekat dinding atas
     function place() {
       if (bub.hidden || !bubbleOf) return;
       const a = actors.get(bubbleOf); if (!a) return;
-      const l = Math.max(30, Math.min(70, (a.x + .5) / GW * 100)), tp = Math.max(0, (a.y - .3) / GH * 100);
-      bub.style.left = l + '%'; bub.style.top = tp + '%';
-      bub.classList.toggle('down', a.y < 2);
-      if (a.y < 2) bub.style.top = ((a.y + 1.1) / GH * 100) + '%';
+      const below = a.y < 3;
+      const g = goal && R.st[goal];
+      let side = 'mid';
+      if (g && Math.abs(g.y - a.y) <= 2) side = g.x <= a.x ? 'right' : 'left';
+      const cx = (a.x + .5) / GW * 100;
+      bub.style.left = cx + '%';
+      bub.style.top = (below ? (a.y + 1.05) * TSY / (GH * TSY) * 100 : (a.y * TSY + (TSY - TS) - 8) / (GH * TSY) * 100) + '%';
+      bub.className = `ws-bubble ${below ? 'down' : ''} s-${side}${cx < 30 ? ' edge-l' : cx > 70 ? ' edge-r' : ''}`;
     }
     function bubble(k, html) {
       if (!html) { bub.hidden = true; bubbleOf = null; return; }
       bubbleOf = k; bub.innerHTML = html; bub.hidden = false; place();
     }
 
-    // ketuk ruangan → jalan ke ubin / pos
+    const stationAt = (x, y) => Object.entries(R.st).find(([, s]) => { const [sx, sy] = standOf(s); return (s.x === x && s.y === y) || (sx === x && sy === y); });
     cv.addEventListener('click', e => {
       const r = cv.getBoundingClientRect();
       const x = Math.floor((e.clientX - r.left) / r.width * GW), y = Math.floor((e.clientY - r.top) / r.height * GH);
-      const hit = Object.entries(R.st).find(([, s]) => { const [sx, sy] = standOf(s); return (s.x === x && s.y === y) || (sx === x && sy === y); });
+      const hit = stationAt(x, y);
       if (onTap) onTap(hit ? hit[0] : null, x, y);
+      else if (free(x, y)) walk('you', x, y);
     });
+
+    /* ---------- D-pad di dalam ruangan ---------- */
+    const DIR = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    let held = null, holdT = 0;
+    function step(dir) {
+      const a = actors.get('you'); if (!a || a.path.length) return;
+      const [dx, dy] = DIR[dir], nx = Math.round(a.x) + dx, ny = Math.round(a.y) + dy;
+      a.dir = dir;
+      if (!free(nx, ny)) {
+        const hit = stationAt(nx, ny);
+        if (hit && onTap && hit[0] === goal) onTap(hit[0], nx, ny);   // menabrak pos tujuan = memeriksa
+        else if (Sound.bump) Sound.bump();
+        return;
+      }
+      a.path = [[nx, ny]];
+      if (goal && onTap) { const [gx, gy] = standOf(R.st[goal]); if (nx === gx && ny === gy) setTimeout(() => onTap && onTap(goal, gx, gy), 260); }
+    }
+    function keys(btn) {
+      if (!cv.isConnected) return false;
+      if (DIR[btn]) {
+        step(btn); held = btn; clearInterval(holdT);
+        holdT = setInterval(() => { if (held && cv.isConnected) step(held); else clearInterval(holdT); }, 240);
+        return true;
+      }
+      if (btn === 'a') {
+        const nb = box.querySelector('.ws-next, [data-a=check], .kj-next');
+        if (nb) { nb.click(); return true; }
+        if (goal && onTap) {
+          const a = actors.get('you'), ax = Math.round(a.x), ay = Math.round(a.y), [dx, dy] = DIR[a.dir] || [0, -1];
+          const hit = stationAt(ax, ay) || stationAt(ax + dx, ay + dy);
+          if (hit) { onTap(hit[0], ax, ay); return true; }
+        }
+        return true;
+      }
+      if (btn === 'menu') { listEl.open = !listEl.open; return true; }
+      return false;   // B → tombol keluar (konfirmasi)
+    }
+    function release(btn) { if (btn === held) { held = null; clearInterval(holdT); } }
 
     /* ---------- aksi untuk naskah ---------- */
     const api = {
-      p, box, actors, R,
+      p, box, actors, R, keys, release,
       walk, face, emote, bubble,
       cast(list) {
         (list || []).forEach(c => {
@@ -624,21 +683,45 @@ const Kerja = (() => {
           a.gone = false; walk(c.k, c.x, c.y).then(() => { if (c.dir) a.dir = c.dir; });
         });
       },
-      clock(time, title, step) {
+      clock(time, title) {
         clockEl.textContent = '🕒 ' + time;
         const hh = parseInt(time, 10); light = hh >= 19 ? .28 : hh >= 17 ? .14 : 0;
         banner.innerHTML = `<b>${esc(time)}</b><span>${esc(title)}</span>`; banner.hidden = false;
         Sound.star();
         list.insertAdjacentHTML('beforeend', `<li class="sec">${esc(time)} · ${esc(title)}</li>`);
-        return sleep(1500).then(() => { banner.hidden = true; });
+        return sleep(1400).then(() => { banner.hidden = true; });
       },
       score(n) { scoreEl.textContent = '⭐ ' + n; },
       todo(text) { list.insertAdjacentHTML('beforeend', `<li>${esc(text)}</li>`); return list.lastElementChild; },
       objective(text) { obj.innerHTML = text || ''; obj.classList.toggle('on', !!text); },
+      // ganti seragam kerja
+      wear() {
+        const U = UNIFORM[job.id], key = 'kj_' + job.id;
+        Pix.registerLook(key, Object.assign({}, S().look, U.look));
+        const a = actors.get('you'); a.id = key; emote('you', '👕', 1600); Sound.star();
+        return api.line({ n: `👕 ${U.say}` });
+      },
+      // kartu absen: masuk (しゅっきん) / pulang (たいきん)
+      timecard(kind, time) {
+        const inn = kind === 'in';
+        box.innerHTML = `<div class="ws-tc"><div class="tc-card"><div class="tc-h">タイムカード</div><div class="tc-name">${esc(S().name || 'Kamu')}</div>
+          <div class="tc-row"><span>しゅっきん (masuk)</span><b class="tc-in">${inn ? '--:--' : esc(api._in || '--:--')}</b></div>
+          <div class="tc-row"><span>たいきん (pulang)</span><b class="tc-out">--:--</b></div></div>
+          <button class="btn block ws-next" type="button">${inn ? '🪪 Tap kartu: しゅっきん' : '🪪 Tap kartu: たいきん'}</button></div>`;
+        return UI.wait(done => {
+          box.querySelector('.ws-next').onclick = () => {
+            Sound.ok(); box.querySelector(inn ? '.tc-in' : '.tc-out').textContent = time;
+            if (inn) api._in = time;
+            const b = box.querySelector('.ws-next'); b.className = 'btn block kj-next'; b.textContent = 'ピッ！ Lanjut ▶';
+            b.onclick = () => { Sound.blip(); done(); };
+          };
+        });
+      },
       // kalimat tokoh: balon kata di ruangan + teks lengkap di kotak bawah
       line(l, btn = 'Lanjut ▶') {
         const who = l.w ? (l.w === boss ? 'boss' : [...actors.values()].find(a => a.id === l.w)?.k) : null;
-        const short = l.jp ? `<b class="jp">${esc(l.jp)}</b>` : `<span>${esc((l.t || l.n || '').slice(0, 60))}${(l.t || l.n || '').length > 60 ? '…' : ''}</span>`;
+        const txt = l.t || l.n || '';
+        const short = l.jp ? `<b class="jp">${esc(l.jp)}</b>` : `<span>${esc(txt.slice(0, 50))}${txt.length > 50 ? '…' : ''}</span>`;
         if (who) { bubble(who, short); if (l.e === 'happy') emote(who, '♪', 1200); }
         else bubble(null);
         const name = l.w && CHARACTERS[l.w] ? `<div class="ws-name" style="--c:${CHARACTERS[l.w].color}">${esc(CHARACTERS[l.w].name)}</div>` : '';
@@ -650,30 +733,30 @@ const Kerja = (() => {
         speak(l.jp);
         return UI.wait(done => { box.querySelector('.ws-next').onclick = () => { Sound.blip(); done(); }; });
       },
-      // atasan memimpin ke pos, pemain harus mengetuk pos itu
+      // atasan memimpin ke pos, pemain harus ke sana (ketuk atau D-pad)
       async lead(key) {
         const s = R.st[key], [sx, sy] = standOf(s), you = actors.get('you');
-        if (Math.round(you.x) === sx && Math.round(you.y) === sy) return;
-        const bx = Math.min(GW - 1, sx + 1) === sx ? sx - 1 : sx + 1;
+        if (Math.round(you.x) === sx && Math.round(you.y) === sy && !you.path.length) return;
+        const cand = [[sx + 1, sy], [sx - 1, sy], [sx, sy + 1], [sx + 1, sy + 1], [sx - 1, sy + 1]].find(([x, y]) => free(x, y)) || [sx, sy];
         const go = [`${s.jp} へ いこう！`, `つぎ は ${s.jp} です。`, `${s.jp} に きて ください。`][Object.keys(R.st).indexOf(key) % 3];
         bubble('boss', `<b class="jp">${esc(go)}</b>`); speak(go);
         hot = key;
-        await walk('boss', bx, sy); face('boss', sx, sy);
+        await walk('boss', cand[0], cand[1]); face('boss', s.x, s.y);
         goal = key;
-        api.objective(`➡ Ketuk <b>${s.e} ${esc(s.jp)}</b> <small>(${esc(s.id)})</small> di ruangan`);
-        box.innerHTML = `<div class="ws-cap"><div class="ws-name" style="--c:${CHARACTERS[boss].color}">${esc(CHARACTERS[boss].name)}</div><div class="ws-jp"><span class="jp">${esc(go)}</span></div><div class="ws-id">Ayo ke ${esc(s.id)} (${esc(s.jp)}). Ketuk tempat yang ditunjuk panah.</div></div>`;
-        let idle = setTimeout(() => { bubble('boss', `<b class="jp">こっち、こっち！</b> 👋`); emote('boss', '❗'); }, 5000);
+        api.objective(`➡ Pergi ke <b>${s.e} ${esc(s.jp)}</b> <small>(${esc(s.id)})</small> · ketuk atau pakai D-pad`);
+        box.innerHTML = `<div class="ws-cap"><div class="ws-name" style="--c:${CHARACTERS[boss].color}">${esc(CHARACTERS[boss].name)}</div><div class="ws-jp"><span class="jp">${esc(go)}</span></div><div class="ws-id">Ayo ke ${esc(s.id)} (${esc(s.jp)}). Ikuti panah kuning.</div></div>`;
+        const idle = setTimeout(() => { bubble('boss', `<b class="jp">こっち、こっち！</b> 👋`); emote('boss', '❗'); }, 6000);
         await UI.wait(done => {
           onTap = (hit, x, y) => {
             if (hit === key) { onTap = null; clearTimeout(idle); done(); return; }
-            Sound.bump && Sound.bump();
-            if (hit) { bubble('boss', `<b class="jp">そこ じゃ なくて、${esc(s.jp)}！</b>`); emote('boss', '💦'); }
-            walk('you', Math.max(0, Math.min(GW - 1, x)), Math.max(1, Math.min(GH - 1, y)));
+            if (hit) { Sound.bump && Sound.bump(); bubble('boss', `<b class="jp">そこ じゃ なくて、${esc(s.jp)}！</b>`); emote('boss', '💦'); }
+            if (free(x, y)) walk('you', x, y);
           };
         });
         goal = null; api.objective('');
-        await walk('you', sx, sy); face('you', s.x, s.y); face('boss', sx, sy);
+        await walk('you', sx, sy); face('you', s.x, s.y); face('boss', s.x, s.y);
         hot = null;
+        if (UNIFORM[job.id].at === key && UNIFORM[job.id].after == null && !api._worn) { api._worn = true; await api.wear(); }
       },
       react(ok) {
         if (ok) { emote('boss', '👍'); bubble('boss', `<b class="jp">${esc(shuffle(['いいね！', 'そう そう！', 'じょうず！', 'ばっちり！'])[0])}</b>`); emote('you', '⭕'); }
@@ -686,7 +769,7 @@ const Kerja = (() => {
         const id = setInterval(tick, 9000);
         return () => clearInterval(id);
       },
-      close() { cancelAnimationFrame(raf); UI.closePanel(); },
+      close() { cancelAnimationFrame(raf); held = null; clearInterval(holdT); UI.closePanel(); },
     };
     return api;
   }
@@ -801,53 +884,378 @@ const Kerja = (() => {
     });
   }
 
+  /* ---------- tugas fisik (lakukan, jangan pilih) ---------- */
+  // Kanvas kecil di kotak tugas dengan koordinat piksel logis
+  function pad(W, w, h, cls = '') {
+    const c = document.createElement('canvas'); c.width = w; c.height = h; c.className = 'kj-pad ' + cls;
+    const pos = e => { const r = c.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * w, (e.clientY - r.top) / r.height * h]; };
+    return { c, ctx: c.getContext('2d'), pos };
+  }
+  const done1 = (W, label = 'Lanjut ▶') => new Promise(res => {
+    const b = document.createElement('button'); b.className = 'btn block kj-next'; b.type = 'button'; b.textContent = label;
+    b.onclick = () => { Sound.blip(); res(); }; W.box.appendChild(b);
+  });
+
+  // 🧼 Cuci tangan: urutan alat + gosok semua bagian tangan sampai bersih
+  function taskWash(W, st) {
+    const SEQ = [['water', '💧', 'みず', 'basahi'], ['soap', '🧴', 'せっけん', 'sabun'], ['rub', '🫧', 'こする', 'gosok'], ['rinse', '🚿', 'ながす', 'bilas'], ['dry', '🧻', 'ふく', 'lap'], ['alc', '✨', 'アルコール', 'disinfeksi']];
+    const ZONES = [['てのひら', 'telapak', 40, 40, 80, 60], ['てのこう', 'punggung tangan', 180, 40, 80, 60], ['ゆび の あいだ', 'sela jari', 30, 4, 100, 34], ['つめ', 'kuku', 170, 4, 100, 34], ['てくび', 'pergelangan', 100, 104, 100, 30]];
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title)}</div><p class="muted small">Ketuk alat sesuai urutan. Saat menggosok, usap jari di setiap bagian tangan sampai bersih (30 detik).</p>
+      <div class="kj-tools">${shuffle(SEQ).map(([k, e, jp, id]) => `<button class="kj-tool" data-k="${k}" type="button"><b>${e}</b><span class="jp">${jp}</span><small>${id}</small></button>`).join('')}</div>
+      <div class="kj-timer">⏱ <b>0</b> / 30 びょう</div><p class="kj-msg small"></p>`;
+    const P = pad(W, 300, 140); W.box.insertBefore(P.c, W.box.querySelector('.kj-timer'));
+    const clean = ZONES.map(() => 0), msg = W.box.querySelector('.kj-msg'), tEl = W.box.querySelector('.kj-timer b');
+    P.c.dataset.zones = JSON.stringify(ZONES.map(z => z.slice(2)));
+    let stepI = 0, miss = 0, rubT = 0, rubStart = 0, lastP = null;
+    const stop = W.watch('せっけん で 30びょう、ゆび の あいだ も！');
+    const draw = () => {
+      const c = P.ctx; c.clearRect(0, 0, 300, 140);
+      ZONES.forEach(([jp, , x, y, w, h], i) => {
+        const v = clean[i] / 100;
+        c.fillStyle = stepI >= 3 ? `rgba(${Math.round(150 - 60 * v)},${Math.round(110 + 100 * v)},${Math.round(80 + 120 * v)},.9)` : '#e8c9a8';
+        c.beginPath(); c.roundRect ? c.roundRect(x, y, w, h, 10) : c.rect(x, y, w, h); c.fill();
+        c.strokeStyle = '#2a1f2d'; c.lineWidth = 2; c.stroke();
+        c.fillStyle = '#2a1f2d'; c.font = '700 11px "Zen Maru Gothic",sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(jp, x + w / 2, y + h / 2 - 6);
+        c.font = '10px sans-serif'; c.fillText(Math.round(clean[i]) + '%', x + w / 2, y + h / 2 + 8);
+        if (stepI === 3 && v < 1) { c.fillStyle = 'rgba(120,90,60,.5)'; for (let k = 0; k < 6 * (1 - v); k++) c.fillRect(x + 8 + (k * 23) % (w - 16), y + 6 + (k * 17) % (h - 12), 4, 4); }
+        if (stepI === 3) { c.fillStyle = 'rgba(255,255,255,.7)'; c.beginPath(); c.arc(x + w - 10, y + 10, 5, 0, 7); c.fill(); }
+      });
+    };
+    draw();
+    const elapsed = () => Math.min(30, Math.floor(rubT * 2.5 / 1000));   // dipercepat 2,5×
+    return UI.wait(done => {
+      const rub = e => {
+        if (stepI !== 3) return;
+        const [x, y] = P.pos(e);
+        if (lastP) { const d = Math.hypot(x - lastP[0], y - lastP[1]); ZONES.forEach(([, , zx, zy, zw, zh], i) => { if (x >= zx && x <= zx + zw && y >= zy && y <= zy + zh) clean[i] = Math.min(100, clean[i] + d * .9); }); }
+        lastP = [x, y];
+        if (!rubStart) rubStart = performance.now();
+        rubT = performance.now() - rubStart; tEl.textContent = elapsed();
+        draw();
+      };
+      P.c.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') rub(e); });
+      P.c.addEventListener('pointerdown', e => { lastP = null; rub(e); });
+      P.c.addEventListener('pointerup', () => { lastP = null; });
+      W.box.querySelectorAll('.kj-tool').forEach(b => b.onclick = () => {
+        const k = b.dataset.k, want = SEQ[stepI][0];
+        if (k !== want) { Sound.bad(); miss++; b.classList.add('bad'); setTimeout(() => b.classList.remove('bad'), 400); W.bubble('boss', '<b class="jp">ちがう！ つぎ は…？</b>'); W.emote('boss', '💦'); msg.textContent = `Bukan itu. Langkah ke-${stepI + 1}?`; return; }
+        if (k === 'rinse' && (clean.some(v => v < 100) || elapsed() < 30)) {
+          Sound.bad(); miss++; W.bubble('boss', '<b class="jp">まだ！ 30びょう こすって。</b>'); W.emote('boss', '💦');
+          msg.textContent = `Belum bersih: ${ZONES.filter((z, i) => clean[i] < 100).map(z => z[1]).join(', ') || 'belum 30 detik'}.`; return;
+        }
+        Sound.ok(); b.classList.add('done'); b.disabled = true; stepI++;
+        W.R._water = stepI >= 1 && stepI <= 4;
+        msg.textContent = k === 'rub' ? 'Usap setiap bagian tangan di gambar sampai 100%, minimal 30 detik.' : '';
+        if (k === 'rub') W.bubble('boss', '<b class="jp">ゆび の あいだ、つめ、てくび も！</b>');
+        draw();
+        if (stepI >= SEQ.length) { stop(); W.R._water = false; const sc = Math.max(0, 1 - miss * .2); W.react(sc >= .8); done(sc); }
+      });
+    });
+  }
+
+  // 🧲 Rol perekat: gulirkan rol ke seluruh badan (depan & belakang)
+  function taskRoller(W, st) {
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'ローラー · Bersihkan baju dengan rol perekat')}</div><p class="muted small">Usap jari di badan (depan & belakang) untuk mengambil rambut & debu. Jangan lupa lengan dan punggung!</p><div class="kj-timer">🧹 <b>0</b>%</div>`;
+    const P = pad(W, 300, 160); W.box.insertBefore(P.c, W.box.querySelector('.kj-timer'));
+    const body = (c, ox) => { c.fillStyle = '#f4f6fa'; c.strokeStyle = '#2a1f2d'; c.lineWidth = 2; c.beginPath(); c.arc(ox + 50, 22, 16, 0, 7); c.fill(); c.stroke(); c.beginPath(); c.roundRect ? c.roundRect(ox + 24, 40, 52, 70, 8) : c.rect(ox + 24, 40, 52, 70); c.fill(); c.stroke(); c.fillRect(ox + 6, 44, 16, 52); c.strokeRect(ox + 6, 44, 16, 52); c.fillRect(ox + 78, 44, 16, 52); c.strokeRect(ox + 78, 44, 16, 52); c.fillRect(ox + 28, 110, 18, 44); c.strokeRect(ox + 28, 110, 18, 44); c.fillRect(ox + 54, 110, 18, 44); c.strokeRect(ox + 54, 110, 18, 44); };
+    const specks = [];
+    [40, 180].forEach(ox => { for (let i = 0; i < 18; i++) { const zone = [[ox + 26, 42, 48, 66], [ox + 8, 46, 12, 48], [ox + 80, 46, 12, 48], [ox + 30, 112, 14, 40], [ox + 56, 112, 14, 40]][i % 5]; specks.push({ x: zone[0] + Math.random() * zone[2], y: zone[1] + Math.random() * zone[3], hair: Math.random() < .5, on: true }); } });
+    const el = W.box.querySelector('.kj-timer b');
+    P.c.dataset.specks = JSON.stringify(specks.map(s => [Math.round(s.x), Math.round(s.y)]));
+    let roller = null;
+    const draw = () => {
+      const c = P.ctx; c.clearRect(0, 0, 300, 160); body(c, 40); body(c, 180);
+      c.fillStyle = '#2a1f2d'; c.font = '10px sans-serif'; c.textAlign = 'center'; c.fillText('まえ (depan)', 90, 158); c.fillText('うしろ (belakang)', 230, 158);
+      specks.forEach(s => { if (!s.on) return; c.strokeStyle = s.hair ? '#2a1f2d' : '#9a8a7a'; c.lineWidth = 1.2; c.beginPath(); if (s.hair) { c.moveTo(s.x - 4, s.y); c.quadraticCurveTo(s.x, s.y - 4, s.x + 4, s.y + 1); } else c.arc(s.x, s.y, 1.6, 0, 7); c.stroke(); });
+      if (roller) { c.fillStyle = 'rgba(246,212,74,.6)'; c.fillRect(roller[0] - 14, roller[1] - 6, 28, 12); c.strokeStyle = '#2a1f2d'; c.strokeRect(roller[0] - 14, roller[1] - 6, 28, 12); }
+    };
+    draw();
+    const stop = W.watch('せなか も わすれないで！');
+    return UI.wait(done => {
+      let finished = false;
+      const roll = e => {
+        if (finished) return;
+        roller = P.pos(e);
+        specks.forEach(s => { if (s.on && Math.abs(s.x - roller[0]) < 16 && Math.abs(s.y - roller[1]) < 10) s.on = false; });
+        const pct = Math.round(specks.filter(s => !s.on).length / specks.length * 100); el.textContent = pct;
+        draw();
+        if (pct >= 100) { finished = true; stop(); Sound.ok(); W.react(true); done(1); }
+      };
+      P.c.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') roll(e); });
+      P.c.addEventListener('pointerdown', roll);
+      const b = document.createElement('button'); b.className = 'btn block ghost'; b.type = 'button'; b.textContent = 'Sudah bersih ✓';
+      b.onclick = () => { if (finished) return; finished = true; stop(); const pct = specks.filter(s => !s.on).length / specks.length; (pct >= .9 ? Sound.ok : Sound.bad)(); W.react(pct >= .9); if (pct < .9) W.bubble('boss', '<b class="jp">まだ ついてる よ！</b>'); done(pct >= .9 ? 1 : pct); };
+      W.box.appendChild(b);
+    });
+  }
+
+  // 🍙 Conveyor real-time: ketuk produk NG sebelum keluar layar
+  function taskBelt(W, st) {
+    const relax = !!S().settings.relax, N = st.count || 12;
+    const items = []; while (items.length < N) items.push(...shuffle(st.items)); items.length = N;
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title)}</div><p class="muted small">Produk berjalan di conveyor. <b>Ketuk produk NG</b> untuk menyingkirkannya. Produk bagus biarkan lewat (ヨシ！).</p><div class="kj-timer">✅ <b class="ok">0</b> · ❌ <b class="ng">0</b> · <span class="left">${N}</span> lagi</div><p class="kj-msg small"></p>`;
+    const P = pad(W, 320, 90, 'belt'); W.box.insertBefore(P.c, W.box.querySelector('.kj-timer'));
+    const msg = W.box.querySelector('.kj-msg'), okEl = W.box.querySelector('.ok'), ngEl = W.box.querySelector('.ng'), leftEl = W.box.querySelector('.left');
+    const speed = relax ? 34 : 58, gap = relax ? 2000 : 1250;
+    return UI.wait(done => {
+      const live = []; let spawned = 0, t0 = performance.now(), lastSpawn = -1e9, ok = 0, ng = 0, raf = 0, prev = t0;
+      const finish = () => { cancelAnimationFrame(raf); const sc = ok / N; W.react(sc >= .8); done(sc); };
+      const judge = (it, removed) => {
+        it.gone = true;
+        const good = removed ? !it.ok : it.ok;
+        if (good) { ok++; Sound.ok(); if (removed) { W.emote('you', '⭕', 500); W.bubble('boss', '<b class="jp">NG、ナイス！</b>'); } }
+        else { ng++; Sound.bad(); W.emote('boss', '💦'); W.bubble('boss', `<b class="jp">${removed ? 'それ は ヨシ！' : 'NG が ながれた！'}</b>`); msg.textContent = removed ? `Itu produk bagus: ${it.d}` : `NG lolos: ${it.why || it.d}`; }
+        okEl.textContent = ok; ngEl.textContent = ng; leftEl.textContent = N - ok - ng;
+        if (ok + ng >= N) setTimeout(finish, 400);
+      };
+      P.c.addEventListener('pointerdown', e => {
+        const [x, y] = P.pos(e);
+        const it = live.find(o => !o.gone && Math.abs(o.x - x) < 22 && Math.abs(45 - y) < 34);
+        if (it) judge(it, true);
+      });
+      const loop = t => {
+        if (!P.c.isConnected) return;
+        const dt = Math.min(50, t - prev); prev = t;
+        if (spawned < N && t - lastSpawn > gap) { live.push({ ...items[spawned], x: -20 }); spawned++; lastSpawn = t; }
+        const c = P.ctx; c.clearRect(0, 0, 320, 90);
+        c.fillStyle = '#4a4f5a'; c.fillRect(0, 26, 320, 40); c.fillStyle = '#2f333b'; for (let x = (t / 12) % 20; x < 320; x += 20) c.fillRect(x, 28, 3, 36);
+        c.fillStyle = '#e0475f'; c.fillRect(300, 20, 4, 52);
+        live.forEach(o => {
+          if (o.gone) return;
+          o.x += speed * dt / 1000;
+          c.font = '30px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(o.e, o.x, 46);
+          if (o.b) { c.font = '16px sans-serif'; c.fillText(o.b, o.x + 12, 58); }
+          if (o.x > 300) judge(o, false);
+        });
+        raf = requestAnimationFrame(loop);
+      };
+      P.c.dataset.live = '1';
+      W.box._belt = live;
+      raf = requestAnimationFrame(loop);
+    });
+  }
+
+  // 🌡 Termometer: tusuk di bagian paling tebal, tahan sampai stabil, catat, lalu putuskan
+  async function taskThermo(W, st) {
+    let score = 0;
+    for (const round of [{ temp: 68, ok: false }, { temp: 78, ok: true }]) {
+      W.box.innerHTML = `<div class="ws-q">${round.ok ? 'Setelah dipanaskan ulang: ukur lagi' : esc(st.title || 'Ukur suhu tengah karaage')}</div>
+        <p class="muted small">1) Ketuk <b>bagian paling tebal</b> untuk menusuk termometer · 2) <b>Tahan</b> tombol sampai angkanya stabil · 3) Tulis di 記録表 · 4) Putuskan.</p>
+        <div class="kj-thermo"><div class="kj-meat" role="img" aria-label="karaage">
+          <button class="kj-zone edge" data-z="edge" type="button" aria-label="pinggir">pinggir</button><button class="kj-zone mid" data-z="mid" type="button" aria-label="tengah">tengah (tebal)</button></div>
+          <div class="kj-read"><b>--.-</b>℃</div></div>
+        <button class="btn block kj-hold" type="button" disabled>⏱ Tahan 2 detik</button>
+        <div class="kj-log" hidden><div class="tc-h">きろくひょう (catatan suhu)</div><div class="kj-num"><input type="text" inputmode="numeric" maxlength="3" placeholder="℃"><span>℃</span></div>
+          <div class="kj-keys">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '⌫', 0, '✓'].map(k => `<button type="button" data-n="${k}">${k}</button>`).join('')}</div></div>
+        <div class="kj-yn" hidden><button class="btn kj-pass" type="button">✅ OK (75℃ ke atas)</button><button class="btn danger kj-re" type="button">🔁 さいかねつ (panaskan ulang)</button></div>
+        <p class="kj-msg small"></p>`;
+      const B = W.box, rd = B.querySelector('.kj-read b'), hold = B.querySelector('.kj-hold'), log = B.querySelector('.kj-log'), yn = B.querySelector('.kj-yn'), msg = B.querySelector('.kj-msg'), inp = B.querySelector('.kj-num input');
+      let pts = 0;
+      // 1) tempat menusuk
+      const z = await UI.wait(d => B.querySelectorAll('.kj-zone').forEach(b => b.onclick = () => d(b.dataset.z)));
+      if (z === 'edge') { Sound.bad(); W.bubble('boss', '<b class="jp">はし じゃ なくて、いちばん あつい ところ！</b>'); msg.textContent = 'Pinggir lebih cepat panas, jadi angkanya menipu. Ukur di tengah yang paling tebal.'; await UI.wait(d => B.querySelector('.kj-zone.mid').onclick = () => d()); }
+      else pts += 1;
+      B.querySelector('.kj-zone.mid').classList.add('in'); Sound.blip(); hold.disabled = false;
+      // 2) tahan sampai stabil
+      await UI.wait(d => {
+        let t0 = 0, raf = 0;
+        const tick = t => { if (!t0) t0 = t; const k = Math.min(1, (t - t0) / 2000); rd.textContent = (20 + (round.temp - 20) * k + (k < 1 ? Math.random() * 2 : 0)).toFixed(1); if (k >= 1) { Sound.ok(); hold.textContent = '✓ Stabil'; hold.disabled = true; d(); return; } raf = requestAnimationFrame(tick); };
+        const start = e => { e.preventDefault(); t0 = 0; raf = requestAnimationFrame(tick); };
+        const end = () => { if (!hold.disabled) { cancelAnimationFrame(raf); rd.textContent = '--.-'; msg.textContent = 'Tahan terus sampai angkanya berhenti berubah.'; } };
+        hold.addEventListener('pointerdown', start); ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => hold.addEventListener(ev, end));
+        hold._auto = () => { rd.textContent = round.temp.toFixed(1); hold.disabled = true; d(); };
+      });
+      // 3) tulis di catatan
+      log.hidden = false; msg.textContent = 'Tulis angkanya di catatan suhu.';
+      const val = await UI.wait(d => {
+        B.querySelectorAll('.kj-keys button').forEach(b => b.onclick = () => { const n = b.dataset.n; Sound.blip(); if (n === '⌫') inp.value = inp.value.slice(0, -1); else if (n === '✓') d(inp.value); else if (inp.value.length < 3) inp.value += n; });
+        inp.onkeydown = e => { if (e.key === 'Enter') d(inp.value); };
+      });
+      if (+val === round.temp) { pts += 1; Sound.ok(); } else { Sound.bad(); msg.textContent = `Catatan salah: termometer menunjukkan ${round.temp}℃, bukan ${val || '(kosong)'}.`; W.bubble('boss', '<b class="jp">きろく は ただしく！</b>'); }
+      // 4) putuskan
+      yn.hidden = false;
+      const pass = await UI.wait(d => { B.querySelector('.kj-pass').onclick = () => d(true); B.querySelector('.kj-re').onclick = () => d(false); });
+      if (pass === round.ok) { pts += 1; Sound.ok(); W.react(true); } else { Sound.bad(); W.react(false); msg.textContent = round.ok ? `${round.temp}℃ sudah lewat 75℃, boleh diloloskan.` : `${round.temp}℃ di bawah 75℃: wajib panaskan ulang!`; await sleep(1600); }
+      score += pts / 3;
+      if (!round.ok && pass) break;   // kalau diloloskan padahal kurang, tidak ada ronde kedua
+    }
+    return Math.min(1, score / 2);
+  }
+
+  // 🛁 Dial suhu air mandi
+  async function taskDial(W, st) {
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'Atur suhu air mandi')}</div><p class="muted small">Geser dial ke suhu yang aman untuk lansia, cek dengan tanganmu, lalu tanya ke nenek.</p>
+      <div class="kj-dial"><div class="kj-water"><b>40</b>℃</div><input type="range" min="30" max="50" step="1" value="44"></div>
+      <div class="row"><button class="btn ghost kj-hand" type="button">✋ Cek dengan tangan</button></div><p class="kj-msg small"></p>`;
+    const B = W.box, rng = B.querySelector('input'), val = B.querySelector('.kj-water b'), wat = B.querySelector('.kj-water'), msg = B.querySelector('.kj-msg');
+    const paint = () => { const v = +rng.value; val.textContent = v; wat.style.background = `hsl(${210 - (v - 30) * 10},70%,${70 - (v - 30)}%)`; };
+    paint(); rng.oninput = paint; W.R._water = true;
+    let checked = false;
+    const stop = W.watch('38〜41ど ぐらい が いい よ。');
+    await UI.wait(d => { B.querySelector('.kj-hand').onclick = () => { checked = true; const v = +rng.value; Sound.blip(); msg.textContent = v > 41 ? '🔥 あつい！ Terlalu panas untuk kulit lansia.' : v < 38 ? '🥶 つめたい… Terlalu dingin.' : '😊 ちょうど いい！ Suhunya pas.'; if (v >= 38 && v <= 41) d(); }; });
+    stop();
+    const ok = +rng.value >= 38 && +rng.value <= 41 && checked;
+    const q = await taskQuiz(W, { q: 'Sebelum nenek masuk, kamu bertanya…', opts: [{ jp: 'おゆ の かげん は どう ですか？', ro: 'oyu no kagen wa dou desu ka?' }, { jp: 'はやく はいって！', ro: 'hayaku haitte!' }, { jp: 'あつい けど、がまん して。', ro: 'atsui kedo, gaman shite.' }] });
+    W.R._water = false;
+    return (ok ? .5 : 0) + q * .5;
+  }
+
+  // 🥄 Menyuapi: tunggu tanda menelan sebelum suapan berikutnya
+  function taskFeed(W, st) {
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'しょくじ かいじょ · Suapi Nenek Kimura')}</div>
+      <p class="muted small">Ucapkan salam makan dulu. Suapkan, lalu <b>tunggu sampai muncul 「ごっくん」</b> (sudah menelan) sebelum suapan berikutnya. Terlalu cepat = tersedak (むせ)!</p>
+      <div class="kj-feed"><div class="kj-face">👵</div><div class="kj-cue">…</div><div class="kj-bowl">🍚 <b>0</b>/6</div></div>
+      <div class="row"><button class="btn ghost kj-say" type="button">🗣 「いただきましょう」</button><button class="btn kj-spoon" type="button" disabled>🥄 Suapkan</button></div><p class="kj-msg small"></p>`;
+    const B = W.box, face = B.querySelector('.kj-face'), cue = B.querySelector('.kj-cue'), cnt = B.querySelector('.kj-bowl b'), spoon = B.querySelector('.kj-spoon'), msg = B.querySelector('.kj-msg');
+    const stop = W.watch('ゆっくり で いい よ。のみこんだ か みて ね。');
+    return UI.wait(done => {
+      let n = 0, miss = 0, ready = true, saidFirst = false, timer = 0;
+      B.querySelector('.kj-say').onclick = () => { saidFirst = true; Sound.ok(); speak('いただきましょう'); spoon.disabled = false; face.textContent = '😊'; cue.textContent = 'はい、いただきます。'; B.querySelector('.kj-say').disabled = true; };
+      spoon.onclick = () => {
+        if (!saidFirst) return;
+        if (!ready) { miss++; Sound.bad(); face.textContent = '😣'; cue.textContent = 'ゴホッ ゴホッ！ (むせ)'; W.bubble('boss', '<b class="jp">ストップ！ はやすぎる！</b>'); W.emote('boss', '💦'); msg.textContent = 'Nenek tersedak karena belum menelan. Tunggu tanda ごっくん.'; clearTimeout(timer); timer = setTimeout(() => { ready = true; face.textContent = '😌'; cue.textContent = 'ふう…'; }, 2200); return; }
+        ready = false; n++; cnt.textContent = n; face.textContent = '😋'; cue.textContent = 'もぐ もぐ…'; Sound.blip();
+        timer = setTimeout(() => { ready = true; face.textContent = '😊'; cue.textContent = 'ごっくん ✓'; if (n >= 6) { stop(); const sc = Math.max(0, 1 - miss * .25); W.react(sc >= .75); done(sc); } }, 1300 + Math.random() * 1300);
+      };
+      B._feed = () => ({ ready, saidFirst, n });
+    });
+  }
+
+  // 💴 Laci kasir: ambil uang kembalian yang tepat
+  async function taskCash(W, st) {
+    const total = shuffle([2380, 3500, 1760, 4120, 2950])[0], paid = total < 3000 ? (total < 2000 ? 2000 : 3000) : 5000, change = paid - total;
+    const yen = n => n.toLocaleString('ja-JP');
+    W.box.innerHTML = `<div class="ws-q">レジ · Total ${yen(total)}えん, tamu membayar ${yen(paid)}えん</div>
+      <p class="muted small">Ambil uang kembalian dari laci kasir, lalu serahkan.</p>
+      <div class="kj-tray">Kembalian: <b>0</b> えん</div>
+      <div class="kj-drawer">${[1000, 500, 100, 50, 10].map(v => `<button class="kj-coin ${v >= 1000 ? 'bill' : ''}" data-v="${v}" type="button">${yen(v)}</button>`).join('')}</div>
+      <div class="row"><button class="btn ghost kj-clear" type="button">↺ Ulang</button><button class="btn kj-give" type="button">Serahkan ▶</button></div><p class="kj-msg small"></p>`;
+    const B = W.box, tray = B.querySelector('.kj-tray b'), msg = B.querySelector('.kj-msg');
+    let sum = 0;
+    B.querySelectorAll('.kj-coin').forEach(b => b.onclick = () => { sum += +b.dataset.v; tray.textContent = yen(sum); Sound.blip(); });
+    B.querySelector('.kj-clear').onclick = () => { sum = 0; tray.textContent = 0; };
+    const stop = W.watch(`${yen(paid)} − ${yen(total)} は…？`);
+    await UI.wait(d => { B.querySelector('.kj-give').onclick = () => d(); });
+    stop();
+    const ok = sum === change;
+    (ok ? Sound.ok : Sound.bad)(); W.react(ok);
+    if (!ok) { msg.textContent = `Kembalian yang benar: ${yen(paid)} − ${yen(total)} = ${yen(change)}えん.`; await sleep(1800); }
+    const q = await taskQuiz(W, { q: `Saat menyerahkan ${yen(change)}えん, kamu bilang…`, opts: [{ jp: `${yen(change)}えん の おかえし です。`, ro: 'no okaeshi desu.' }, { jp: 'はい、おつり。', ro: 'hai, otsuri.' }, { jp: 'ありがとう ね！', ro: 'arigatou ne!' }] });
+    return (ok ? .6 : 0) + q * .4;
+  }
+
+  // 👉 指差呼称: tunjuk titik yang diperiksa, lalu tahan untuk berseru
+  async function taskShisa(W, st) {
+    const PTS = shuffle([['あしもと', 'pijakan kaki', '🦶'], ['きゃたつ の ロック', 'kunci tangga', '🔒'], ['あごひも', 'tali dagu helm', '⛑️']]);
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'しさこしょう · Tunjuk & seru sebelum naik tangga')}</div>
+      <p class="muted small">Untuk setiap titik: ketuk (tunjuk) titiknya, lalu <b>tahan</b> tombol 「ヨシ！」 sampai penuh.</p>
+      <div class="kj-points">${PTS.map(([jp, id, e], i) => `<button class="kj-pt" data-i="${i}" type="button"><b>${e}</b><span class="jp">${jp}</span><small>${id}</small></button>`).join('')}</div>
+      <button class="btn block kj-yoshi" type="button" disabled><span class="fill"></span>👉 ヨシ！ (tahan)</button><p class="kj-msg small"></p>`;
+    const B = W.box, btn = B.querySelector('.kj-yoshi'), fill = btn.querySelector('.fill'), msg = B.querySelector('.kj-msg');
+    let doneN = 0, cur = -1, miss = 0;
+    await UI.wait(d => {
+      B.querySelectorAll('.kj-pt').forEach(b => b.onclick = () => { if (b.classList.contains('done')) return; cur = +b.dataset.i; B.querySelectorAll('.kj-pt').forEach(x => x.classList.toggle('sel', x === b)); btn.disabled = false; Sound.blip(); });
+      let t0 = 0, raf = 0;
+      const tick = t => { if (!t0) t0 = t; const k = Math.min(1, (t - t0) / 800); fill.style.width = (k * 100) + '%'; if (k >= 1) { const [jp] = PTS[cur]; speak(jp + '、よし！'); Sound.ok(); W.bubble('boss', `<b class="jp">${esc(jp)}、ヨシ！</b>`); B.querySelector(`.kj-pt[data-i="${cur}"]`).classList.add('done'); doneN++; cur = -1; btn.disabled = true; fill.style.width = 0; if (doneN >= PTS.length) d(); return; } raf = requestAnimationFrame(tick); };
+      btn.addEventListener('pointerdown', e => { e.preventDefault(); if (cur < 0) { miss++; msg.textContent = 'Tunjuk dulu titiknya!'; return; } t0 = 0; raf = requestAnimationFrame(tick); });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, () => { cancelAnimationFrame(raf); if (cur >= 0 && fill.style.width !== '0px' && parseFloat(fill.style.width) < 100) { fill.style.width = 0; msg.textContent = 'Tahan sampai penuh sambil berseru!'; } }));
+    });
+    W.react(miss === 0);
+    return Math.max(0, 1 - miss * .2);
+  }
+
   /* ---------- menjalankan satu shift ---------- */
-  const TASK_NAME = { quiz: s => s.q, order: s => s.title, pick: s => s.title, spot: s => s.title };
+  const TASKS = { quiz: taskQuiz, order: taskOrder, pick: taskPick, spot: taskSpot, wash: taskWash, roller: taskRoller, belt: taskBelt, thermo: taskThermo, dial: taskDial, feed: taskFeed, cash: taskCash, shisa: taskShisa };
+  const TASK_START = { spot: 'はじめ！', belt: 'ライン スタート！', order: 'じゅんばん に やって みて。', pick: 'えらんで ください。', wash: 'てあらい スタート！', roller: 'ローラー を かけて。', thermo: 'おんど を はかって。', dial: 'おゆ の おんど を みて。', feed: 'ゆっくり ね。', cash: 'おつり を おねがい。', shisa: 'しさこしょう！' };
+  // Kategori 評価シート
+  const CATS = [['anzen', '安全', 'Keselamatan'], ['eisei', '衛生', 'Kebersihan'], ['horenso', '報連相', 'Komunikasi'], ['seikaku', '正確さ', 'Ketepatan'], ['speed', 'スピード', 'Kecepatan'], ['kotoba', '言葉づかい', 'Bahasa & sopan santun']];
+  const COMMENT = {
+    anzen: ['Keselamatanmu sangat baik. ご安全に！', 'Hati-hati dengan keselamatan. Ingat: keselamatan nomor satu.'],
+    eisei: ['Kebersihanmu rapi sekali, cocok untuk pabrik makanan.', 'Kebersihan masih kurang. Cuci tangan & cek produk lebih teliti, ya.'],
+    horenso: ['Laporanmu cepat & jelas. ほうれんそう bagus!', 'Kalau ada masalah, langsung lapor. Jangan disimpan sendiri.'],
+    seikaku: ['Kerjamu teliti dan tepat.', 'Masih ada yang terlewat. Ikuti urutan kerja pelan-pelan.'],
+    speed: ['Kerjamu cepat tanpa mengorbankan ketelitian.', 'Coba sedikit lebih cepat. Nanti terbiasa sendiri, kok.'],
+    kotoba: ['Bahasa & sopan santunmu bagus sekali.', 'Perhatikan bahasa sopan ke atasan dan tamu (です・ます, keigo).'],
+  };
+  function catOf(job, st) {
+    const t = st.t, txt = `${st.q || ''} ${st.why || ''} ${st.title || ''}`;
+    if (['wash', 'roller', 'belt'].includes(t)) return 'eisei';
+    if (['dial', 'feed', 'shisa'].includes(t)) return 'anzen';
+    if (t === 'thermo') return 'eisei';
+    if (t === 'cash' || t === 'order') return 'seikaku';
+    if (t === 'pick') return job.id === 'food' ? 'eisei' : 'anzen';
+    if (t === 'spot') return job.id === 'genba' ? 'anzen' : 'eisei';
+    if (/lapor|ほうこく|ほうれんそう|もう いちど|paham|laporan/i.test(txt)) return 'horenso';
+    if (/bahaya|jatuh|helm|heat|ねっちゅう|tersedak|alergi|logam|てんとう|あぶない|demam|ねつ/i.test(txt)) return 'anzen';
+    if (/diare|bersih|rol|おなか/i.test(txt)) return 'eisei';
+    if (/bilang|ucap|jawab|salam|sopan|pamit|sapa/i.test(txt)) return 'kotoba';
+    return 'seikaku';
+  }
+
   async function run(job) {
     const R = ROOMS[job.id];
     Music.play && Music.play('home');
     const W = stage(job);
-    let got = 0, max = 0;
-    for (let i = 0; i < job.steps.length; i++) {
-      const st = job.steps[i];
-      if (R.cast[i]) W.cast(R.cast[i]);
-      if (st.t === 'clock') { W.bubble(null); W.box.innerHTML = ''; await W.clock(st.time, st.title); }
-      if (R.at[i]) await W.lead(R.at[i]);
-      if (st.t === 'clock') continue;
-      if (st.t === 'say') { await W.line(st); continue; }
-      // tugas
-      if (st.t === 'quiz' && (st.jp || st.id)) await W.line({ w: st.w, e: st.e, jp: st.jp, ro: st.ro, id: st.id }, 'Kerjakan ▶');
-      const li = W.todo((TASK_NAME[st.t](st) || '').slice(0, 70));
-      W.bubble('boss', `<b class="jp">${esc(st.t === 'spot' ? 'はじめ！' : st.t === 'order' ? 'じゅんばん に やって みて。' : st.t === 'pick' ? 'えらんで ください。' : 'どう する？')}</b>`);
-      const wgt = st.t === 'spot' ? 2 : 1;
-      const r = st.t === 'quiz' ? await taskQuiz(W, st) : st.t === 'order' ? await taskOrder(W, st) : st.t === 'pick' ? await taskPick(W, st) : await taskSpot(W, st);
-      got += r * wgt; max += wgt; W.score(Math.round(got * 10));
-      li.classList.add(r >= .99 ? 'ok' : r > 0 ? 'mid' : 'ng');
-      if (st.why) await W.line({ w: BOSS[job.id], e: r ? 'happy' : 'normal', t: `${r ? '⭕' : `❌ Yang tepat: 「${st.opts ? (st.opts[0].label || st.opts[0].jp) : ''}」.`} ${st.why}` });
-      else if (st.t !== 'quiz') await W.line({ w: BOSS[job.id], t: r >= .99 ? '⭕ Bagus, rapi sekali!' : r > 0 ? 'Lumayan. Ingat urutannya, ya.' : 'Masih banyak yang salah. Ulangi lagi lain kali, ya.' });
+    Kerja._keys = W.keys; Kerja._release = W.release;
+    const tally = Object.fromEntries(CATS.map(([k]) => [k, []]));
+    let got = 0, max = 0, firstClock = job.steps.find(s => s.t === 'clock'), lastClock = [...job.steps].reverse().find(s => s.t === 'clock');
+    try {
+      for (let i = 0; i < job.steps.length; i++) {
+        const st = job.steps[i];
+        if (R.cast[i]) W.cast(R.cast[i]);
+        if (st.t === 'clock') { W.bubble(null); W.box.innerHTML = ''; await W.clock(st.time, st.title); }
+        if (R.at[i]) await W.lead(R.at[i]);
+        if (st === firstClock) await W.timecard('in', st.time);
+        if (st.t === 'clock') continue;
+        if (st.t === 'say') { await W.line(st); continue; }
+        if (st.t === 'quiz' && (st.jp || st.id)) await W.line({ w: st.w, e: st.e, jp: st.jp, ro: st.ro, id: st.id }, 'Kerjakan ▶');
+        const li = W.todo((st.q || st.title || '').slice(0, 70));
+        W.bubble('boss', `<b class="jp">${esc(TASK_START[st.t] || 'どう する？')}</b>`);
+        const t0 = performance.now();
+        const r = await TASKS[st.t](W, st);
+        const secs = (performance.now() - t0) / 1000, wgt = ['spot', 'belt', 'wash', 'thermo'].includes(st.t) ? 2 : 1;
+        got += r * wgt; max += wgt; W.score(Math.round(got * 10));
+        tally[catOf(job, st)].push(r);
+        tally.speed.push(r <= 0 ? 0 : Math.max(.2, Math.min(1, (st.t === 'quiz' ? 14 : 45) / Math.max(secs, 1))));
+        li.classList.add(r >= .99 ? 'ok' : r > 0 ? 'mid' : 'ng');
+        if (st.why) await W.line({ w: BOSS[job.id], e: r >= .5 ? 'happy' : 'normal', t: `${r >= .99 ? '⭕' : r > 0 ? '🟡' : '❌'}${st.t === 'quiz' && r < 1 ? ` Yang tepat: 「${st.opts[0].label || st.opts[0].jp}」.` : ''} ${st.why}` });
+        else if (st.t !== 'quiz') await W.line({ w: BOSS[job.id], t: r >= .99 ? '⭕ Bagus, rapi sekali!' : r > 0 ? '🟡 Lumayan. Masih ada yang bisa diperbaiki.' : '❌ Masih banyak yang salah. Ulangi lagi lain kali, ya.' });
+        if (UNIFORM[job.id].after === i) await W.wear();
+      }
+      await W.timecard('out', lastClock ? lastClock.time : '17:00');
+    } finally {
+      Kerja._keys = null; Kerja._release = null;
     }
     W.close();
     const pct = Math.round(got / max * 100), rank = rankOf(pct);
+    const stars = Object.fromEntries(CATS.map(([k]) => { const a = tally[k]; return [k, a.length ? Math.max(1, Math.round(1 + 4 * a.reduce((x, y) => x + y, 0) / a.length)) : null]; }));
     const Rr = rec(), r0 = Rr[job.id] || { best: null, plays: 0, last: 0 };
     const firstToday = r0.last !== S().day;
     const better = !r0.best || 'SABC'.indexOf(rank) < 'SABC'.indexOf(r0.best);
-    Rr[job.id] = { best: better ? rank : r0.best, plays: r0.plays + 1, last: S().day };
+    Rr[job.id] = { best: better ? rank : r0.best, plays: r0.plays + 1, last: S().day, stars };
     Save.write();
-    await result(job, pct, rank, better && r0.best);
+    await result(job, pct, rank, better && r0.best, stars);
     const pts = Math.round(pct / 100 * (firstToday ? 30 : 10));
     if (pts) H().addPoints(pts, `gaji ${job.name}`);
     if (rank === 'S' || rank === 'A') H().addStamp('kerja_' + job.id, `${job.icon} Pekerja teladan: ${job.name}`);
     if (JOBS.every(j => Rr[j.id])) H().addStamp('kerja_all', '💼 Sudah mencoba semua simulasi kerja');
   }
 
-  function result(job, pct, rank, improved) {
+  function result(job, pct, rank, improved, stars) {
     const msg = { S: 'すばらしい！ Siap kerja di Jepang!', A: 'よく できました！ Tinggal sedikit lagi.', B: 'まあまあ。 Ulangi untuk hafal alurnya.', C: 'がんばろう！ Baca Info Kerja, lalu coba lagi.' }[rank];
+    const rated = CATS.filter(([k]) => stars[k]);
+    const best = rated.slice().sort((a, b) => stars[b[0]] - stars[a[0]])[0], worst = rated.slice().sort((a, b) => stars[a[0]] - stars[b[0]])[0];
+    const boss = BOSS[job.id];
+    const comment = best && worst && stars[worst[0]] < 4 ? `${COMMENT[best[0]][0]} Tapi: ${COMMENT[worst[0]][1]}` : best ? COMMENT[best[0]][0] + ' Pertahankan!' : '';
     const p = UI.panel(`<div class="win kj">
-      <div class="w-title">しごと の ひょうか · Penilaian kerja</div>
+      <div class="w-title">ひょうか シート · Lembar evaluasi</div>
       <div class="kj-res"><div class="kj-rank r${rank}">${rank}</div><div><b>${job.icon} ${esc(job.name)}</b><br>Skor ${pct}%${improved ? ' · <b>Rekor baru!</b>' : ''}<br><span class="muted small">${msg}</span></div></div>
+      <table class="kj-eval">${CATS.map(([k, jp, id]) => `<tr><td><b class="jp">${jp}</b><small>${id}</small></td><td class="st">${stars[k] ? '★'.repeat(stars[k]) + '☆'.repeat(5 - stars[k]) : '<span class="muted">—</span>'}</td></tr>`).join('')}</table>
+      ${comment ? `<div class="kj-comment"><canvas width="32" height="32"></canvas><div><b>${esc(CHARACTERS[boss].name)}</b><p>${esc(comment)}</p></div></div>` : ''}
       <div class="sec-h">Kosakata kerja hari ini</div>
       <div class="kj-voc">${vocabRows(job)}</div>
       <button class="btn block" data-a="close" type="button">Selesai</button></div>`, 'scroll');
+    const fc = p.querySelector('.kj-comment canvas'); if (fc) Pix.drawPortrait(fc, boss, 'happy');
     bindVocab(p);
     return UI.wait(done => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); }; });
   }
@@ -988,5 +1396,5 @@ const Kerja = (() => {
   Places.song = m => (m === 'shigoto' ? 'school' : P0.song(m));
   Places.interact = t => (t.type === 'door' && /^kerja_/.test(t.door.id) ? enter(t.door.id.slice(6)) : P0.interact(t));
 
-  return { open, run: id => run(BY[id]), enter, JOBS, ROOMS };
+  return { open, run: id => run(BY[id]), enter, JOBS, ROOMS, _keys: null, _release: null };
 })();

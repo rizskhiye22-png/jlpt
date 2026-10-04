@@ -25,6 +25,12 @@
 
   const DIRS = ['up', 'down', 'left', 'right'];
 
+  // Panel & modal berhenti di atas pad, jadi D-pad / A / B / MENU tetap bisa dipencet
+  const padEl = document.querySelector('.pad');
+  const syncPad = () => { if (padEl) document.getElementById('app').style.setProperty('--pad-h', padEl.offsetHeight + 'px'); };
+  syncPad(); window.addEventListener('resize', syncPad); setTimeout(syncPad, 500);
+  const keyHook = btn => typeof Kerja !== 'undefined' && Kerja._keys && Kerja._keys(btn);
+
   // Semua tombol (layar sentuh & keyboard) lewat sini
   function press(btn) {
     if (UI.modalOpen()) {
@@ -33,6 +39,7 @@
       return;
     }
     if (UI.panelOpen()) {
+      if (keyHook(btn)) return;
       if (Lesson._keys && Lesson._keys(btn)) return;
       if (UI.input(btn)) return;
       if (btn === 'b' || btn === 'menu') UI.back();
@@ -45,7 +52,7 @@
     else if (btn === 'a') World.action();
     else if (btn === 'b' || btn === 'menu') Game.menu();
   }
-  function release(btn) { if (DIRS.includes(btn) && window.World) World.release(btn); }
+  function release(btn) { if (typeof Kerja !== 'undefined' && Kerja._release) Kerja._release(btn); if (DIRS.includes(btn) && window.World) World.release(btn); }
 
   // D-pad: tahan untuk terus berjalan
   document.querySelectorAll('.dpad [data-dir]').forEach(b => {
