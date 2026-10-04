@@ -26,6 +26,7 @@ Paket ini berisi desain lengkap pembaruan besar **Nihongo Gakkou**: dari game be
 | `12-SISTEM-DAN-MINIGAME.md` | Spesifikasi Kotak Surat, Jurnal Misteri, Peta Harta, kerja paruh waktu, Meter Kota, kamera, kebun, pesan; 16 mini-game + 7 mini-game kecil; daftar flag; save v3 | Programmer |
 | `13-KEJADIAN-MISI-NPC.md` | Kejadian harian (lama & baru), misi sampingan, rutinitas NPC, dialog ambien | Penulis, programmer |
 | `14-AUDIT-SINKRON-BAB1-2.md` | Audit Bab 1–2 (hiragana & katakana) terhadap sistem Bab 3–4: temuan, perbaikan v3.6, sisa pekerjaan | Semua |
+| `16-KARIER-15-HARI.md` | Karier 15 hari di 6 bidang (cerita harian, slip gaji, sertifikat, pertanian & peternakan, aksi nyata) | Desainer, penulis, pengembang |
 | `15-SIMULASI-KERJA-NYATA.md` | Rancangan simulasi kerja nyata: tugas fisik per tempat kerja, sistem shift/karier, 報連相, evaluasi, perbaikan tampilan, tahapan | Desainer, pengembang |
 | `NIHONGO_GAKKOU_v3_FULL.md` | Semua file di atas digabung jadi satu | Membaca sekaligus |
 

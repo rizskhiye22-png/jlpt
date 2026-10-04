@@ -10,7 +10,7 @@ import helpers as H
 OUT = sys.argv[1] if len(sys.argv) > 1 else '.'
 GOAL_JS = """() => {
   const t = (document.querySelector('.ws-obj.on') || {}).textContent || ''; if (!t) return null;
-  for (const R of Object.values(Kerja.ROOMS)) for (const s of Object.values(R.st)) if (t.includes(s.jp + ' ')) {
+  for (const R of [Kerja._room, ...Object.values(Kerja.ROOMS)].filter(Boolean)) for (const s of Object.values(R.st)) if (t.includes(s.jp + ' ')) {
     const cv = document.querySelector('.ws-stage canvas').getBoundingClientRect();
     return [cv.left + (s.x + .5) / 12 * cv.width, cv.top + (s.y + .5) / 7 * cv.height];
   }
@@ -21,6 +21,7 @@ def tap(pg, sel):
     except Exception: return False
 
 def canvas_pt(pg, sel, x, y, w, h):
+    pg.locator(sel).first.scroll_into_view_if_needed()
     r = pg.locator(sel).bounding_box()
     return r['x'] + x / w * r['width'], r['y'] + y / h * r['height']
 
@@ -72,7 +73,7 @@ def do_thermo(pg):
         tap(pg, '.kj-pass' if int(v) >= 75 else '.kj-re'); pg.wait_for_timeout(1900)
 
 def do_dial(pg):
-    pg.evaluate("(() => { const r = document.querySelector('.kj-dial input'); r.value = 40; r.dispatchEvent(new Event('input')); })()")
+    pg.evaluate("(() => { const r = document.querySelector('.kj-dial input'); r.value = document.querySelector('.ws-box').dataset.target || 40; r.dispatchEvent(new Event('input')); })()")
     tap(pg, '.kj-hand')
 
 def do_feed(pg):
@@ -98,10 +99,58 @@ def do_shisa(pg):
         p.first.click(); b = pg.locator('.kj-yoshi').bounding_box()
         pg.mouse.move(b['x'] + 20, b['y'] + 10); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up(); pg.wait_for_timeout(200)
 
-PHYS = [('.kj-tool', do_wash, 'cuci'), ('.kj-pad[data-specks]', do_roller, 'rol'), ('.kj-pad.belt', do_belt, 'conveyor'), ('.kj-zone.mid', do_thermo, 'termometer'),
+def do_act(pg):
+    for _ in range(12):
+        if not pg.locator('.ws-box .kj-target').count(): return
+        d = pg.evaluate("(() => { const b = document.querySelector('.ws-box'); return [b.dataset.tool, b.dataset.how, +b.dataset.times]; })()")
+        tool, how, times = d
+        pg.locator('.kj-tool2').filter(has=pg.locator(f'span:text-is("{tool}")')).first.click()
+        pg.wait_for_timeout(150)
+        b = pg.locator('.kj-target').bounding_box(); cx, cy = b['x'] + b['width'] / 2, b['y'] + b['height'] / 2
+        if how == 'hold': pg.mouse.move(cx, cy); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up()
+        elif how == 'swipe':
+            pg.mouse.move(cx - 50, cy); pg.mouse.down()
+            for i in range(6): pg.mouse.move(cx + (50 if i % 2 == 0 else -50), cy, steps=4)
+            pg.mouse.up()
+        else:
+            for i in range(times or 1): pg.mouse.click(cx, cy); pg.wait_for_timeout(60)
+        pg.wait_for_timeout(650)
+
+def do_hunt(pg):
+    its = pg.evaluate("JSON.parse(document.querySelector('.kj-pad.hunt').dataset.items)")
+    for (x, y, bad) in its:
+        if bad and pg.locator('.kj-pad.hunt').count(): pg.mouse.click(*canvas_pt(pg, '.kj-pad.hunt', x, y, 320, 160)); pg.wait_for_timeout(120)
+    pg.wait_for_timeout(700)
+    if pg.locator('.kj-pad.hunt').count(): tap(pg, '.ws-box .btn.ghost')
+
+def do_harvest(pg):
+    fr = pg.evaluate("JSON.parse(document.querySelector('.kj-pad.farm').dataset.fruits)")
+    for (x, y, ripe) in fr:
+        if ripe and pg.locator('.kj-pad.farm').count(): pg.mouse.click(*canvas_pt(pg, '.kj-pad.farm', x, y, 320, 150)); pg.wait_for_timeout(80)
+    pg.wait_for_timeout(500)
+    if pg.locator('.kj-pad.farm').count(): tap(pg, '.ws-box .btn.ghost')
+
+def do_scale(pg):
+    for _ in range(6):
+        if not pg.locator('.kj-scale').count(): return
+        kg = float(pg.evaluate("document.querySelector('.ws-box').dataset.kg"))
+        tap(pg, '.kj-keys.kg [data-d="0"]')
+        while kg >= 5: tap(pg, '.kj-keys.kg [data-d="5"]'); kg -= 5
+        while kg >= 1: tap(pg, '.kj-keys.kg [data-d="1"]'); kg -= 1
+        if kg >= .5: tap(pg, '.kj-keys.kg [data-d="0.5"]')
+        tap(pg, '.kj-feed-go'); pg.wait_for_timeout(500)
+
+def do_sort(pg):
+    for _ in range(12):
+        if not pg.locator('.kj-bins').count(): return
+        ans = pg.evaluate("document.querySelector('.ws-box').dataset.ans")
+        tap(pg, f'.kj-bins [data-k="{ans}"]'); pg.wait_for_timeout(250)
+
+PHYS = [('.kj-target', do_act, 'aksi'), ('.kj-pad.hunt', do_hunt, 'cari-bahaya'), ('.kj-pad.farm', do_harvest, 'panen'), ('.kj-scale', do_scale, 'timbang'), ('.kj-bins', do_sort, 'sortir'),
+        ('.kj-tool', do_wash, 'cuci'), ('.kj-pad[data-specks]', do_roller, 'rol'), ('.kj-pad.belt', do_belt, 'conveyor'), ('.kj-zone.mid', do_thermo, 'termometer'),
         ('.kj-dial', do_dial, 'dial'), ('.kj-say:not([disabled])', do_feed, 'suap'), ('.kj-drawer', do_cash, 'kasir'), ('.kj-points', do_shisa, 'shisa')]
 
-def play(pg, tag):
+def play(pg, tag, keep=False):
     shots = set()
     for it in range(4000):
         pg.wait_for_timeout(60)
@@ -109,6 +158,7 @@ def play(pg, tag):
         if pg.locator('.kj-rank').count():
             rank = pg.locator('.kj-rank').inner_text()
             pg.screenshot(path=f'{OUT}/kerja_{tag}_hasil.png', full_page=True); tap(pg, '.kj [data-a=close]'); pg.wait_for_timeout(700)
+            if keep: return rank
             return rank
         g = pg.evaluate(GOAL_JS)
         if g and pg.locator('.ws-obj.on').count():
@@ -135,31 +185,32 @@ def play(pg, tag):
     pg.screenshot(path=f'{OUT}/kerja_{tag}_TIMEOUT.png'); print(pg.evaluate("document.querySelector('.panels').innerText.slice(0,400)"))
     raise RuntimeError('timeout ' + tag)
 
-with sync_playwright() as p:
-    H.CTX['br'] = p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
-    pg = H.boot(H.base(12, 'after'))
-    # pad tidak tertutup panel: tombol MENU/B tetap bisa dipencet
-    pg.evaluate("setTimeout(() => Game.menu()); 0"); pg.wait_for_timeout(400)
-    pg.click('.mi[data-a=settings]'); pg.wait_for_timeout(300)
-    hitB = pg.evaluate("(() => { const b = document.querySelector('.pad [data-btn=b]').getBoundingClientRect(); const e = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2); return !!(e && e.closest('.pad')); })()")
-    print('pad bisa dipencet saat Pengaturan terbuka:', hitB)
-    pg.click('.settings [data-a=close]'); pg.wait_for_timeout(300)
-    pg.locator('.pad [data-btn=b]').dispatch_event('pointerdown'); pg.wait_for_timeout(300)
-    print('B menutup menu:', pg.locator('.modals.on').count() == 0)
-    # D-pad di ruangan kerja: dari (2,3) ke loker (1,2) dengan ← lalu ↑
-    pg.wait_for_timeout(300)
-    pg.evaluate("setTimeout(() => Kerja.run('food')); 0"); pg.wait_for_selector('.ws-obj.on', timeout=10000)
-    pg.keyboard.press('ArrowLeft'); pg.wait_for_timeout(450); pg.keyboard.press('ArrowUp'); pg.wait_for_timeout(1200)
-    print('D-pad sampai ke pos:', pg.locator('.ws-obj.on').count() == 0)
-    print('food (D-pad) → rank', play(pg, 'food'))
-    pg.evaluate("setTimeout(() => Kerja.open()); 0"); pg.wait_for_timeout(500)
-    for j in ['kaigo', 'genba', 'gaishoku']:
-        pg.click(f'[data-go={j}]')
-        print(j, '→ rank', play(pg, j))
-    pg.click('.kj [data-a=close]'); pg.wait_for_timeout(500)
-    pg.evaluate("setTimeout(() => Game.h.goTo('shigoto', 13, 5, 'up')); 0"); pg.wait_for_timeout(1500)
-    print('peta:', pg.evaluate("World.map"), '| tujuan kereta:', pg.evaluate("Places2.DESTS.map(d => d.id).join(',')"))
-    pg.evaluate("setTimeout(() => Places.interact({ type: 'door', door: { id: 'kerja_gaishoku' } })); 0"); pg.wait_for_timeout(500)
-    print('pintu izakaya → rank', play(pg, 'pintu'))
-    print('evaluasi tersimpan:', pg.evaluate("JSON.stringify(Save.d.kerja.food.stars)"))
-    print('ERRORS:', H.errors or 'none')
+if __name__ == '__main__':
+  with sync_playwright() as p:
+      H.CTX['br'] = p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
+      pg = H.boot(H.base(12, 'after'))
+      # pad tidak tertutup panel: tombol MENU/B tetap bisa dipencet
+      pg.evaluate("setTimeout(() => Game.menu()); 0"); pg.wait_for_timeout(400)
+      pg.click('.mi[data-a=settings]'); pg.wait_for_timeout(300)
+      hitB = pg.evaluate("(() => { const b = document.querySelector('.pad [data-btn=b]').getBoundingClientRect(); const e = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2); return !!(e && e.closest('.pad')); })()")
+      print('pad bisa dipencet saat Pengaturan terbuka:', hitB)
+      pg.click('.settings [data-a=close]'); pg.wait_for_timeout(300)
+      pg.locator('.pad [data-btn=b]').dispatch_event('pointerdown'); pg.wait_for_timeout(300)
+      print('B menutup menu:', pg.locator('.modals.on').count() == 0)
+      # D-pad di ruangan kerja: dari (2,3) ke loker (1,2) dengan ← lalu ↑
+      pg.wait_for_timeout(300)
+      pg.evaluate("setTimeout(() => Kerja.run('food')); 0"); pg.wait_for_selector('.ws-obj.on', timeout=10000)
+      pg.keyboard.press('ArrowLeft'); pg.wait_for_timeout(450); pg.keyboard.press('ArrowUp'); pg.wait_for_timeout(1200)
+      print('D-pad sampai ke pos:', pg.locator('.ws-obj.on').count() == 0)
+      print('food (D-pad) → rank', play(pg, 'food'))
+      pg.evaluate("setTimeout(() => Kerja.open()); 0"); pg.wait_for_timeout(500)
+      for j in ['kaigo', 'genba', 'gaishoku']:
+          pg.click(f'[data-go={j}]')
+          print(j, '→ rank', play(pg, j))
+      pg.click('.kj [data-a=close]'); pg.wait_for_timeout(500)
+      pg.evaluate("setTimeout(() => Game.h.goTo('shigoto', 13, 5, 'up')); 0"); pg.wait_for_timeout(1500)
+      print('peta:', pg.evaluate("World.map"), '| tujuan kereta:', pg.evaluate("Places2.DESTS.map(d => d.id).join(',')"))
+      pg.evaluate("setTimeout(() => Places.interact({ type: 'door', door: { id: 'kerja_gaishoku' } })); 0"); pg.wait_for_timeout(500)
+      print('pintu izakaya → rank', play(pg, 'pintu'))
+      print('evaluasi tersimpan:', pg.evaluate("JSON.stringify(Save.d.kerja.food.stars)"))
+      print('ERRORS:', H.errors or 'none')

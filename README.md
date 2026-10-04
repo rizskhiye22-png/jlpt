@@ -8,6 +8,17 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 
 > Rencana pengembangan lengkap ada di **[ROADMAP.md](ROADMAP.md)**. Desain lengkap v3 (cerita, kurikulum N5, suara) ada di folder **[design/](design/00-README.md)**.
 
+## Baru: ⏭ Lewati materi yang sudah dikuasai
+Sudah bisa hiragana/katakana? Sebelum pelajaran, sensei menawarkan **⏭ Saya sudah bisa**. Cukup lulus **tes cepat (≥80%)**, video & latihan menulis hari itu dilewati, dan latihan soal pelajaran kedua otomatis selesai. Kalau belum lulus, materi diajarkan seperti biasa. Latihan mini-game juga bisa dilewati. Saklar: **Pengaturan → Tawarkan lewati materi**. Di karier kerja, **semua hari terbuka**, jadi bisa langsung pilih hari mana pun.
+
+## Baru: 📅 Karier 15 hari di 6 bidang kerja (+ 🌱 Pertanian & 🐄 Peternakan)
+Simulasi kerja kini punya **cerita panjang 15 hari** di setiap tempat kerja, bukan shift yang itu-itu saja. Rancangan lengkap: [design/16-KARIER-15-HARI.md](design/16-KARIER-15-HARI.md).
+- **6 bidang**: 🍙 pabrik makanan, 🧓 kaigo, 🏗 konstruksi, 🍶 izakaya, dan yang baru 🌱 **pertanian** (rumah kaca tomat & stroberi) serta 🐄 **peternakan** (sapi perah & ayam). Semuanya ada sebagai bangunan di **しごとまち**.
+- **Busur cerita 15 hari**: orientasi → rutinitas → kesalahan pertama & 報連相 → **slip gaji** (hari 5, 10, 15) → tugas baru → cuaca/musim → hari sibuk → ヒヤリハット → **hari libur di asrama** bersama Bu Siti (pilah sampah, kirim uang, hidup di Jepang) → inspeksi/tamu → masalah besar (mesin rusak, wabah, topan, flu burung…) → **mengajari Nguyen-san** → ujian keterampilan → **kelulusan & 修了証 (sertifikat)**.
+- **Aksi nyata, bukan memilih langkah**: atasan memberi perintah dalam bahasa Jepang, kamu memilih alat yang benar, lalu **melakukannya** di sasaran (ketuk, tahan, usap, ketuk berkali-kali). Contoh: menggoreng karaage, memindahkan lansia ke kursi roda, memerah susu, menangani mesin yang berhenti, mengamankan genba sebelum topan, memasukkan pesanan ke ハンディ. Ditambah **panen** (petik yang matang saja), **timbang pakan**, **sortir S/M/L**, dan **cari bahaya** di gambar (KY).
+- **📚 Kamus kerja**: ±50 kosakata nyata per bidang (alat, tempat, tindakan, keselamatan, ungkapan) dengan suara, ⭐ untuk kata yang sudah kamu temui, dan **🎯 latihan 10 soal**. Setiap hari karier juga punya kosakata harian sendiri (285 kata).
+- Setiap hasil hari menampilkan lembar evaluasi, **📘 pelajaran hari ini**, kosakata hari itu, dan **"Besok:"** (lanjutan cerita).
+
 ## Baru: 🗨️ Chat semua pemain
 Ngobrol dengan pemain lain secara langsung, **tanpa server game sendiri**: pesan dikirim lewat broker MQTT publik gratis (EMQX, cadangan HiveMQ) langsung dari browser. Buka lewat tombol **🗨️ di HUD** atau **Menu → Chat**.
 - Kanal **🌏 Semua** dan **📍 Di sini** (hanya pemain di peta yang sama), jumlah pemain aktif, dan tombol frasa Jepang siap kirim (こんにちは！, いっしょに べんきょう しよう！…).

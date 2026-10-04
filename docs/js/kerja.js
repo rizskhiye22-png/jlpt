@@ -103,13 +103,13 @@ const Kerja = (() => {
         { t: 'say', w: 'hancho', jp: 'からあげ の ちゅうしん おんど を はかって。', ro: 'karaage no chuushin ondo wo hakatte.', id: 'Ukur suhu bagian tengah karaage. Standarnya 75℃ selama 1 menit atau lebih.' },
         { t: 'thermo', title: 'おんど チェック · Ukur suhu tengah karaage', why: 'Di Jepang standar umum pemanasan adalah suhu tengah 75℃ selama 1 menit atau lebih, supaya bakteri mati. Ukur di bagian paling tebal, catat angkanya, dan panaskan ulang kalau kurang.' },
         { t: 'clock', time: '16:30', title: 'せいそう · Bersih-bersih & 5S' },
-        { t: 'order', title: '5S · Urutkan 5S (budaya kerja pabrik Jepang)', items: [
-          { jp: 'せいり', id: 'Seiri: buang yang tidak perlu' },
-          { jp: 'せいとん', id: 'Seiton: tata supaya mudah diambil' },
-          { jp: 'せいそう', id: 'Seisō: bersihkan' },
-          { jp: 'せいけつ', id: 'Seiketsu: jaga tetap bersih' },
-          { jp: 'しつけ', id: 'Shitsuke: jadikan kebiasaan' },
-        ] },
+        { t: 'act', title: '5S · Rapikan area kerja (せいり・せいとん・せいそう)', target: '🧰', targetLabel: 'meja kerja & papan alat', steps: [
+          { tool: ['🗑️', 'いらない もの'], jp: 'いらない もの を すてて。（せいり）', id: 'buang barang yang tidak perlu', how: 'swipe', after: '🗑️ ✓' },
+          { tool: ['🔧', 'どうぐ'], jp: 'どうぐ を かげ の ばしょ に もどして。（せいとん）', id: 'kembalikan alat ke bayangannya di papan', how: 'taps:3', after: '🔧🔧🔧 rapi' },
+          { tool: ['🧽', 'ぞうきん'], jp: 'つくえ と ゆか を ふいて。（せいそう）', id: 'lap meja & lantai', how: 'swipe', after: '✨' },
+          { tool: ['✅', 'チェックひょう'], jp: 'チェックひょう に きにゅう。（せいけつ）', id: 'isi daftar periksa kebersihan', how: 'tap', after: '✅' },
+          { tool: ['🙇', 'あいさつ'], jp: 'まいにち つづけよう！（しつけ）', id: 'jadikan kebiasaan', how: 'hold', after: '🙇' },
+        ], extras: [['📱', 'スマホ'], ['🍙', 'おにぎり']], why: '5S: せいり (buang yang tidak perlu), せいとん (tata, alat punya tempat/bayangan), せいそう (bersihkan), せいけつ (pertahankan), しつけ (biasakan).' },
         { t: 'clock', time: '17:00', title: 'しゅうれい · Apel sore & pulang' },
         { t: 'quiz', w: 'hancho', q: 'Kamu pulang lebih dulu, teman lain masih bekerja. Kamu bilang…', opts: [
           { jp: 'おさきに しつれいします。', ro: 'osaki ni shitsurei shimasu.' },
@@ -164,14 +164,14 @@ const Kerja = (() => {
           { label: 'Sudah kenyang' }, { label: 'Masih lapar, minta tambah' }, { label: 'Perutnya sakit' },
         ], why: 'おなか いっぱい = perut penuh/kenyang. Jangan dipaksa makan; catat berapa banyak yang dimakan (misal 8わり = 80%).' },
         { t: 'clock', time: '14:00', title: 'いじょう · Pindah ke kursi roda' },
-        { t: 'order', title: 'Urutkan langkah memindahkan dari kasur ke kursi roda', items: [
-          { jp: 'こえかけ・せつめい', id: 'jelaskan dulu: "Kita pindah ke kursi roda, ya"' },
-          { jp: 'くるまいす を ななめ に おく', id: 'taruh kursi roda miring ±30° di samping kasur' },
-          { jp: 'ブレーキ を かける', id: 'kunci rem kursi roda' },
-          { jp: 'あし を ゆか に つける', id: 'duduk di tepi kasur, kaki menapak lantai' },
-          { jp: 'たちあがって、まわる', id: 'berdiri pelan, berputar ke arah kursi' },
-          { jp: 'ふかく すわる', id: 'duduk dalam, kaki di pijakan kaki' },
-        ] },
+        { t: 'act', title: 'いじょう · Pindahkan Nenek Kimura ke kursi roda', target: '👵', targetLabel: 'Nenek Kimura di tepi kasur', steps: [
+          { tool: ['🗣️', 'こえかけ'], jp: 'くるまいす に うつりましょう ね。', id: 'jelaskan dulu ke nenek', how: 'tap', after: '👵 うん' },
+          { tool: ['♿', 'くるまいす'], jp: 'くるまいす を ななめ に おいて。', id: 'taruh kursi roda miring ±30° di sisi yang sehat', how: 'swipe', after: '♿ ↗' },
+          { tool: ['🛑', 'ブレーキ'], jp: 'ブレーキ を かけて。', id: 'kunci rem kiri & kanan', how: 'taps:2', after: '🛑🛑' },
+          { tool: ['🦶', 'あし'], jp: 'あし を ゆか に つけて もらって。', id: 'kaki menapak lantai', how: 'tap', after: '🦶' },
+          { tool: ['🤝', 'ささえる'], jp: 'いち、に の さん で たちましょう。', id: 'topang & berdiri bersama, lalu berputar', how: 'hold', after: '🧍' },
+          { tool: ['🪑', 'すわる'], jp: 'ふかく すわって ください。', id: 'dudukkan dalam, kaki di pijakan', how: 'hold', after: '♿👵 ✓' },
+        ], extras: [['🍵', 'おちゃ'], ['📺', 'テレビ']], why: 'Kursi roda di sisi yang sehat, rem terkunci, kaki menapak, berdiri bersama dengan aba-aba, lalu duduk dalam. Setiap langkah dijelaskan (こえかけ).' },
         { t: 'clock', time: '15:00', title: 'にゅうよく · Membantu mandi' },
         { t: 'dial', title: 'にゅうよく · Atur suhu air mandi', why: 'Umumnya 38–41℃. Cek dulu dengan tanganmu sendiri, lalu tanya: 「おゆ の かげん は どう ですか？」 Kulit lansia sensitif dan mudah melepuh.' },
         { t: 'quiz', w: 'leader', q: 'Nenek Kimura terjatuh (てんとう) di lorong. Apa yang pertama kamu lakukan?', opts: [
@@ -230,12 +230,12 @@ const Kerja = (() => {
         ], why: 'Helm tanpa tali dagu bisa lepas saat jatuh atau tertimpa, lalu tidak melindungi kepala sama sekali.' },
         { t: 'clock', time: '08:00', title: 'ちょうれい & KY活動' },
         { t: 'say', w: 'oyakata', jp: 'KY を やろう。きょう の きけん は なに か？', ro: 'KY wo yarou. kyou no kiken wa nani ka?', id: 'Ayo lakukan KY (prediksi bahaya). Apa bahaya hari ini?' },
-        { t: 'order', title: 'KY 4 ラウンド · Urutkan langkah KY活動', items: [
-          { jp: 'どんな きけん が ある？', id: 'Cari bahaya yang tersembunyi' },
-          { jp: 'いちばん あぶない の は？', id: 'Tentukan bahaya paling utama' },
-          { jp: 'どう する？', id: 'Buat tindakan pencegahan' },
-          { jp: 'チーム の めあて「〜 ヨシ！」', id: 'Target tim, diserukan bersama' },
+        { t: 'hunt', title: 'KY · Temukan bahaya di area kerja hari ini', items: [
+          { e: '🕳️', x: 60, y: 120, d: 'Lubang tanpa penutup', ok: false, why: 'Pasang penutup & pagar' }, { e: '🔌', x: 150, y: 130, d: 'Kabel melintang di jalan', ok: false, why: 'Rapikan kabel' },
+          { e: '🪜', x: 250, y: 80, d: 'Tangga di tanah miring', ok: false, why: 'Tempatkan di tanah datar' }, { e: '🏗️', x: 290, y: 40, d: 'Beban crane di atas jalur orang', ok: false, why: 'Dilarang lewat di bawah beban' },
+          { e: '⛑️', x: 100, y: 50, d: 'Pekerja memakai helm', ok: true }, { e: '🚧', x: 200, y: 45, d: 'Pagar pengaman terpasang', ok: true }, { e: '🧱', x: 200, y: 125, d: 'Material ditumpuk rapi', ok: true },
         ] },
+        { t: 'quiz', w: 'oyakata', q: 'KY: dari bahaya tadi, mana yang PALING berbahaya (bisa fatal)?', opts: [{ label: 'Lubang tanpa penutup (jatuh) / beban crane' }, { label: 'Material ditumpuk rapi' }, { label: 'Pagar pengaman' }], why: 'KY 4 ronde: ① cari bahaya ② tentukan yang paling berbahaya ③ buat pencegahan ④ target tim, diserukan bersama: 「かいこうぶ ふた よし！」' },
         { t: 'say', w: 'oyakata', jp: 'じゃあ、げんば を まわって きけん を みつけて！', ro: 'jaa, genba wo mawatte kiken wo mitsukete!', id: 'Sekarang keliling genba dan temukan bahaya!' },
         { t: 'spot', title: 'Patroli: aman atau berbahaya?', okLabel: 'ヨシ！', ngLabel: 'あぶない！', count: 9, limit: 8000, items: [
           { e: '⛑️', d: 'Pekerja memakai helm, tali dagu terkunci', ok: true },
@@ -290,14 +290,14 @@ const Kerja = (() => {
       steps: [
         { t: 'clock', time: '16:30', title: 'しゅっきん · Masuk kerja' },
         { t: 'say', w: 'tencho', e: 'happy', jp: 'おはよう ございます！', ro: 'ohayou gozaimasu!', id: 'Di restoran, salam saat mulai shift tetap "ohayou gozaimasu", walau sudah sore!' },
-        { t: 'order', title: 'Urutkan alur melayani tamu', items: [
-          { jp: 'いらっしゃいませ！', id: 'sambut tamu' },
-          { jp: 'なんめいさま ですか？', id: 'tanya jumlah orang, antar ke meja' },
-          { jp: 'おしぼり と おひや', id: 'beri handuk basah & air' },
-          { jp: 'ごちゅうもん は？', id: 'terima pesanan' },
-          { jp: 'おまたせ しました', id: 'sajikan makanan' },
-          { jp: 'おかいけい', id: 'pembayaran' },
-        ] },
+        { t: 'act', title: 'せっきゃく · Layani tamu dari datang sampai pulang', target: '🧑‍🤝‍🧑', targetLabel: 'tamu (2 orang)', steps: [
+          { tool: ['🙇', 'おじぎ'], jp: 'いらっしゃいませ！', id: 'sambut & membungkuk', how: 'hold', after: '🙇' },
+          { tool: ['👋', 'あんない'], jp: 'にめいさま、こちら へ どうぞ。', id: 'antar ke meja', how: 'tap', after: '🪑' },
+          { tool: ['🧻', 'おしぼり'], jp: 'おしぼり と おひや を どうぞ。', id: 'beri handuk basah & air', how: 'taps:2', after: '🧻🥛' },
+          { tool: ['📟', 'ハンディ'], jp: 'ごちゅうもん を おうかがい します。', id: 'catat pesanan di ハンディ', how: 'taps:3', after: '📟 ✓' },
+          { tool: ['🍽️', 'トレー'], jp: 'おまたせ しました。', id: 'sajikan pesanan', how: 'hold', after: '🍢🍺' },
+          { tool: ['💴', 'レジ'], jp: 'おかいけい は 3,200えん です。', id: 'proses pembayaran', how: 'tap', after: '💴 ✓' },
+        ], extras: [['📱', 'スマホ'], ['🧹', 'ほうき']], why: 'Alur pelayanan: sambut → antar → おしぼり & おひや → pesanan → sajikan → kasir → antar pulang.' },
         { t: 'clock', time: '17:00', title: 'かいてん · Restoran buka' },
         { t: 'quiz', w: 'tencho', q: 'Tamu masuk ke restoran. Kamu bilang…', opts: [
           { jp: 'いらっしゃいませ！', ro: 'irasshaimase!' }, { jp: 'ただいま！', ro: 'tadaima!' }, { jp: 'おかえり！', ro: 'okaeri!' },
@@ -341,7 +341,11 @@ const Kerja = (() => {
       ],
     },
   ];
-  const BY = Object.fromEntries(JOBS.map(j => [j.id, j]));
+  const BY = new Proxy({}, { get: (o, id) => JOBS.find(j => j.id === id) });
+  const DAYS = {};             // isi karier 15 hari per bidang (kerja-hari.js)
+  let dayBuilder = null;       // (job, day, n) → langkah-langkah shift
+  const TASK_CAT = {};         // kategori evaluasi untuk tugas tambahan
+  const GLOSS = {};            // kamus kerja per bidang (kerja-kotoba.js)
   const BOSS = { food: 'hancho', kaigo: 'leader', genba: 'oyakata', gaishoku: 'tencho' };
   Object.assign(CHARACTERS, { rina: { name: 'Bu Rina (Pembimbing Kerja)', color: '#3b8a78' } });
   Object.assign(Pix.PAL, { rina: { h: '#2a2238', H: '#16121e', e: '#2a2238', E: '#3b5a6a', I: '#7ab0c0', o: '#3b8a78', O: '#2a6458', a: '#f6d44a', A: '#c9a526', p: '#3a3f55', b: '#2a2a2a', c: '#f7f3ea' } });
@@ -396,8 +400,8 @@ const Kerja = (() => {
         tent:     { x: 6, y: 5, e: '⛺', jp: 'きゅうけいじょ', id: 'tenda istirahat' },
         gate:     { x: 10, y: 5, e: '🚧', jp: 'ゲート', id: 'gerbang proyek' },
       },
-      at: { 0: 'plaza', 3: 'ppe', 5: 'ky', 8: 'scaffold', 10: 'ladder', 11: 'material', 14: 'tent', 16: 'gate' },
-      cast: { 0: [{ k: 'w1', id: 'ryo', x: 2, y: 3, dir: 'up' }, { k: 'w2', id: 'kenta', x: 3, y: 3, dir: 'up' }], 8: [{ k: 'w1', x: 8, y: 3, dir: 'up' }, { k: 'w2', x: 9, y: 4, dir: 'left' }], 14: [{ k: 'w1', x: 7, y: 6, dir: 'left' }] },
+      at: { 0: 'plaza', 3: 'ppe', 5: 'ky', 9: 'scaffold', 11: 'ladder', 12: 'material', 15: 'tent', 17: 'gate' },
+      cast: { 0: [{ k: 'w1', id: 'ryo', x: 2, y: 3, dir: 'up' }, { k: 'w2', id: 'kenta', x: 3, y: 3, dir: 'up' }], 9: [{ k: 'w1', x: 8, y: 3, dir: 'up' }, { k: 'w2', x: 9, y: 4, dir: 'left' }], 15: [{ k: 'w1', x: 7, y: 6, dir: 'left' }] },
       block: [[7, 1, 9, 1], [9, 2]],
       start: { player: [2, 4], boss: [1, 2] },
     },
@@ -450,8 +454,8 @@ const Kerja = (() => {
     gaishoku: { at: 'back', look: { uniform: 'blazer', uniformColor: '#2b2b38', accessory: 'headband', accColor: '#f7f3ea' }, say: 'Seragam izakaya & ikat kepala sudah dipakai.' },
   };
 
-  function stage(job) {
-    const R = ROOMS[job.id], boss = BOSS[job.id];
+  function stage(job, room) {
+    const R = room || ROOMS[job.id], boss = R.boss || BOSS[job.id];
     const p = UI.panel(`<div class="ws">
       <div class="ws-hud"><span class="ws-clock">🕒 --:--</span><b class="ws-title">${job.icon} ${esc(R.name)}</b><span class="ws-score">⭐ 0</span></div>
       <div class="ws-stage"><canvas width="${GW * TS}" height="${GH * TSY}"></canvas><div class="ws-bubble" hidden></div><div class="ws-banner" hidden></div></div>
@@ -508,7 +512,7 @@ const Kerja = (() => {
       }
       ctx.fillStyle = R.wall; ctx.fillRect(0, 0, W, TSY * .9);
       ctx.fillStyle = R.wallTop; ctx.fillRect(0, 0, W, 6);
-      if (R.outdoor) { for (let x = 0; x < W; x += 24) { ctx.fillStyle = (x / 24) % 2 ? '#f6c90e' : '#2a2a2a'; ctx.fillRect(x, TSY * .9 - 6, 24, 6); } }
+      if (job.id === 'genba' && !room) { for (let x = 0; x < W; x += 24) { ctx.fillStyle = (x / 24) % 2 ? '#f6c90e' : '#2a2a2a'; ctx.fillRect(x, TSY * .9 - 6, 24, 6); } }
       extra(t);
       for (const [key, s] of Object.entries(R.st)) {
         const X = s.x * TS, Y = s.y * TSY + (TSY - TS);
@@ -554,6 +558,7 @@ const Kerja = (() => {
     }
     const yy = y => y * TSY + (TSY - TS);   // posisi y (piksel) untuk benda setinggi 1 ubin
     function extra(t) {
+      if (R.draw) R.draw(ctx, t, { TS, TSY, yy, GW, GH });
       if (job.id === 'food') {
         const y = yy(4) + 6, x0 = 2 * TS, x1 = 10 * TS, stop = R._stop;
         ctx.fillStyle = '#4a4f5a'; ctx.fillRect(x0, y, x1 - x0, 20); ctx.fillStyle = '#2f333b';
@@ -692,6 +697,7 @@ const Kerja = (() => {
         return sleep(1400).then(() => { banner.hidden = true; });
       },
       score(n) { scoreEl.textContent = '⭐ ' + n; },
+      setDay(n, title) { p.querySelector('.ws-title').textContent = `${job.icon} Hari ${n}/15${title ? ' · ' + title : ''}`; },
       todo(text) { list.insertAdjacentHTML('beforeend', `<li>${esc(text)}</li>`); return list.lastElementChild; },
       objective(text) { obj.innerHTML = text || ''; obj.classList.toggle('on', !!text); },
       // ganti seragam kerja
@@ -903,7 +909,7 @@ const Kerja = (() => {
     W.box.innerHTML = `<div class="ws-q">${esc(st.title)}</div><p class="muted small">Ketuk alat sesuai urutan. Saat menggosok, usap jari di setiap bagian tangan sampai bersih (30 detik).</p>
       <div class="kj-tools">${shuffle(SEQ).map(([k, e, jp, id]) => `<button class="kj-tool" data-k="${k}" type="button"><b>${e}</b><span class="jp">${jp}</span><small>${id}</small></button>`).join('')}</div>
       <div class="kj-timer">⏱ <b>0</b> / 30 びょう</div><p class="kj-msg small"></p>`;
-    const P = pad(W, 300, 140); W.box.insertBefore(P.c, W.box.querySelector('.kj-timer'));
+    const P = pad(W, 300, 140); W.box.insertBefore(P.c, W.box.querySelector('.kj-tools'));
     const clean = ZONES.map(() => 0), msg = W.box.querySelector('.kj-msg'), tEl = W.box.querySelector('.kj-timer b');
     P.c.dataset.zones = JSON.stringify(ZONES.map(z => z.slice(2)));
     let stepI = 0, miss = 0, rubT = 0, rubStart = 0, lastP = null;
@@ -1082,21 +1088,24 @@ const Kerja = (() => {
     return Math.min(1, score / 2);
   }
 
-  // 🛁 Dial suhu air mandi
+  // 🛁 Dial suhu (air mandi, rumah kaca, kandang…): geser ke rentang aman, cek, lalu tanya/ucapkan
   async function taskDial(W, st) {
-    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'Atur suhu air mandi')}</div><p class="muted small">Geser dial ke suhu yang aman untuk lansia, cek dengan tanganmu, lalu tanya ke nenek.</p>
-      <div class="kj-dial"><div class="kj-water"><b>40</b>℃</div><input type="range" min="30" max="50" step="1" value="44"></div>
-      <div class="row"><button class="btn ghost kj-hand" type="button">✋ Cek dengan tangan</button></div><p class="kj-msg small"></p>`;
+    const min = st.min || 30, max = st.max || 50, [lo, hi] = st.target || [38, 41], unit = st.unit || '℃';
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title || 'Atur suhu air mandi')}</div><p class="muted small">${esc(st.hint || 'Geser dial ke suhu yang aman, cek, lalu lanjutkan.')}</p>
+      <div class="kj-dial"><div class="kj-water"><b>${st.start || 44}</b>${unit}</div><input type="range" min="${min}" max="${max}" step="1" value="${st.start || 44}"></div>
+      <div class="row"><button class="btn ghost kj-hand" type="button">${esc(st.check || '✋ Cek dengan tangan')}</button></div><p class="kj-msg small"></p>`;
     const B = W.box, rng = B.querySelector('input'), val = B.querySelector('.kj-water b'), wat = B.querySelector('.kj-water'), msg = B.querySelector('.kj-msg');
-    const paint = () => { const v = +rng.value; val.textContent = v; wat.style.background = `hsl(${210 - (v - 30) * 10},70%,${70 - (v - 30)}%)`; };
-    paint(); rng.oninput = paint; W.R._water = true;
+    const paint = () => { const v = +rng.value, k = (v - min) / (max - min); val.textContent = v; wat.style.background = `hsl(${210 - k * 200},70%,${70 - k * 20}%)`; };
+    paint(); rng.oninput = paint; W.R._water = true; B.dataset.target = Math.round((lo + hi) / 2);
     let checked = false;
-    const stop = W.watch('38〜41ど ぐらい が いい よ。');
-    await UI.wait(d => { B.querySelector('.kj-hand').onclick = () => { checked = true; const v = +rng.value; Sound.blip(); msg.textContent = v > 41 ? '🔥 あつい！ Terlalu panas untuk kulit lansia.' : v < 38 ? '🥶 つめたい… Terlalu dingin.' : '😊 ちょうど いい！ Suhunya pas.'; if (v >= 38 && v <= 41) d(); }; });
+    const stop = W.watch(`${lo}〜${hi}${unit === '℃' ? 'ど' : unit} ぐらい が いい よ。`);
+    await UI.wait(d => { B.querySelector('.kj-hand').onclick = () => { checked = true; const v = +rng.value; Sound.blip(); msg.textContent = v > hi ? '🔥 ' + (st.hot || 'あつい！ Terlalu panas untuk kulit lansia.') : v < lo ? '🥶 ' + (st.cold || 'つめたい… Terlalu dingin.') : '😊 ' + (st.good || 'ちょうど いい！ Suhunya pas.'); if (v >= lo && v <= hi) d(); }; });
     stop();
-    const ok = +rng.value >= 38 && +rng.value <= 41 && checked;
-    const q = await taskQuiz(W, { q: 'Sebelum nenek masuk, kamu bertanya…', opts: [{ jp: 'おゆ の かげん は どう ですか？', ro: 'oyu no kagen wa dou desu ka?' }, { jp: 'はやく はいって！', ro: 'hayaku haitte!' }, { jp: 'あつい けど、がまん して。', ro: 'atsui kedo, gaman shite.' }] });
+    const ok = +rng.value >= lo && +rng.value <= hi && checked;
+    const ask = st.ask === false ? null : st.ask || { q: 'Sebelum nenek masuk, kamu bertanya…', opts: [{ jp: 'おゆ の かげん は どう ですか？', ro: 'oyu no kagen wa dou desu ka?' }, { jp: 'はやく はいって！', ro: 'hayaku haitte!' }, { jp: 'あつい けど、がまん して。', ro: 'atsui kedo, gaman shite.' }] };
     W.R._water = false;
+    if (!ask) return ok ? 1 : 0;
+    const q = await taskQuiz(W, ask);
     return (ok ? .5 : 0) + q * .5;
   }
 
@@ -1164,25 +1173,117 @@ const Kerja = (() => {
     return Math.max(0, 1 - miss * .2);
   }
 
+  // 🛠 Aksi nyata: dengar perintah (Jepang) → pilih alat yang benar → lakukan di sasaran
+  const HOW = { tap: ['👆', 'Ketuk sasaran'], hold: ['✋', 'Tahan sasaran'], swipe: ['↔️', 'Usap sasaran'] };
+  async function taskAct(W, st) {
+    const seen = new Set(), tools = shuffle([...st.steps.map(x => x.tool), ...(st.extras || [])].filter(([e, n]) => { const k = e + n; if (seen.has(k)) return false; seen.add(k); return true; }));
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title)}</div>
+      <div class="kj-act"><div class="kj-target" role="button" tabindex="0"><b>${st.target}</b><span class="kj-tl">${esc(st.targetLabel || '')}</span><span class="kj-state"></span><div class="kj-prog"><i></i></div><span class="kj-how"></span></div>
+        <div class="kj-order"><div class="kj-cmd"></div><button class="kj-hint" type="button">💡 Petunjuk</button><small class="kj-hid" hidden></small></div></div>
+      <div class="kj-toolbox">${tools.map(([e, n]) => `<button class="kj-tool2" type="button" data-n="${esc(n)}"><b>${e}</b><span class="jp">${esc(n)}</span></button>`).join('')}</div>
+      <p class="kj-msg small"></p><p class="muted small kj-cnt"></p>`;
+    const B = W.box, tg = B.querySelector('.kj-target'), state = B.querySelector('.kj-state'), how = B.querySelector('.kj-how'), bar = B.querySelector('.kj-prog i'), cmd = B.querySelector('.kj-cmd'), hid = B.querySelector('.kj-hid'), msg = B.querySelector('.kj-msg'), cnt = B.querySelector('.kj-cnt');
+    let miss = 0;
+    const stop = W.watch('どうぐ を よく みて。');
+    for (let i = 0; i < st.steps.length; i++) {
+      const s = st.steps[i], [need, needN] = s.tool;
+      const m = /^taps:(\d+)$/.exec(s.how || 'tap'), kind = m ? 'taps' : (s.how || 'tap'), times = m ? +m[1] : 1;
+      cmd.innerHTML = `<b class="jp">「${esc(s.jp)}」</b>`; hid.hidden = true; hid.textContent = s.id || '';
+      cnt.textContent = `Langkah ${i + 1}/${st.steps.length}`; how.textContent = ''; bar.style.width = 0; tg.classList.remove('ready');
+      W.bubble('boss', `<b class="jp">${esc(s.jp)}</b>`); speak(s.jp);
+      B.dataset.tool = needN; B.dataset.how = kind; B.dataset.times = times;
+      B.querySelector('.kj-hint').onclick = () => { hid.hidden = false; Sound.blip(); };
+      // 1) pilih alat
+      await UI.wait(d => B.querySelectorAll('.kj-tool2').forEach(b => b.onclick = () => {
+        B.querySelectorAll('.kj-tool2').forEach(x => x.classList.remove('sel'));
+        if (b.dataset.n === needN) { b.classList.add('sel'); Sound.blip(); d(); }
+        else { miss++; Sound.bad(); b.classList.add('bad'); setTimeout(() => b.classList.remove('bad'), 400); W.bubble('boss', `<b class="jp">ちがう！ それ は ${esc(b.dataset.n)}。</b>`); W.emote('boss', '💦'); msg.textContent = `Bukan itu. Dengarkan lagi: 「${s.jp}」`; hid.hidden = false; }
+      }));
+      // 2) lakukan aksinya di sasaran
+      const [ic, label] = kind === 'taps' ? ['👆', `Ketuk sasaran ${times}×`] : HOW[kind] || HOW.tap;
+      how.textContent = `${ic} ${label}`; tg.classList.add('ready'); msg.textContent = '';
+      await UI.wait(d => {
+        let n = 0, dist = 0, last = null, t0 = 0, raf = 0, down = false;
+        const fin = () => { tg.onpointerdown = tg.onpointermove = tg.onpointerup = tg.onpointerleave = null; cancelAnimationFrame(raf); d(); };
+        const tick = t => { if (!t0) t0 = t; const k = Math.min(1, (t - t0) / 900); bar.style.width = k * 100 + '%'; if (k >= 1) return fin(); raf = requestAnimationFrame(tick); };
+        tg.onpointerdown = e => {
+          e.preventDefault(); down = true; last = [e.clientX, e.clientY];
+          if (kind === 'tap') return fin();
+          if (kind === 'taps') { n++; bar.style.width = n / times * 100 + '%'; tg.classList.add('hit'); setTimeout(() => tg.classList.remove('hit'), 120); Sound.blip(); if (n >= times) fin(); return; }
+          if (kind === 'hold') { t0 = 0; raf = requestAnimationFrame(tick); }
+        };
+        tg.onpointermove = e => {
+          if (kind !== 'swipe' || !down || !last) return;
+          dist += Math.hypot(e.clientX - last[0], e.clientY - last[1]); last = [e.clientX, e.clientY];
+          bar.style.width = Math.min(100, dist / 1.6) + '%'; if (dist >= 160) fin();
+        };
+        tg.onpointerup = tg.onpointerleave = () => { down = false; last = null; if (kind === 'hold') { cancelAnimationFrame(raf); if (parseFloat(bar.style.width) < 100) { bar.style.width = 0; how.textContent = '✋ Tahan lebih lama!'; } } };
+      });
+      Sound.ok(); tg.classList.remove('ready'); W.emote('you', '✨', 600);
+      state.textContent = s.after || '✓'; how.textContent = '✅';
+      B.querySelectorAll('.kj-tool2').forEach(x => x.classList.remove('sel'));
+      await sleep(450);
+    }
+    stop();
+    const sc = Math.max(0, 1 - miss * .2); W.react(sc >= .8);
+    return sc;
+  }
+
+  // 🔎 Cari bahaya: ketuk semua bahaya di gambar lokasi kerja
+  function taskHunt(W, st) {
+    const relax = !!S().settings.relax, limit = relax ? 1e9 : (st.limit || 30000);
+    const items = st.items, haz = items.filter(x => !x.ok).length;
+    W.box.innerHTML = `<div class="ws-q">${esc(st.title)}</div><p class="muted small">Ketuk semua <b>bahaya</b> di gambar. Hal yang aman jangan diketuk.</p><div class="arb-timer"><i></i></div><div class="kj-timer">⚠️ <b class="ok">0</b>/${haz} · ❌ <b class="ng">0</b></div><p class="kj-msg small"></p>`;
+    const P = pad(W, 320, 160, 'hunt'); W.box.insertBefore(P.c, W.box.querySelector('.kj-timer'));
+    P.c.dataset.items = JSON.stringify(items.map(x => [x.x, x.y, x.ok ? 0 : 1]));
+    const okEl = W.box.querySelector('.ok'), ngEl = W.box.querySelector('.ng'), msg = W.box.querySelector('.kj-msg'), bar = W.box.querySelector('.arb-timer i');
+    const draw = () => {
+      const c = P.ctx; c.fillStyle = '#d8c79a'; c.fillRect(0, 0, 320, 160); c.fillStyle = '#9fc4e8'; c.fillRect(0, 0, 320, 26);
+      c.strokeStyle = '#7a7f88'; c.lineWidth = 2; for (let x = 20; x < 320; x += 60) { c.beginPath(); c.moveTo(x, 26); c.lineTo(x, 70); c.stroke(); }
+      items.forEach(it => { c.font = '28px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(it.e, it.x, it.y); if (it.found) { c.strokeStyle = it.ok ? '#3b8a78' : '#e0475f'; c.lineWidth = 3; c.beginPath(); c.arc(it.x, it.y, 20, 0, 7); c.stroke(); } });
+    };
+    draw();
+    const stop = W.watch('あし もと、あたま の うえ、まわり を よく みて。');
+    return UI.wait(done => {
+      let ok = 0, ng = 0, t0 = performance.now(), raf = 0, end = false;
+      const finish = () => { if (end) return; end = true; cancelAnimationFrame(raf); stop(); const sc = Math.max(0, Math.min(1, (ok - ng * .5) / haz)); W.react(sc >= .8); done(sc); };
+      P.c.addEventListener('pointerdown', e => {
+        if (end) return;
+        const [x, y] = P.pos(e), it = items.find(o => !o.found && Math.hypot(o.x - x, o.y - y) < 22);
+        if (!it) return;
+        it.found = true;
+        if (!it.ok) { ok++; Sound.ok(); msg.textContent = `⚠️ ${it.d} → ${it.why || 'bahaya!'}`; W.bubble('boss', '<b class="jp">そう、あぶない！</b>'); if (ok >= haz) setTimeout(finish, 500); }
+        else { ng++; Sound.bad(); msg.textContent = `Itu aman: ${it.d}.`; W.bubble('boss', '<b class="jp">それ は だいじょうぶ。</b>'); }
+        okEl.textContent = ok; ngEl.textContent = ng; draw();
+      });
+      const btn = document.createElement('button'); btn.className = 'btn block ghost'; btn.type = 'button'; btn.textContent = 'Sudah semua ✓'; btn.onclick = finish; W.box.appendChild(btn);
+      const loop = t => { if (!P.c.isConnected || end) return; const left = Math.max(0, 1 - (t - t0) / limit); bar.style.width = left * 100 + '%'; if (left <= 0) { msg.textContent = '⏰ Waktu habis!'; finish(); return; } raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+    });
+  }
+
   /* ---------- menjalankan satu shift ---------- */
-  const TASKS = { quiz: taskQuiz, order: taskOrder, pick: taskPick, spot: taskSpot, wash: taskWash, roller: taskRoller, belt: taskBelt, thermo: taskThermo, dial: taskDial, feed: taskFeed, cash: taskCash, shisa: taskShisa };
-  const TASK_START = { spot: 'はじめ！', belt: 'ライン スタート！', order: 'じゅんばん に やって みて。', pick: 'えらんで ください。', wash: 'てあらい スタート！', roller: 'ローラー を かけて。', thermo: 'おんど を はかって。', dial: 'おゆ の おんど を みて。', feed: 'ゆっくり ね。', cash: 'おつり を おねがい。', shisa: 'しさこしょう！' };
+  const TASKS = { quiz: taskQuiz, order: taskOrder, pick: taskPick, spot: taskSpot, wash: taskWash, roller: taskRoller, belt: taskBelt, thermo: taskThermo, dial: taskDial, feed: taskFeed, cash: taskCash, shisa: taskShisa, act: taskAct, hunt: taskHunt };
+  const TASK_START = { spot: 'はじめ！', belt: 'ライン スタート！', order: 'じゅんばん に やって みて。', pick: 'えらんで ください。', wash: 'てあらい スタート！', roller: 'ローラー を かけて。', thermo: 'おんど を はかって。', dial: 'おゆ の おんど を みて。', feed: 'ゆっくり ね。', cash: 'おつり を おねがい。', shisa: 'しさこしょう！', act: 'いっしょ に やって みよう。', hunt: 'きけん を さがして！' };
   // Kategori 評価シート
   const CATS = [['anzen', '安全', 'Keselamatan'], ['eisei', '衛生', 'Kebersihan'], ['horenso', '報連相', 'Komunikasi'], ['seikaku', '正確さ', 'Ketepatan'], ['speed', 'スピード', 'Kecepatan'], ['kotoba', '言葉づかい', 'Bahasa & sopan santun']];
   const COMMENT = {
     anzen: ['Keselamatanmu sangat baik. ご安全に！', 'Hati-hati dengan keselamatan. Ingat: keselamatan nomor satu.'],
-    eisei: ['Kebersihanmu rapi sekali, cocok untuk pabrik makanan.', 'Kebersihan masih kurang. Cuci tangan & cek produk lebih teliti, ya.'],
+    eisei: ['Kebersihanmu rapi sekali, cocok untuk pekerjaan yang menuntut higiene tinggi.', 'Kebersihan masih kurang. Cuci tangan, desinfeksi & cek produk lebih teliti, ya.'],
     horenso: ['Laporanmu cepat & jelas. ほうれんそう bagus!', 'Kalau ada masalah, langsung lapor. Jangan disimpan sendiri.'],
     seikaku: ['Kerjamu teliti dan tepat.', 'Masih ada yang terlewat. Ikuti urutan kerja pelan-pelan.'],
     speed: ['Kerjamu cepat tanpa mengorbankan ketelitian.', 'Coba sedikit lebih cepat. Nanti terbiasa sendiri, kok.'],
     kotoba: ['Bahasa & sopan santunmu bagus sekali.', 'Perhatikan bahasa sopan ke atasan dan tamu (です・ます, keigo).'],
   };
   function catOf(job, st) {
+    if (st.cat) return st.cat;
+    if (TASK_CAT[st.t]) return TASK_CAT[st.t];
     const t = st.t, txt = `${st.q || ''} ${st.why || ''} ${st.title || ''}`;
     if (['wash', 'roller', 'belt'].includes(t)) return 'eisei';
     if (['dial', 'feed', 'shisa'].includes(t)) return 'anzen';
     if (t === 'thermo') return 'eisei';
-    if (t === 'cash' || t === 'order') return 'seikaku';
+    if (t === 'cash' || t === 'order' || t === 'act') return 'seikaku';
+    if (t === 'hunt') return 'anzen';
     if (t === 'pick') return job.id === 'food' ? 'eisei' : 'anzen';
     if (t === 'spot') return job.id === 'genba' ? 'anzen' : 'eisei';
     if (/lapor|ほうこく|ほうれんそう|もう いちど|paham|laporan/i.test(txt)) return 'horenso';
@@ -1192,20 +1293,22 @@ const Kerja = (() => {
     return 'seikaku';
   }
 
-  async function run(job) {
-    const R = ROOMS[job.id];
+  async function run(job, opts = {}) {
+    const R = opts.room || ROOMS[job.id], steps = opts.steps || job.steps, dayMode = !!opts.day, bossId = R.boss || BOSS[job.id];
     Music.play && Music.play('home');
-    const W = stage(job);
-    Kerja._keys = W.keys; Kerja._release = W.release;
+    const W = stage(job, opts.room);
+    Kerja._keys = W.keys; Kerja._release = W.release; Kerja._room = R;
+    if (dayMode) W.setDay(opts.day, opts.dayInfo && opts.dayInfo.title);
     const tally = Object.fromEntries(CATS.map(([k]) => [k, []]));
-    let got = 0, max = 0, firstClock = job.steps.find(s => s.t === 'clock'), lastClock = [...job.steps].reverse().find(s => s.t === 'clock');
+    let got = 0, max = 0;
+    const firstClock = steps.find(s => s.t === 'clock'), lastClock = [...steps].reverse().find(s => s.t === 'clock');
     try {
-      for (let i = 0; i < job.steps.length; i++) {
-        const st = job.steps[i];
-        if (R.cast[i]) W.cast(R.cast[i]);
+      for (let i = 0; i < steps.length; i++) {
+        const st = steps[i];
+        const cast = st.cast || (dayMode ? null : R.cast[i]); if (cast) W.cast(cast);
         if (st.t === 'clock') { W.bubble(null); W.box.innerHTML = ''; await W.clock(st.time, st.title); }
-        if (R.at[i]) await W.lead(R.at[i]);
-        if (st === firstClock) await W.timecard('in', st.time);
+        const at = st.at || (dayMode ? null : R.at[i]); if (at) await W.lead(at);
+        if (st === firstClock) { await W.timecard('in', st.time); if (dayMode && !W._worn) { W._worn = true; await W.wear(); } }
         if (st.t === 'clock') continue;
         if (st.t === 'say') { await W.line(st); continue; }
         if (st.t === 'quiz' && (st.jp || st.id)) await W.line({ w: st.w, e: st.e, jp: st.jp, ro: st.ro, id: st.id }, 'Kerjakan ▶');
@@ -1213,35 +1316,53 @@ const Kerja = (() => {
         W.bubble('boss', `<b class="jp">${esc(TASK_START[st.t] || 'どう する？')}</b>`);
         const t0 = performance.now();
         const r = await TASKS[st.t](W, st);
-        const secs = (performance.now() - t0) / 1000, wgt = ['spot', 'belt', 'wash', 'thermo'].includes(st.t) ? 2 : 1;
+        const secs = (performance.now() - t0) / 1000, wgt = ['spot', 'belt', 'wash', 'thermo', 'harvest', 'sort', 'act', 'hunt'].includes(st.t) ? 2 : 1;
         got += r * wgt; max += wgt; W.score(Math.round(got * 10));
         tally[catOf(job, st)].push(r);
         tally.speed.push(r <= 0 ? 0 : Math.max(.2, Math.min(1, (st.t === 'quiz' ? 14 : 45) / Math.max(secs, 1))));
         li.classList.add(r >= .99 ? 'ok' : r > 0 ? 'mid' : 'ng');
-        if (st.why) await W.line({ w: BOSS[job.id], e: r >= .5 ? 'happy' : 'normal', t: `${r >= .99 ? '⭕' : r > 0 ? '🟡' : '❌'}${st.t === 'quiz' && r < 1 ? ` Yang tepat: 「${st.opts[0].label || st.opts[0].jp}」.` : ''} ${st.why}` });
-        else if (st.t !== 'quiz') await W.line({ w: BOSS[job.id], t: r >= .99 ? '⭕ Bagus, rapi sekali!' : r > 0 ? '🟡 Lumayan. Masih ada yang bisa diperbaiki.' : '❌ Masih banyak yang salah. Ulangi lagi lain kali, ya.' });
-        if (UNIFORM[job.id].after === i) await W.wear();
+        if (st.why) await W.line({ w: bossId, e: r >= .5 ? 'happy' : 'normal', t: `${r >= .99 ? '⭕' : r > 0 ? '🟡' : '❌'}${st.t === 'quiz' && r < 1 ? ` Yang tepat: 「${st.opts[0].label || st.opts[0].jp}」.` : ''} ${st.why}` });
+        else if (st.t !== 'quiz') await W.line({ w: bossId, t: r >= .99 ? '⭕ Bagus, rapi sekali!' : r > 0 ? '🟡 Lumayan. Masih ada yang bisa diperbaiki.' : '❌ Masih banyak yang salah. Ulangi lagi lain kali, ya.' });
+        if (!dayMode && UNIFORM[job.id].after === i) await W.wear();
       }
-      await W.timecard('out', lastClock ? lastClock.time : '17:00');
+      if (lastClock) await W.timecard('out', lastClock.end || lastClock.time);
     } finally {
       Kerja._keys = null; Kerja._release = null;
     }
     W.close();
-    const pct = Math.round(got / max * 100), rank = rankOf(pct);
+    const pct = max ? Math.round(got / max * 100) : 100, rank = rankOf(pct);
     const stars = Object.fromEntries(CATS.map(([k]) => { const a = tally[k]; return [k, a.length ? Math.max(1, Math.round(1 + 4 * a.reduce((x, y) => x + y, 0) / a.length)) : null]; }));
-    const Rr = rec(), r0 = Rr[job.id] || { best: null, plays: 0, last: 0 };
+    const Rr = rec(), r0 = Object.assign({ best: null, plays: 0, last: 0, day: 1, days: {} }, Rr[job.id] || {});
+    r0.days = r0.days || {}; r0.day = r0.day || 1;
     const firstToday = r0.last !== S().day;
     const better = !r0.best || 'SABC'.indexOf(rank) < 'SABC'.indexOf(r0.best);
-    Rr[job.id] = { best: better ? rank : r0.best, plays: r0.plays + 1, last: S().day, stars };
+    let firstClear = false;
+    if (dayMode) {
+      const prev = r0.days[opts.day];
+      if (!prev || 'SABC'.indexOf(rank) < 'SABC'.indexOf(prev)) r0.days[opts.day] = rank;
+      if (opts.day >= r0.day) { r0.day = opts.day + 1; firstClear = true; }
+    }
+    Rr[job.id] = Object.assign(r0, { best: better ? rank : r0.best, plays: r0.plays + 1, last: S().day, stars });
     Save.write();
-    await result(job, pct, rank, better && r0.best, stars);
-    const pts = Math.round(pct / 100 * (firstToday ? 30 : 10));
+    await result(job, pct, rank, better && r0.best && !dayMode, stars, opts);
+    if (dayMode && [5, 10, 15].includes(opts.day)) await paySlip(job, opts.day);
+    if (dayMode && opts.day === 15 && firstClear) await certificate(job);
+    else if (dayMode && opts.day === 15) await certificate(job, true);
+    const pts = Math.round(pct / 100 * (dayMode ? (firstClear ? 30 : 8) : firstToday ? 30 : 10));
     if (pts) H().addPoints(pts, `gaji ${job.name}`);
     if (rank === 'S' || rank === 'A') H().addStamp('kerja_' + job.id, `${job.icon} Pekerja teladan: ${job.name}`);
     if (JOBS.every(j => Rr[j.id])) H().addStamp('kerja_all', '💼 Sudah mencoba semua simulasi kerja');
   }
 
-  function result(job, pct, rank, improved, stars) {
+  // Mulai hari ke-n dari karier 15 hari
+  async function runDay(job, n) {
+    const d = (DAYS[job.id] || [])[n - 1];
+    if (!d || !dayBuilder) return run(job);
+    return run(job, { steps: dayBuilder(job, d, n), day: n, dayInfo: d, room: d.room });
+  }
+  const careerDay = id => Math.min(16, (rec()[id] && rec()[id].day) || 1);
+
+  function result(job, pct, rank, improved, stars, opts = {}) {
     const msg = { S: 'すばらしい！ Siap kerja di Jepang!', A: 'よく できました！ Tinggal sedikit lagi.', B: 'まあまあ。 Ulangi untuk hafal alurnya.', C: 'がんばろう！ Baca Info Kerja, lalu coba lagi.' }[rank];
     const rated = CATS.filter(([k]) => stars[k]);
     const best = rated.slice().sort((a, b) => stars[b[0]] - stars[a[0]])[0], worst = rated.slice().sort((a, b) => stars[a[0]] - stars[b[0]])[0];
@@ -1249,17 +1370,68 @@ const Kerja = (() => {
     const comment = best && worst && stars[worst[0]] < 4 ? `${COMMENT[best[0]][0]} Tapi: ${COMMENT[worst[0]][1]}` : best ? COMMENT[best[0]][0] + ' Pertahankan!' : '';
     const p = UI.panel(`<div class="win kj">
       <div class="w-title">ひょうか シート · Lembar evaluasi</div>
+      ${opts.day ? dayHead(job, opts.day, opts.dayInfo) : ''}
       <div class="kj-res"><div class="kj-rank r${rank}">${rank}</div><div><b>${job.icon} ${esc(job.name)}</b><br>Skor ${pct}%${improved ? ' · <b>Rekor baru!</b>' : ''}<br><span class="muted small">${msg}</span></div></div>
       <table class="kj-eval">${CATS.map(([k, jp, id]) => `<tr><td><b class="jp">${jp}</b><small>${id}</small></td><td class="st">${stars[k] ? '★'.repeat(stars[k]) + '☆'.repeat(5 - stars[k]) : '<span class="muted">—</span>'}</td></tr>`).join('')}</table>
       ${comment ? `<div class="kj-comment"><canvas width="32" height="32"></canvas><div><b>${esc(CHARACTERS[boss].name)}</b><p>${esc(comment)}</p></div></div>` : ''}
+      ${opts.dayInfo && opts.dayInfo.learn ? `<div class="kj-learn"><b>📘 Pelajaran hari ini</b><p>${esc(opts.dayInfo.learn)}</p></div>` : ''}
       <div class="sec-h">Kosakata kerja hari ini</div>
-      <div class="kj-voc">${vocabRows(job)}</div>
+      <div class="kj-voc">${vocabRows(job, opts.dayInfo && opts.dayInfo.vocab)}</div>
+      ${opts.dayInfo && opts.dayInfo.next && opts.day < 15 ? `<div class="kj-next-day"><b>Besok · Hari ${opts.day + 1}</b><p>${esc(opts.dayInfo.next)}</p></div>` : ''}
       <button class="btn block" data-a="close" type="button">Selesai</button></div>`, 'scroll');
     const fc = p.querySelector('.kj-comment canvas'); if (fc) Pix.drawPortrait(fc, boss, 'happy');
     bindVocab(p);
     return UI.wait(done => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); }; });
   }
-  const vocabRows = job => job.vocab.map(([k, kana, r, id]) => `<button class="kj-v" type="button" data-say="${esc(kana.replace(/\s*\(.*\)/, ''))}"><b class="jp">${esc(k)}</b><span class="jp">${esc(kana)}</span><small>${esc(r)} · ${esc(id)}</small><i>♪</i></button>`).join('');
+
+  // Garis kemajuan 15 hari
+  function dayHead(job, n, d) {
+    const r = rec()[job.id] || {}, days = r.days || {};
+    return `<div class="kj-dayhead"><div><b>📅 Hari ${n}/15</b> · ${esc((d && d.title) || '')}</div>
+      <div class="kj-dots">${Array.from({ length: 15 }, (_, i) => `<i class="${days[i + 1] ? 'r' + days[i + 1] : ''} ${i + 1 === n ? 'now' : ''}" title="Hari ${i + 1}">${i + 1}</i>`).join('')}</div></div>`;
+  }
+  // 給与明細: contoh slip gaji per minggu
+  function paySlip(job, n) {
+    const week = n / 5, wage = 1100, hours = 40, gross = wage * hours, tax = 1000, ins = 6600, dorm = 7500, net = gross - tax - ins - dorm;
+    const yen = v => '¥' + v.toLocaleString('ja-JP');
+    const p = UI.panel(`<div class="win kj"><div class="w-title">きゅうよ めいさい · Slip gaji minggu ${week}</div>
+      <div class="kj-slip"><div class="tc-h">給与明細 (きゅうよめいさい) · ${esc(job.name)}</div><div class="tc-name">${esc(S().name || 'Kamu')} 様</div>
+        <table>
+          <tr><td>時給 <small>じきゅう · upah per jam</small></td><td>${yen(wage)}</td></tr>
+          <tr><td>労働時間 <small>ろうどうじかん · jam kerja</small></td><td>${hours} jam (8 × 5 hari)</td></tr>
+          <tr class="sum"><td>総支給額 <small>そうしきゅうがく · bruto</small></td><td>${yen(gross)}</td></tr>
+          <tr class="minus"><td>所得税 <small>しょとくぜい · pajak</small></td><td>− ${yen(tax)}</td></tr>
+          <tr class="minus"><td>社会保険 <small>しゃかいほけん · asuransi</small></td><td>− ${yen(ins)}</td></tr>
+          <tr class="minus"><td>寮費 <small>りょうひ · asrama</small></td><td>− ${yen(dorm)}</td></tr>
+          <tr class="net"><td>差引支給額 <small>さしひき · diterima</small></td><td>${yen(net)}</td></tr>
+        </table>
+        <p class="muted small">Total diterima ${week} minggu: <b>${yen(net * week)}</b> (≈ Rp${Math.round(net * week * 105 / 1000) * 1000 > 0 ? (Math.round(net * week * 105 / 1000) * 1000).toLocaleString('id-ID') : '-'} kurs contoh ¥1 = Rp105)</p></div>
+      <p class="muted small">⚠ Angka hanya CONTOH. Upah, potongan, dan biaya asrama tergantung kontrak, daerah, dan aturan terbaru. Selalu minta & simpan slip gajimu, dan tanyakan ke perusahaan/pendamping kalau ada potongan yang tidak jelas.</p>
+      <button class="btn block" data-a="close" type="button">Simpan slip</button></div>`, 'scroll');
+    Sound.star();
+    return UI.wait(done => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); }; });
+  }
+  // 修了証: sertifikat setelah hari 15
+  function certificate(job, again) {
+    const r = rec()[job.id] || {}, ranks = Object.values(r.days || {});
+    const avg = ranks.length ? ranks.reduce((a, x) => a + 'SABC'.indexOf(x), 0) / ranks.length : 3;
+    const final = 'SABC'[Math.round(avg)];
+    const date = new Date().toLocaleDateString('ja-JP');
+    const p = UI.panel(`<div class="win kj"><div class="kj-cert">
+      <div class="c-h">修 了 証</div><div class="c-sub">しゅうりょうしょう · Sertifikat</div>
+      <div class="c-name">${esc(S().name || 'Kamu')} 殿</div>
+      <p>Telah menyelesaikan <b>simulasi kerja 15 hari</b> bidang<br><b>${job.icon} ${esc(job.name)} (${esc(job.k)})</b></p>
+      <div class="c-rank">Nilai akhir <b class="r${final}">${final}</b></div>
+      <div class="c-foot"><span>${date}</span><span class="c-stamp">${esc((CHARACTERS[BOSS[job.id]].name.match(/\(([^)]+)\)/) || ['', '印'])[1])}<br>印</span></div>
+      </div>
+      <p class="muted small">Sertifikat ini bagian dari game (bukan dokumen resmi). Untuk kerja sungguhan, siapkan ujian Tokutei Ginou & bahasa Jepang (JLPT N4 / JFT-Basic).</p>
+      <button class="btn block" data-a="close" type="button">${again ? 'Tutup' : 'おせわ に なりました！'}</button></div>`, 'scroll');
+    Sound.star();
+    if (!again) { H().addStamp('kerja15_' + job.id, `🎓 Lulus 15 hari: ${job.name}`); H().addPoints(100, 'kelulusan kerja'); }
+    return UI.wait(done => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(); }; });
+  }
+
+  const vocabRows = (job, list) => (list && list.length ? list : job.vocab).map(([k, kana, r, id]) => `<button class="kj-v" type="button" data-say="${esc(kana.replace(/\s*\(.*\)/, ''))}"><b class="jp">${esc(k)}</b><span class="jp">${esc(kana)}</span><small>${esc(r)} · ${esc(id)}</small><i>♪</i></button>`).join('');
   const bindVocab = p => p.querySelectorAll('.kj-v').forEach(b => b.onclick = () => Sound.speak(b.dataset.say));
 
   /* ---------- info kerja (gambaran nyata) ---------- */
@@ -1283,62 +1455,146 @@ const Kerja = (() => {
   }
 
   /* ---------- pilih tempat kerja (Menu → Kerja) ---------- */
+  function dayList(job) {
+    const r = rec()[job.id] || {}, days = r.days || {}, upto = careerDay(job.id);
+    const p = UI.panel(`<div class="win kj"><div class="w-title">📅 ${job.icon} ${esc(job.name)} · 15 hari</div>
+      <p class="small muted">Semua hari terbuka. Sudah berpengalaman? Langsung pilih hari yang kamu mau. Hari berikutnya yang disarankan: <b>Hari ${Math.min(15, upto)}</b>.</p>
+      <div class="kj-days">${(DAYS[job.id] || []).map((d, i) => { const n = i + 1, open = true; return `<button class="kj-dayb ${open ? '' : 'lock'}" data-n="${n}" type="button" ${open ? '' : 'disabled'}><b>Hari ${n}</b><span>${esc(d.title)}</span><i>${days[n] ? `<em class="r${days[n]}">${days[n]}</em>` : open ? '▶' : '🔒'}</i></button>`; }).join('')}</div>
+      <button class="btn block ghost" data-a="close" type="button">Tutup</button></div>`, 'scroll');
+    return UI.wait(done => {
+      p.querySelectorAll('.kj-dayb:not([disabled])').forEach(b => b.onclick = () => { Sound.blip(); UI.closePanel(); done(+b.dataset.n); });
+      p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); done(0); };
+    });
+  }
+
+  /* ---------- 📚 kamus kerja & latihan kosakata ---------- */
+  const KCAT = [['all', '📚 Semua'], ['alat', '🧰 Alat & benda'], ['tempat', '📍 Tempat'], ['tindakan', '🙌 Tindakan'], ['aman', '⚠️ Keselamatan'], ['ungkapan', '💬 Ungkapan']];
+  function seenWords(job) {
+    const r = rec()[job.id] || {}, set = new Set();
+    Object.keys(r.days || {}).forEach(n => ((DAYS[job.id] || [])[n - 1]?.vocab || []).forEach(v => set.add(v[1])));
+    (r.plays ? job.vocab : []).forEach(v => set.add(v[1]));
+    return set;
+  }
+  async function kotoba(job) {
+    const words = GLOSS[job.id] || job.vocab.map(v => [...v, 'alat']);
+    let cat = 'all';
+    for (;;) {
+      const seen = seenWords(job), list = words.filter(w => cat === 'all' || w[4] === cat);
+      const p = UI.panel(`<div class="win kj"><div class="w-title">📚 ${job.icon} Kosakata ${esc(job.name)}</div>
+        <p class="small muted">${words.length} kata kerja nyata · ⭐ ${words.filter(w => seen.has(w[1])).length} sudah kamu temui di karier. Ketuk kata untuk mendengar.</p>
+        <div class="kj-kcat">${KCAT.map(([k, l]) => `<button type="button" class="${k === cat ? 'on' : ''}" data-cat="${k}">${l}</button>`).join('')}</div>
+        <div class="kj-voc">${list.map(([k, kana, r, id]) => `<button class="kj-v ${seen.has(kana) ? 'seen' : ''}" type="button" data-say="${esc(kana.replace(/〜/g, ''))}"><b class="jp">${esc(k)}</b><span class="jp">${esc(kana)}</span><small>${esc(r)} · ${esc(id)}</small><i>${seen.has(kana) ? '⭐' : '♪'}</i></button>`).join('')}</div>
+        <div class="row"><button class="btn ghost" data-a="close" type="button">Tutup</button><button class="btn" data-a="quiz" type="button">🎯 Latihan 10 soal</button></div></div>`, 'scroll');
+      p.querySelectorAll('.kj-v').forEach(b => b.onclick = () => Sound.speak(b.dataset.say));
+      const a = await UI.wait(d => {
+        p.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { Sound.blip(); d({ cat: b.dataset.cat }); });
+        p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); d(null); };
+        p.querySelector('[data-a=quiz]').onclick = () => { Sound.blip(); d({ quiz: true }); };
+      });
+      UI.closePanel();
+      if (!a) return;
+      if (a.cat) cat = a.cat;
+      if (a.quiz) await vocabQuiz(job, words);
+    }
+  }
+  async function vocabQuiz(job, words) {
+    const qs = shuffle(words).slice(0, 10);
+    let ok = 0;
+    for (let i = 0; i < qs.length; i++) {
+      const w = qs[i], toJp = i % 2 === 1;   // selang-seling: Jepang → arti, arti → Jepang
+      const others = shuffle(words.filter(x => x !== w && x[3] !== w[3])).slice(0, 3);
+      const opts = shuffle([w, ...others]);
+      const p = UI.panel(`<div class="win kj"><div class="w-title">🎯 Latihan kosakata · ${i + 1}/${qs.length}</div>
+        <div class="kj-vq">${toJp ? `<b>${esc(w[3])}</b><small>Pilih kata Jepangnya</small>` : `<b class="jp">${esc(w[0])}</b><span class="jp">${esc(w[1])}</span>`}</div>
+        <div class="ws-opts">${opts.map((o, j) => `<button class="ws-o" data-i="${j}" type="button">${toJp ? `<span class="jp">${esc(o[0])}</span><small class="kj-ro">${esc(o[1])}</small>` : esc(o[3])}</button>`).join('')}</div>
+        <p class="kj-msg small"></p><button class="btn block ghost" data-a="close" type="button">Berhenti</button></div>`, 'scroll');
+      if (!toJp) Sound.speak(w[1].replace(/〜/g, ''));
+      const r = await UI.wait(d => {
+        p.querySelectorAll('.ws-o').forEach(b => b.onclick = async () => {
+          const good = opts[+b.dataset.i] === w;
+          p.querySelectorAll('.ws-o').forEach((x, j) => { x.disabled = true; if (opts[j] === w) x.classList.add('right'); });
+          if (!good) b.classList.add('wrong');
+          (good ? Sound.ok : Sound.bad)();
+          p.querySelector('.kj-msg').innerHTML = `${good ? '⭕' : '❌'} <b class="jp">${esc(w[0])}</b> (${esc(w[1])}, ${esc(w[2])}) = ${esc(w[3])}`;
+          if (toJp) Sound.speak(w[1].replace(/〜/g, ''));
+          await sleep(good ? 900 : 1700); d(good ? 1 : 0);
+        });
+        p.querySelector('[data-a=close]').onclick = () => d(-1);
+      });
+      UI.closePanel();
+      if (r < 0) return;
+      ok += r;
+    }
+    const p = UI.panel(`<div class="win kj"><div class="w-title">🎯 Hasil latihan</div><div class="kj-res"><div class="kj-rank r${rankOf(ok * 10)}">${ok}</div><div><b>${ok}/10 benar</b><br><span class="muted small">${ok >= 8 ? 'すごい！ Kosakatamu siap untuk kerja nyata.' : 'Ulangi lagi, ya. Dengarkan suaranya dan ucapkan keras-keras.'}</span></div></div><button class="btn block" data-a="close" type="button">Selesai</button></div>`, 'scroll');
+    if (ok) H().addPoints(ok, 'latihan kosakata');
+    await UI.wait(d => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); d(); }; });
+  }
+
   async function open() {
     for (;;) {
       const R = rec();
       const p = UI.panel(`<div class="win kj">
         <div class="w-title">💼 しごと たいけん · Simulasi Kerja</div>
-        <p class="small muted">Rasakan satu hari kerja di Jepang. Atasan akan memandu, memberi instruksi, dan menilai kerjamu. Tempat kerjanya juga bisa dikunjungi di <b>しごとまち</b> (naik kereta dari stasiun).</p>
-        <div class="kj-jobs">${JOBS.map(j => `<div class="kj-job">
+        <p class="small muted">Jalani <b>karier 15 hari</b> di tempat kerja Jepang: cerita, rekan kerja, kejadian, slip gaji, sampai kelulusan. Tempat kerjanya juga ada di <b>しごとまち</b> (naik kereta dari stasiun).</p>
+        <div class="kj-jobs">${JOBS.map(j => { const d = careerDay(j.id), has = DAYS[j.id]; return `<div class="kj-job">
           <div class="kj-ic">${j.icon}</div>
           <div class="kj-jt"><b>${esc(j.name)}</b> <span class="jp muted small">${esc(j.k)}</span><br><small>${esc(j.desc)}</small>
-            ${R[j.id] ? `<br><small class="kj-best">Nilai terbaik: <b class="r${R[j.id].best}">${R[j.id].best}</b> · ${R[j.id].plays}× main</small>` : ''}</div>
-          <div class="kj-jb"><button class="btn small" data-go="${j.id}" type="button">Mulai ▶</button><button class="btn ghost small" data-info="${j.id}" type="button">ℹ Info</button></div>
-        </div>`).join('')}</div>
+            ${has ? `<div class="kj-prog"><i style="width:${Math.min(15, d - 1) / 15 * 100}%"></i></div><small class="kj-best">${d > 15 ? '🎓 Lulus 15 hari' : `📅 Hari ${d}/15 · ${esc(DAYS[j.id][d - 1].title)}`}${R[j.id] && R[j.id].best ? ` · terbaik <b class="r${R[j.id].best}">${R[j.id].best}</b>` : ''}</small>` : ''}</div>
+          <div class="kj-jb">${has ? `<button class="btn small" data-day="${j.id}" type="button">${d > 15 ? '📅 Pilih hari' : `▶ Hari ${d}`}</button>` : ''}<button class="btn ghost small" data-go="${j.id}" type="button">🔁 Latihan</button><button class="btn ghost small" data-info="${j.id}" type="button">ℹ Info</button><button class="btn ghost small" data-kotoba="${j.id}" type="button">📚 Kata</button>${has && d <= 15 ? `<button class="btn ghost small" data-list="${j.id}" type="button">📅 Pilih hari</button>` : ''}</div>
+        </div>`; }).join('')}</div>
         <button class="btn block ghost" data-a="close" type="button">Tutup</button></div>`, 'scroll');
       const a = await UI.wait(done => {
+        p.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { Sound.blip(); done({ day: b.dataset.day }); });
+        p.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { Sound.blip(); done({ list: b.dataset.list }); });
         p.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { Sound.blip(); done({ go: b.dataset.go }); });
         p.querySelectorAll('[data-info]').forEach(b => b.onclick = () => { Sound.blip(); done({ info: b.dataset.info }); });
+        p.querySelectorAll('[data-kotoba]').forEach(b => b.onclick = () => { Sound.blip(); done({ kotoba: b.dataset.kotoba }); });
         p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); done(null); };
       });
       UI.closePanel();
       if (!a) return;
-      if (a.info && !(await info(BY[a.info]))) continue;
-      await run(BY[a.go || a.info]);
+      if (a.kotoba) { await kotoba(BY[a.kotoba]); continue; }
+      if (a.info) { if (await info(BY[a.info])) await run(BY[a.info]); continue; }
+      if (a.go) { await run(BY[a.go]); continue; }
+      const id = a.day || a.list, job = BY[id];
+      let n = careerDay(id);
+      if (a.list || n > 15) { n = await dayList(job); if (!n) continue; }
+      await runDay(job, n);
     }
   }
 
   /* =========================================================
      KAWASAN KERJA しごとまち (peta kota, naik kereta)
      ========================================================= */
-  const B = '.'.repeat(28);
   MAPS.shigoto = {
     name: 'Kawasan Kerja (しごとまち)', outdoor: true,
     rows: [
-      'T'.repeat(30),
-      'T' + B + 'T',
-      'T' + B + 'T',
-      'T' + '.'.repeat(24) + '.f..T',
-      'T' + '.'.repeat(24) + '...LT',
-      'T' + '='.repeat(28) + 'T',
-      'T' + '='.repeat(28) + 'T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T............................T',
+      'T............................T',
+      'T............................T',
+      'T............................T',
+      'T============================T',
+      'T============================T',
       'T..f.......=...........f.....T',
-      'T..........=..........b......T',
+      'T..........=..........b.....fT',
       'T..........=.................T',
       'T..........=.................T',
-      'T..........=............V....T',
+      'T..........=.V...............T',
       'T..........=.................T',
-      'T' + '='.repeat(28) + 'T',
-      'T' + '='.repeat(28) + 'T',
+      'T============================T',
+      'T============================T',
       'T....f....L.........f....L...T',
-      'T'.repeat(30),
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     buildings: [
       { type: 'station', x: 2, y: 1, w: 6, h: 4, doors: [[5, 4]] },
       { type: 'kojo', x: 10, y: 1, w: 6, h: 4, doors: [[13, 4]] },
       { type: 'kaigo', x: 18, y: 1, w: 6, h: 4, doors: [[21, 4]] },
+      { type: 'bokujo', x: 25, y: 1, w: 4, h: 4, doors: [[26, 4]] },
       { type: 'genba', x: 3, y: 9, w: 6, h: 4, doors: [[6, 12]] },
       { type: 'izakaya', x: 15, y: 9, w: 5, h: 4, doors: [[17, 12]] },
+      { type: 'nojo', x: 21, y: 9, w: 6, h: 4, doors: [[23, 12]] },
     ],
     signs: [
       { x: 9, y: 7, text: 'しごとまち', note: 'Kawasan kerja' },
@@ -1346,13 +1602,16 @@ const Kerja = (() => {
       { x: 24, y: 4, text: 'かいご', note: 'Panti wreda (perawatan lansia)' },
       { x: 2, y: 12, text: 'けんせつ', note: 'Proyek konstruksi (genba)' },
       { x: 20, y: 12, text: 'いざかや', note: 'Restoran izakaya' },
+      { x: 27, y: 12, text: 'のうじょう', note: 'Pertanian: rumah kaca tomat & stroberi' },
     ],
     warps: [{ x: 5, y: 4, to: 'eki', tx: 7, ty: 3, dir: 'down' }],
     closedDoors: [
       { x: 13, y: 4, kind: 'scene', id: 'kerja_food' },
       { x: 21, y: 4, kind: 'scene', id: 'kerja_kaigo' },
+      { x: 26, y: 4, kind: 'scene', id: 'kerja_chikusan' },
       { x: 6, y: 12, kind: 'scene', id: 'kerja_genba' },
       { x: 17, y: 12, kind: 'scene', id: 'kerja_gaishoku' },
+      { x: 23, y: 12, kind: 'scene', id: 'kerja_nogyo' },
     ],
     spots: { arrive: [5, 5], rina: [12, 8] },
   };
@@ -1361,6 +1620,8 @@ const Kerja = (() => {
     kaigo:   { wall: '#fbeef2', awning: '#d77a9a', sign: 'かいご ホーム', door: '#6a4228' },
     genba:   { wall: '#efe2b0', awning: '#f6c90e', sign: 'けんせつ', door: '#3a3f55', board: '#2a1f2d', ink: '#f6c90e' },
     izakaya: { wall: '#e9dcc4', awning: '#b0363f', sign: 'いざかや', door: '#6a4228', board: '#2a1f2d', ink: '#fbf7ef' },
+    nojo:    { wall: '#eef5e4', awning: '#5a9a3a', sign: 'のうじょう', door: '#6a4228', board: '#fbf7ef', ink: '#3f6b28' },
+    bokujo:  { wall: '#f4ecdc', awning: '#8a5a36', sign: 'ぼくじょう', door: '#5a3a22', board: '#fbf7ef', ink: '#5a3a22' },
   });
 
   // Masuk bangunan kerja: atasan menyambut di pintu
@@ -1373,17 +1634,23 @@ const Kerja = (() => {
   async function enter(id) {
     const job = BY[id]; if (!job) return;
     await say({ w: BOSS[id], e: 'happy', ...GREET[id] });
-    const a = await H().menuChoice(`${job.icon} ${job.name}`, ['Mulai shift kerja ▶', 'ℹ Info kerja (gambaran nyata)', 'Tidak jadi']);
+    const d = careerDay(id), has = DAYS[id];
+    const opts = [has ? (d > 15 ? '📅 Ulangi salah satu hari (sudah lulus 🎓)' : `▶ Karier: Hari ${d}/15 · ${DAYS[id][d - 1].title}`) : null, has && d <= 15 ? '📅 Pilih hari lain (lewati yang sudah bisa)' : null, '🔁 Latihan shift bebas', '📚 Kosakata kerja', 'ℹ Info kerja (gambaran nyata)', 'Tidak jadi'].filter(Boolean);
+    const a = await H().menuChoice(`${job.icon} ${job.name}`, opts);
     UI.hideDialog();
-    if (a === 2) return;
-    if (a === 1 && !(await info(job))) return;
-    await run(job);
+    const pick = opts[a];
+    if (pick === 'Tidak jadi') return;
+    if (pick.startsWith('ℹ')) { if (await info(job)) await run(job); return; }
+    if (pick.startsWith('🔁')) return run(job);
+    if (pick.startsWith('📚')) return kotoba(job);
+    let n = d; if (n > 15 || pick.startsWith('📅 Pilih')) { n = await dayList(job); if (!n) return; }
+    await runDay(job, n);
   }
 
   // Bu Rina: pembimbing kerja di depan stasiun
   async function rina() {
     await say({ w: 'rina', e: 'happy', jp: 'しごとまち へ ようこそ！', ro: 'shigotomachi e youkoso!', id: 'Selamat datang di kawasan kerja!' });
-    await say({ w: 'rina', t: 'Di sini kamu bisa mencoba kerja di 🍙 pabrik makanan, 🧓 panti wreda (kaigo), 🏗 proyek konstruksi, dan 🍶 izakaya. Masuk lewat pintu bangunannya, ya. Atasan di sana akan memandu langsung.' });
+    await say({ w: 'rina', t: 'Di sini ada 6 tempat kerja: 🍙 pabrik makanan, 🧓 panti wreda (kaigo), 🐄 peternakan, 🏗 proyek konstruksi, 🍶 izakaya, dan 🌱 pertanian. Masuk lewat pintunya. Di tiap tempat kamu bisa menjalani karier 15 hari: ceritanya berlanjut setiap hari, sampai kelulusan.' });
     const R = rec(), done = JOBS.filter(j => R[j.id]).length;
     await say({ w: 'rina', t: done ? `Kamu sudah mencoba ${done} dari ${JOBS.length} tempat kerja. がんばって！` : 'Belum pernah mencoba? Mulai dari pabrik (こうじょう) di sebelah kanan stasiun!' });
   }
@@ -1396,5 +1663,16 @@ const Kerja = (() => {
   Places.song = m => (m === 'shigoto' ? 'school' : P0.song(m));
   Places.interact = t => (t.type === 'door' && /^kerja_/.test(t.door.id) ? enter(t.door.id.slice(6)) : P0.interact(t));
 
-  return { open, run: id => run(BY[id]), enter, JOBS, ROOMS, _keys: null, _release: null };
+  // Menambah bidang kerja baru (kerja-tani.js)
+  function register(job, room, o) {
+    if (!BY[job.id]) JOBS.push(job);
+    ROOMS[job.id] = room; BOSS[job.id] = o.boss; UNIFORM[job.id] = o.uniform; GREET[job.id] = o.greet;
+  }
+  return {
+    open, enter, register, runDay, kotoba, JOBS, ROOMS, BOSS, DAYS, TASKS, TASK_START, TASK_CAT, GLOSS,
+    run: (id, o) => run(BY[id], o), day: (id, n) => runDay(BY[id], n),
+    setDayBuilder: f => { dayBuilder = f; },
+    kit: { pad, sleep, speak, esc, shuffle, ro, taskQuiz, done1 },
+    _keys: null, _release: null,
+  };
 })();

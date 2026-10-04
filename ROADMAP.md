@@ -67,7 +67,8 @@ Huruf yang sudah dipelajari harus **muncul lagi tepat sebelum lupa**.
 
 ### 3.3b Simulasi kerja — ✅
 - 💼 **Simulasi Kerja** (Menu → Kerja, atau kereta ke **しごとまち**): pabrik makanan, panti wreda (kaigo), genba konstruksi, izakaya sebagai bangunan yang bisa dimasuki. Ruangan kerja bergambar: atasan berjalan ke pos, memberi instruksi lewat balon kata, panah menunjuk tujuan, pemain berjalan ke pos lalu mengerjakan tugas (kuis situasi, urutkan langkah, pilih APD, cek cepat ヨシ/NG). Tamu/penghuni/teman kerja ikut bergerak, petunjuk saat diam, nilai S–C, kosakata kerja, info kerja nyata.
-- 🔜 Bidang lain: pertanian (農業), perawatan gedung (ビルクリーニング), manufaktur (製造業), dan latihan wawancara kerja (めんせつ).
+- ✅ Karier 15 hari di 6 bidang (termasuk 🌱 pertanian & 🐄 peternakan), aksi nyata (act/hunt/panen/timbang/sortir), slip gaji, sertifikat, kamus kerja ±50 kata/bidang + latihan.
+- 🔜 Bidang lain: perawatan gedung (ビルクリーニング), manufaktur (製造業), hotel (宿泊), pengasuhan anak (保育), dan latihan wawancara kerja (めんせつ).
 
 ### 3.4 Pelacakan kemampuan — 🔜
 - Grafik kemajuan mingguan (huruf dikuasai, ketepatan, menit belajar).

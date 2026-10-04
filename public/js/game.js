@@ -341,6 +341,31 @@ const Game = (() => {
     return runLines([{ w: 'sensei', e: 'happy', jp: 'また あした。', ro: 'mata ashita.', id: 'Sampai besok.' }], ['sensei']);
   }
 
+
+  // ⏭ Lewati materi: orang yang sudah bisa cukup lulus tes cepat (≥80%)
+  async function offerSkip(kana) {
+    if (S().settings.skipOffer === false) return false;
+    const list = kana.filter(k => KANA[k]);
+    if (!list.length) return false;
+    const a = await menuChoice(`Materi hari ini: ${list.join(' ')}`, ['📖 Pelajari (video + menulis)', '⏭ Saya sudah bisa — tes cepat, lalu lewati']);
+    UI.hideDialog();
+    if (a !== 1) return false;
+    await UI.say({ w: 'sensei', t: `Oke! Tes cepat ${list.length} soal. Benar minimal 80%, materi hari ini boleh dilewati.` });
+    let ok = 0;
+    for (const k of shuffle(list)) {
+      const ro = KANA[k].ro, others = shuffle(Object.keys(KANA).filter(x => KANA[x].ro !== ro && (IS_KATA(x) === IS_KATA(k)))).slice(0, 3);
+      const opts = shuffle([k, ...others]);
+      const i = await UI.choose(`「${k}」 dibaca…`, opts.map(x => ({ label: KANA[x].ro })));
+      if (opts[i] === k) { ok++; Sound.ok(); } else { Sound.bad(); await UI.say({ n: `「${k}」 dibaca "${ro}".` }); }
+    }
+    UI.hideDialog();
+    const pass = ok / list.length >= .8;
+    if (pass) { await UI.say({ w: 'sensei', e: 'happy', jp: 'すごい！', ro: 'sugoi!', id: `${ok}/${list.length} benar. Materi hari ini kamu lewati.` }); S().skipDay = S().day; Save.write(); }
+    else await UI.say({ w: 'sensei', t: `${ok}/${list.length} benar. Belum 80%, jadi kita pelajari dulu, ya. Tidak apa-apa!` });
+    UI.hideDialog();
+    return pass;
+  }
+
   async function classOne() {
     const d = day(), n = S().day;
     Music.play('school');
@@ -357,7 +382,7 @@ const Game = (() => {
         'Katakana dipakai untuk kata serapan, nama negara, dan nama orang asing.',
         'Garis panjang ー artinya bunyi sebelumnya dipanjangkan, seperti pada ケーキ.',
       ] : (d.intro || []);
-      await Lesson.teach(d.kana, { title: `Video: ${d.sub}`, intro, day: n });
+      if (!(await offerSkip(d.kana))) await Lesson.teach(d.kana, { title: `Video: ${d.sub}`, intro, day: n });
       const learnedNow = [...d.kana, ...(d.also || [])];
       learnedNow.forEach(k => { if (!S().kana.includes(k)) S().kana.push(k); });
       Extras.learn(learnedNow);
@@ -365,12 +390,13 @@ const Game = (() => {
       if (d.also && d.also.length) await UI.say({ w: 'sensei', e: 'happy', t: `Katakananya ikut kamu kuasai hari ini: ${d.also.join(' ')}. Aturannya sama persis!` });
       const acts = activitiesFor(n);
       await UI.say({ w: 'sensei', e: 'happy', t: 'Bagus! Sekarang pilih cara latihan hari ini. Setiap hari pilihannya berbeda, lho!' });
-      const pickA = await menuChoice('Mau latihan dengan cara apa?', acts.map(x => `${Games.NAMES[x]} — ${Games.DESC[x]}`));
+      const pickA = await menuChoice('Mau latihan dengan cara apa?', [...acts.map(x => `${Games.NAMES[x]} — ${Games.DESC[x]}`), '⏭ Lewati latihan (sudah bisa)']);
       const g = acts[pickA];
       UI.hideDialog();
+      if (!g) { await UI.say({ w: 'sensei', t: 'Oke, latihan dilewati. Jangan lupa ulas lewat 📝 Ulasan, ya!' }); UI.hideDialog(); }
       const sc = typeof SCRIPT_OF !== 'undefined' ? SCRIPT_OF : (k => IS_KATA(k) ? 'kata' : 'hira');
       const pool = [...new Set([...d.kana, ...shuffle(S().kana.filter(k => sc(k) === sc(d.kana[0]))).slice(0, 3)])];
-      await Games.run(g, { pool, words: Games.wordsFor(new Set(S().kana)).filter(w => d.kana.some(k => w.jp.includes(k))) });
+      if (g) await Games.run(g, { pool, words: Games.wordsFor(new Set(S().kana)).filter(w => d.kana.some(k => w.jp.includes(k))) });
     } else {
       const r = await Lesson.quiz({ focus: [], count: d.count, title: d.title, pool: d.pool || 'hira' });
       const g = await Lesson.results(r, true);
@@ -434,8 +460,14 @@ const Game = (() => {
     if (d.type === 'lesson') {
       await UI.say({ w: 'sensei', t: d.drill === 'rawan' ? 'Pelajaran kedua: latihan Mata Jeli! Huruf-huruf ini sering tertukar, jadi perhatikan bentuknya baik-baik.' : d.drill ? 'Pelajaran kedua: latihan telinga. Dengarkan baik-baik!' : 'Pelajaran kedua: latihan soal. Tidak apa-apa kalau salah!' });
       UI.hideDialog();
-      const r = d.drill && window.Story ? await Story.drill(d.drill) : await Lesson.quiz({ focus: d.kana, count: 10, title: 'Latihan Soal' });
-      const g = await Lesson.results(r, false);
+      let r, g;
+      if (S().skipDay === n) {
+        await UI.say({ w: 'sensei', e: 'happy', t: 'Kamu sudah lulus tes cepat tadi pagi, jadi latihan soal hari ini dilewati. Bagus!' });
+        r = { correct: 10, total: 10 }; g = { stars: 3 };
+      } else {
+        r = d.drill && window.Story ? await Story.drill(d.drill) : await Lesson.quiz({ focus: d.kana, count: 10, title: 'Latihan Soal' });
+        g = await Lesson.results(r, false);
+      }
       S().days[n] = { stars: g.stars, correct: r.correct, total: r.total };
       const react = g.stars === 3 ? { e: 'happy', jp: 'すばらしい！', ro: 'subarashii!', id: 'Luar biasa!' }
         : g.stars === 2 ? { e: 'happy', jp: 'よく できました。', ro: 'yoku dekimashita.', id: 'Bagus sekali.' }
@@ -899,6 +931,7 @@ const Game = (() => {
         <div class="sec-h">Belajar</div>
         <div class="set col"><span>Romaji<small>Otomatis = romaji hilang sendiri kalau semua hurufnya sudah kamu pelajari (ketuk Aa untuk mengintip)</small></span><div class="seg">${[['auto', 'Otomatis'], ['on', 'Selalu'], ['off', 'Mati']].map(([v, l]) => `<button type="button" class="${(s.romaji === 'auto' ? 'auto' : s.romaji ? 'on' : 'off') === v ? 'on' : ''}" data-ro="${v}">${l}</button>`).join('')}</div></div>
         ${tog('relax', 'Mode santai', 'Tanpa batas waktu di permainan')}
+        ${tog('skipOffer', 'Tawarkan lewati materi', 'Kalau sudah bisa, materi pelajaran boleh dilewati setelah lulus tes cepat (≥80%)')}
         ${seg('text', 'Kecepatan teks', [['slow', 'Pelan'], ['fast', 'Cepat'], ['instant', 'Langsung']])}
         <div class="sec-h">Suara</div>
         ${tog('voice', 'Suara otomatis', 'Kalimat Jepang langsung diucapkan')}
