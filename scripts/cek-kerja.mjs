@@ -15,7 +15,7 @@ const ctx = {
   document: { createElement: () => ({ getContext: () => ({}) }) },
 };
 vm.createContext(ctx);
-for (const f of ['kerja.js', 'kerja-tani.js', 'kerja-aksi.js', 'kerja-hari.js']) vm.runInContext(fs.readFileSync(`public/js/${f}`, 'utf8') + (f === 'kerja.js' ? '\nglobalThis.Kerja = Kerja;' : ''), ctx, { filename: f });
+for (const f of ['kerja.js', 'kerja-tani.js', 'kerja-aksi.js', 'kerja-hari.js', 'kerja-adegan.js']) vm.runInContext(fs.readFileSync(`public/js/${f}`, 'utf8') + (f === 'kerja.js' ? '\nglobalThis.Kerja = Kerja;' : ''), ctx, { filename: f });
 const K = ctx.Kerja;
 const errs = [];
 let days = 0, steps = 0, vocab = 0;

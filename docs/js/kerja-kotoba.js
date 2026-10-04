@@ -123,6 +123,75 @@
       ['足を引きずっています', 'あしをひきずっています', 'ashi wo hikizutte imasu', 'jalannya pincang', 'ungkapan'], ['生まれました', 'うまれました', 'umaremashita', 'sudah lahir', 'ungkapan'],
     ],
   };
+  /* ---------- tambahan: kata kerja nyata yang sering dipakai di lapangan ---------- */
+  const MORE = {
+    food: [
+      ['作業着', 'さぎょうぎ', 'sagyougi', 'baju kerja', 'alat'], ['マスク', 'マスク', 'masuku', 'masker', 'alat'], ['エプロン', 'エプロン', 'epuron', 'celemek', 'alat'], ['トング', 'トング', 'tongu', 'penjepit', 'alat'],
+      ['ボウル', 'ボウル', 'bouru', 'mangkuk adonan', 'alat'], ['台車', 'だいしゃ', 'daisha', 'troli', 'alat'], ['フライヤー', 'フライヤー', 'furaiyaa', 'penggorengan', 'alat'], ['タイマー', 'タイマー', 'taimaa', 'pengatur waktu', 'alat'],
+      ['冷凍庫', 'れいとうこ', 'reitouko', 'ruang beku', 'tempat'], ['出荷場', 'しゅっかじょう', 'shukkajou', 'tempat pengiriman', 'tempat'], ['倉庫', 'そうこ', 'souko', 'gudang', 'tempat'],
+      ['揚げる', 'あげる', 'ageru', 'menggoreng', 'tindakan'], ['切る', 'きる', 'kiru', 'memotong', 'tindakan'], ['並べる', 'ならべる', 'naraberu', 'menyusun berjajar', 'tindakan'], ['運ぶ', 'はこぶ', 'hakobu', 'mengangkut', 'tindakan'],
+      ['交換する', 'こうかんする', 'koukan suru', 'mengganti', 'tindakan'], ['補充する', 'ほじゅうする', 'hojuu suru', 'mengisi ulang', 'tindakan'], ['片付ける', 'かたづける', 'katazukeru', 'membereskan', 'tindakan'],
+      ['不良', 'ふりょう', 'furyou', 'cacat', 'aman'], ['温度管理', 'おんどかんり', 'ondo kanri', 'kontrol suhu', 'aman'], ['交差汚染', 'こうさおせん', 'kousa osen', 'kontaminasi silang', 'aman'], ['転倒', 'てんとう', 'tentou', 'terjatuh', 'aman'],
+      ['手が空きました', 'てがあきました', 'te ga akimashita', 'tangan saya sudah kosong (siap bantu)', 'ungkapan'], ['どこに置けばいいですか', 'どこにおけばいいですか', 'doko ni okeba ii desu ka', 'ditaruh di mana?', 'ungkapan'],
+      ['終わりました', 'おわりました', 'owarimashita', 'sudah selesai', 'ungkapan'], ['遅れてすみません', 'おくれてすみません', 'okurete sumimasen', 'maaf terlambat', 'ungkapan'],
+    ],
+    kaigo: [
+      ['体温計', 'たいおんけい', 'taionkei', 'termometer badan', 'alat'], ['血圧計', 'けつあつけい', 'ketsuatsukei', 'tensimeter', 'alat'], ['パルスオキシメーター', 'パルスオキシメーター', 'parusu okishimeetaa', 'oksimeter', 'alat'], ['入れ歯', 'いれば', 'ireba', 'gigi palsu', 'alat'],
+      ['歯ブラシ', 'はブラシ', 'haburashi', 'sikat gigi', 'alat'], ['エプロン', 'エプロン', 'epuron', 'celemek makan', 'alat'], ['シーツ', 'シーツ', 'shiitsu', 'seprai', 'alat'], ['クッション', 'クッション', 'kusshon', 'bantal penyangga', 'alat'],
+      ['居室', 'きょしつ', 'kyoshitsu', 'kamar penghuni', 'tempat'], ['食堂', 'しょくどう', 'shokudou', 'ruang makan', 'tempat'], ['浴室', 'よくしつ', 'yokushitsu', 'kamar mandi', 'tempat'], ['トイレ', 'トイレ', 'toire', 'toilet', 'tempat'],
+      ['着替える', 'きがえる', 'kigaeru', 'berganti baju', 'tindakan'], ['測る', 'はかる', 'hakaru', 'mengukur', 'tindakan'], ['見守る', 'みまもる', 'mimamoru', 'mengawasi', 'tindakan'], ['付き添う', 'つきそう', 'tsukisou', 'mendampingi', 'tindakan'],
+      ['体位変換', 'たいいへんかん', 'taii henkan', 'ubah posisi tidur', 'tindakan'], ['服薬', 'ふくやく', 'fukuyaku', 'minum obat', 'tindakan'], ['口腔ケア', 'こうくうケア', 'koukuu kea', 'perawatan mulut', 'tindakan'],
+      ['褥瘡', 'じょくそう', 'jokusou', 'luka tekan', 'aman'], ['誤薬', 'ごやく', 'goyaku', 'salah obat', 'aman'], ['脱水', 'だっすい', 'dassui', 'dehidrasi', 'aman'], ['認知症', 'にんちしょう', 'ninchishou', 'demensia', 'aman'],
+      ['ゆっくりでいいですよ', 'ゆっくりでいいですよ', 'yukkuri de ii desu yo', 'pelan-pelan saja', 'ungkapan'], ['痛いところはありますか', 'いたいところはありますか', 'itai tokoro wa arimasu ka', 'ada yang sakit?', 'ungkapan'],
+      ['お茶をどうぞ', 'おちゃをどうぞ', 'ocha wo douzo', 'silakan tehnya', 'ungkapan'], ['すぐ行きますね', 'すぐいきますね', 'sugu ikimasu ne', 'segera saya datang', 'ungkapan'],
+    ],
+    genba: [
+      ['安全靴', 'あんぜんぐつ', 'anzengutsu', 'sepatu safety', 'alat'], ['ハッカー', 'ハッカー', 'hakkaa', 'alat ikat kawat besi', 'alat'], ['結束線', 'けっそくせん', 'kessokusen', 'kawat pengikat', 'alat'], ['スケール', 'スケール', 'sukeeru', 'meteran', 'alat'],
+      ['水平器', 'すいへいき', 'suiheiki', 'waterpass', 'alat'], ['墨つぼ', 'すみつぼ', 'sumitsubo', 'benang penanda (marking)', 'alat'], ['ワイヤー', 'ワイヤー', 'waiyaa', 'tali baja', 'alat'], ['トンボ', 'トンボ', 'tonbo', 'perata beton', 'alat'],
+      ['詰所', 'つめしょ', 'tsumesho', 'pos/kantor lapangan', 'tempat'], ['資材置き場', 'しざいおきば', 'shizai okiba', 'tempat material', 'tempat'], ['開口部', 'かいこうぶ', 'kaikoubu', 'bukaan / lubang lantai', 'tempat'],
+      ['吊る', 'つる', 'tsuru', 'menggantung (beban)', 'tindakan'], ['締める', 'しめる', 'shimeru', 'mengencangkan', 'tindakan'], ['組み立てる', 'くみたてる', 'kumitateru', 'merakit', 'tindakan'], ['解体する', 'かいたいする', 'kaitai suru', 'membongkar', 'tindakan'],
+      ['誘導する', 'ゆうどうする', 'yuudou suru', 'memandu', 'tindakan'], ['打つ', 'うつ', 'utsu', 'memukul / mengecor', 'tindakan'], ['測量', 'そくりょう', 'sokuryou', 'pengukuran lahan', 'tindakan'],
+      ['墜落', 'ついらく', 'tsuiraku', 'jatuh dari ketinggian', 'aman'], ['挟まれ', 'はさまれ', 'hasamare', 'terjepit', 'aman'], ['熱中症', 'ねっちゅうしょう', 'necchuushou', 'heat stroke', 'aman'], ['飛来落下', 'ひらいらっか', 'hirai rakka', 'benda melayang/jatuh', 'aman'],
+      ['ゴーヘイ', 'ゴーヘイ', 'goohei', 'naik! (aba-aba crane)', 'ungkapan'], ['スラー', 'スラー', 'suraa', 'turun! (aba-aba crane)', 'ungkapan'], ['オーライ', 'オーライ', 'oorai', 'terus / oke (aba-aba)', 'ungkapan'],
+      ['足元注意', 'あしもとちゅうい', 'ashimoto chuui', 'awas langkah', 'ungkapan'], ['お先に失礼します', 'おさきにしつれいします', 'osaki ni shitsurei shimasu', 'saya pamit duluan', 'ungkapan'],
+    ],
+    gaishoku: [
+      ['伝票', 'でんぴょう', 'denpyou', 'nota pesanan', 'alat'], ['ハンディ', 'ハンディ', 'handi', 'alat input pesanan', 'alat'], ['トレー', 'トレー', 'toree', 'baki', 'alat'], ['おしぼり', 'おしぼり', 'oshibori', 'handuk basah tamu', 'alat'],
+      ['ジョッキ', 'ジョッキ', 'jokki', 'gelas bir', 'alat'], ['取り皿', 'とりざら', 'torizara', 'piring kecil berbagi', 'alat'], ['ダスター', 'ダスター', 'dasutaa', 'lap meja', 'alat'], ['灰皿', 'はいざら', 'haizara', 'asbak', 'alat'],
+      ['座敷', 'ざしき', 'zashiki', 'ruang lesehan tatami', 'tempat'], ['カウンター', 'カウンター', 'kauntaa', 'meja bar', 'tempat'], ['洗い場', 'あらいば', 'araiba', 'tempat cuci piring', 'tempat'],
+      ['案内する', 'あんないする', 'annai suru', 'mengantar tamu', 'tindakan'], ['下げる', 'さげる', 'sageru', 'membereskan piring', 'tindakan'], ['注ぐ', 'そそぐ', 'sosogu', 'menuang', 'tindakan'], ['温める', 'あたためる', 'atatameru', 'menghangatkan', 'tindakan'],
+      ['会計する', 'かいけいする', 'kaikei suru', 'menghitung pembayaran', 'tindakan'], ['仕込み', 'しこみ', 'shikomi', 'persiapan bahan', 'tindakan'], ['盛り付け', 'もりつけ', 'moritsuke', 'penataan makanan', 'tindakan'],
+      ['アレルギー', 'アレルギー', 'arerugii', 'alergi', 'aman'], ['火傷', 'やけど', 'yakedo', 'luka bakar', 'aman'], ['未成年', 'みせいねん', 'miseinen', 'di bawah umur (dilarang alkohol)', 'aman'], ['賞味期限', 'しょうみきげん', 'shoumi kigen', 'batas rasa terbaik', 'aman'],
+      ['お待たせいたしました', 'おまたせいたしました', 'omatase itashimashita', 'maaf membuat menunggu', 'ungkapan'], ['ご注文はお決まりですか', 'ごちゅうもんはおきまりですか', 'gochuumon wa okimari desu ka', 'sudah memutuskan pesanan?', 'ungkapan'],
+      ['お下げしてもよろしいですか', 'おさげしてもよろしいですか', 'osage shite mo yoroshii desu ka', 'boleh saya angkat piringnya?', 'ungkapan'], ['ラストオーダーです', 'ラストオーダーです', 'rasuto oodaa desu', 'pesanan terakhir', 'ungkapan'],
+    ],
+    nogyo: [
+      ['ハサミ', 'ハサミ', 'hasami', 'gunting panen', 'alat'], ['コンテナ', 'コンテナ', 'kontena', 'keranjang panen', 'alat'], ['軍手', 'ぐんて', 'gunte', 'sarung tangan kain', 'alat'], ['噴霧器', 'ふんむき', 'funmuki', 'alat semprot', 'alat'],
+      ['マルチ', 'マルチ', 'maruchi', 'mulsa plastik', 'alat'], ['支柱', 'しちゅう', 'shichuu', 'ajir / tiang tanaman', 'alat'], ['軽トラ', 'けいトラ', 'kei tora', 'truk kecil', 'alat'], ['じょうろ', 'じょうろ', 'jouro', 'gembor', 'alat'],
+      ['ビニールハウス', 'ビニールハウス', 'biniiru hausu', 'rumah plastik', 'tempat'], ['選果場', 'せんかじょう', 'senkajou', 'tempat sortir', 'tempat'], ['田んぼ', 'たんぼ', 'tanbo', 'sawah', 'tempat'],
+      ['植える', 'うえる', 'ueru', 'menanam', 'tindakan'], ['水をやる', 'みずをやる', 'mizu wo yaru', 'menyiram', 'tindakan'], ['抜く', 'ぬく', 'nuku', 'mencabut', 'tindakan'], ['摘む', 'つむ', 'tsumu', 'memetik', 'tindakan'],
+      ['誘引する', 'ゆういんする', 'yuuin suru', 'mengikat batang ke ajir', 'tindakan'], ['箱詰め', 'はこづめ', 'hakozume', 'mengemas ke kotak', 'tindakan'], ['選別', 'せんべつ', 'senbetsu', 'menyortir', 'tindakan'],
+      ['病気', 'びょうき', 'byouki', 'penyakit tanaman', 'aman'], ['熱中症', 'ねっちゅうしょう', 'necchuushou', 'heat stroke', 'aman'], ['散布', 'さんぷ', 'sanpu', 'penyemprotan', 'aman'], ['立入禁止', 'たちいりきんし', 'tachiiri kinshi', 'dilarang masuk', 'aman'],
+      ['何ケースですか', 'なんケースですか', 'nan keesu desu ka', 'berapa kotak?', 'ungkapan'], ['熟しています', 'じゅくしています', 'jukushite imasu', 'sudah matang', 'ungkapan'],
+      ['虫がいます', 'むしがいます', 'mushi ga imasu', 'ada serangga', 'ungkapan'], ['お裾分けです', 'おすそわけです', 'osusowake desu', 'ini untuk dibagi', 'ungkapan'],
+    ],
+    chikusan: [
+      ['フォーク', 'フォーク', 'fooku', 'garpu jerami', 'alat'], ['一輪車', 'いちりんしゃ', 'ichirinsha', 'gerobak satu roda', 'alat'], ['搾乳機', 'さくにゅうき', 'sakunyuuki', 'mesin perah', 'alat'], ['ミルカー', 'ミルカー', 'mirukaa', 'cangkir perah', 'alat'],
+      ['体温計', 'たいおんけい', 'taionkei', 'termometer', 'alat'], ['哺乳瓶', 'ほにゅうびん', 'honyuubin', 'botol susu anak sapi', 'alat'], ['ヨード', 'ヨード', 'yoodo', 'yodium', 'alat'], ['トラクター', 'トラクター', 'torakutaa', 'traktor', 'alat'],
+      ['搾乳室', 'さくにゅうしつ', 'sakunyuushitsu', 'ruang perah', 'tempat'], ['鶏舎', 'けいしゃ', 'keisha', 'kandang ayam', 'tempat'], ['堆肥場', 'たいひば', 'taihiba', 'tempat kompos', 'tempat'],
+      ['搾る', 'しぼる', 'shiboru', 'memerah', 'tindakan'], ['与える', 'あたえる', 'ataeru', 'memberi (pakan)', 'tindakan'], ['集める', 'あつめる', 'atsumeru', 'mengumpulkan (telur)', 'tindakan'], ['観察する', 'かんさつする', 'kansatsu suru', 'mengamati', 'tindakan'],
+      ['削蹄', 'さくてい', 'sakutei', 'merapikan kuku sapi', 'tindakan'], ['分娩', 'ぶんべん', 'bunben', 'melahirkan', 'tindakan'], ['敷料交換', 'しきりょうこうかん', 'shikiryou koukan', 'ganti alas kandang', 'tindakan'],
+      ['鳥インフルエンザ', 'とりインフルエンザ', 'tori infuruenza', 'flu burung', 'aman'], ['口蹄疫', 'こうていえき', 'kouteieki', 'penyakit mulut & kuku', 'aman'], ['暑熱ストレス', 'しょねつストレス', 'shonetsu sutoresu', 'stres panas', 'aman'], ['消毒', 'しょうどく', 'shoudoku', 'desinfeksi', 'aman'],
+      ['元気がありません', 'げんきがありません', 'genki ga arimasen', 'tidak bersemangat (lesu)', 'ungkapan'], ['熱があるみたいです', 'ねつがあるみたいです', 'netsu ga aru mitai desu', 'sepertinya demam', 'ungkapan'],
+      ['鍵、ヨシ', 'かぎ、ヨシ', 'kagi, yoshi', 'kunci, oke!', 'ungkapan'], ['何キロですか', 'なんキロですか', 'nan kiro desu ka', 'berapa kilo?', 'ungkapan'],
+    ],
+  };
+  Object.keys(MORE).forEach(k => { const have = new Set(G[k].map(r => r[1])); MORE[k].forEach(r => { if (!have.has(r[1])) { have.add(r[1]); G[k].push(r); } }); });
   G.chikusan.forEach(r => { r[2] = r[2].toLowerCase(); });
+  // kosakata harian dari 15 hari cerita ikut masuk kamus (kategori 📅 Cerita)
+  Object.keys(G).forEach(id => {
+    const have = new Set(G[id].map(r => r[1]));
+    (Kerja.DAYS[id] || []).forEach(d => (d.vocab || []).forEach(([k, kana, r, arti]) => { if (!have.has(kana)) { have.add(kana); G[id].push([k, kana, r, arti, 'cerita']); } }));
+  });
   Object.assign(Kerja.GLOSS, G);
 })();

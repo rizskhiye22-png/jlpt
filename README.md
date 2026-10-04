@@ -19,7 +19,8 @@ Sudah bisa hiragana/katakana? Sebelum pelajaran, sensei menawarkan **⏭ Saya su
 Kuis di hari-hari kaigo & konstruksi kini diganti atau ditambah **aksi langsung** dari kasus nyata ([rincian](design/16-KARIER-15-HARI.md#4b-aksi-nyata-tambahan--kaigo--genba-kerja-aksijs)):
 - 🧓 **Kaigo**: ukur **tanda vital** lalu isi tabel & lapor perawat, **ganti baju 脱健着患**, **ubah posisi & cek luka tekan**, **bagikan obat** (baca nama, 3 cek), **sikat gigi & gigi palsu**, **ganti popok**, **bantu jalan dengan tongkat**, pilah cucian tercemar, dan **percakapan dengan meter perasaan** (nenek demensia ingin pulang, menolak makan, keluhan keluarga).
 - 🏗 **Genba**: pandu **crane** dengan aba-aba ゴーヘイ・スラー・ストップ (dan teriak たいひ！ kalau ada orang di bawah beban), jalan di perancah dengan **harness 2 kait**, **pandu truk mundur** (オーライ/ストップ), **ikat besi & cek jarak**, **pilah limbah**, ditegur mandor, menolak perintah tidak aman, menolong rekan yang pusing karena panas.
-- **🎮 Latihan aksi**: di kartu setiap bidang, pilih satu aksi dan langsung main (kaigo 21 aksi, genba 20 aksi).
+- **Setiap hari adegan berbeda**: tidak ada tugas yang diulang di hari lain. 90 percakapan baru (satu per hari di 6 bidang) + aksi khusus hari itu. Daftar hari menampilkan adegan apa saja yang menunggu.
+- **📚 Kamus kerja ±150 kata per bidang** (dulu ±48), termasuk semua kosakata dari cerita harian.
 - **Pengaturan → Umum**: opsi belajar & kerja jadi satu, termasuk *Arti perintah kerja* (terjemahan Indonesia bisa dimatikan untuk latihan mendengar).
 
 ## Baru: 📅 Karier 15 hari di 6 bidang kerja (+ 🌱 Pertanian & 🐄 Peternakan)

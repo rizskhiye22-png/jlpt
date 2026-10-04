@@ -1100,3 +1100,4 @@ img.emo { height: 1.15em; width: 1.15em; margin: 0 .05em; vertical-align: -0.2em
 .kj-acts { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; margin: 8px 0; } .kj-actb span { text-align: center; line-height: 1.25; }
 .kj-pad.crane { background: #cfe3f2; } .kj-pad.yudo, .kj-pad.rebar { background: #d8c79a; } .kj-pad.skin { background: #e8f0f7; }
 .kj-crane { grid-template-columns: repeat(6, 1fr); gap: 3px; } .kj-crane button { font-size: 16px; padding: 6px 0; } .kj-crane button span { font-size: 9.5px; white-space: nowrap; }
+.kj-dayb .kj-sc { display: block; font-size: 10.5px; color: #7a6a7a; margin-top: 2px; line-height: 1.3; }

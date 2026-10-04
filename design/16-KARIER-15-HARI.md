@@ -230,9 +230,18 @@ Banyak hari kaigo & genba sebelumnya berupa kuis. Sekarang diganti atau ditambah
 | 🔩 Ikat besi (`rebar`) | genba | Tahan di setiap persilangan (ハッカー) → cek ピッチ @200 & tunjuk batang yang salah | 鉄筋結束, 配筋検査 |
 | 🛠 Aksi alat+gerakan (`act`) | kaigo | Kasus baru: 口腔ケア, おむつ交換, 歩行介助 (sisi lumpuh, tongkat → kaki lumpuh → kaki sehat) | |
 
-**🎮 Latihan aksi**: tombol baru di kartu setiap bidang. Isinya semua aksi fisik dari shift latihan dan 15 hari (kaigo 21, genba 20), bisa dimainkan satu per satu tanpa menjalani satu hari penuh. Latihan ini tidak mengubah rekor karier.
-
 **Pengaturan → Umum** (dulu "Belajar") berisi opsi belajar & kerja: *Mode santai* (tanpa batas waktu di permainan & tugas kerja) dan *Arti perintah kerja* (terjemahan Indonesia di bawah perintah atasan; matikan untuk latihan mendengar).
+
+---
+
+## 4c. Setiap hari = adegan berbeda (`kerja-adegan.js`)
+
+- **Tidak ada tugas yang diulang.** Tugas yang sudah muncul di hari sebelumnya otomatis dihapus dari hari berikutnya (misalnya cuci tangan atau conveyor yang dulu muncul 10× kini hanya sekali).
+- **90 percakapan baru**: setiap hari di 6 bidang punya percakapan sendiri dengan meter perasaan. Contohnya perkenalan di apel, ditegur senpai, salah antar pesanan, tetangga mengeluh berisik, slip gaji & potongan pajak, telepon darurat, klinik & kartu asuransi, polisi memeriksa sepeda, dan pamit di hari terakhir.
+- **Aksi khusus hari itu**: variasi tugas fisik dengan isi baru, misalnya lini sandwich, bento alergen, panen ulang, suhu malam rumah kaca, kipas kandang, balok baja, upacara 上棟, truk sampah, serah terima shift, dan tutup toko.
+- Hari terakhir tidak lagi mengulang semua tugas, tapi berisi adegan kelulusan sendiri.
+- **Daftar hari** menampilkan ikon adegan + judul percakapan tiap hari. Tombol 🎮 Aksi terpisah dihapus: aksi dan hari menjadi satu bagian.
+- **Kamus kerja** sekarang 136–156 kata per bidang (dulu ±48): tambahan kata lapangan + semua kosakata harian dari cerita (kategori 📅 Dari cerita).
 
 ---
 
@@ -244,6 +253,8 @@ Banyak hari kaigo & genba sebelumnya berupa kuis. Sekarang diganti atau ditambah
 | Bidang pertanian & peternakan (ruangan, tugas baru) | `public/js/kerja-tani.js` |
 | Aksi nyata tambahan kaigo & genba (vital, dress, skin, meds, talk, bins, crane, harness, yudo, rebar) | `public/js/kerja-aksi.js` |
 | Isi 15 hari untuk 6 bidang, slip gaji, sertifikat | `public/js/kerja-hari.js` |
+| Adegan harian unik (percakapan + aksi per hari, hapus tugas berulang) | `public/js/kerja-adegan.js` |
+| Kamus kerja (±150 kata per bidang) | `public/js/kerja-kotoba.js` |
 | Uji otomatis | `tests/kerja_sim.py`, `tests/kerja_hari.py`, `tests/kerja_aksi.py`, `scripts/cek-kerja.mjs` (validasi 90 hari) |
 
 Data simpanan: `Save.d.kerja[id] = { best, plays, stars, day (hari berikutnya 1–16), days: { n: rank } }`.

@@ -74,7 +74,7 @@
     { k: 'spo2', tool: ['☝️', 'パルスオキシメーター'], name: 'SpO2', id: 'saturasi oksigen', jp: 'ゆび に つけて、SpO2 を みて。', how: 'hold', zone: 'ujung jari', fmt: v => v + '%', range: '95〜100%', bad: v => v <= 92 },
   ];
   async function taskVital(W, st) {
-    const C = VCASE[st.case] || VCASE[shuffle(['fever', 'bp', 'spo2'])[0]];
+    const C = st.c || VCASE[st.case] || VCASE[shuffle(['fever', 'bp', 'spo2'])[0]];
     const B = W.box; let miss = 0, pts = 0, max = 0;
     B.dataset.abn = C.abn || '';
     // 1) こえかけ
@@ -305,7 +305,7 @@
      bawah beban (吊り荷の下に入るな), lewati penghalang, turunkan tepat.
      ========================================================= */
   async function taskCrane(W, st) {
-    const B = W.box, WALL = { x: 140, w: 26, h: 44 }, TX = 262, GROUND = 106, R0 = relax();
+    const B = W.box, WALL = { x: st.wallX || 140, w: 26, h: st.wallH || 44 }, TX = st.tx || 262, GROUND = 106, R0 = relax();
     B.innerHTML = head(st.title || 'たまかけ · Pandu crane dengan aba-aba', '① Angkat sedikit → <b>ストップ</b> (地切り) ② naik lewati dinding ③ geser ④ turunkan di kotak kuning. Orang di bawah beban → <b>たいひ！</b>') +
       `<div class="kj-crane"><button type="button" data-c="up">⬆<span class="jp">ゴーヘイ</span></button><button type="button" data-c="down">⬇<span class="jp">スラー</span></button><button type="button" data-c="left">⬅<span class="jp">ひだり</span></button><button type="button" data-c="right">➡<span class="jp">みぎ</span></button><button type="button" data-c="stop" class="stop">✋<span class="jp">ストップ</span></button><button type="button" data-c="evac" class="evac">📣<span class="jp">たいひ！</span></button></div><p class="kj-msg small"></p>`;
     const P = K.pad(W, 320, 124, 'crane'); B.insertBefore(P.c, B.querySelector('.kj-crane'));
@@ -320,7 +320,7 @@
       c.strokeStyle = '#555'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 8); c.lineTo(320, 8); c.stroke();
       const ly = GROUND - 16 - s.h;
       c.lineWidth = 1.5; c.beginPath(); c.moveTo(s.x, 8); c.lineTo(s.x, ly - 10); c.moveTo(s.x, ly - 10); c.lineTo(s.x - 12, ly); c.moveTo(s.x, ly - 10); c.lineTo(s.x + 12, ly); c.stroke();
-      c.fillStyle = '#b5651d'; c.fillRect(s.x - 16, ly, 32, 16);
+      c.fillStyle = st.color || '#b5651d'; c.fillRect(s.x - 16, ly, 32, 16); if (st.load) Emo.draw(c, st.load, s.x, ly + 8, 14);
       if (s.man) Emo.draw(c, '👷', s.man.x, GROUND - 10, 22);
       c.fillStyle = '#222'; c.font = '11px sans-serif'; c.fillText(`${(s.h / 20).toFixed(1)}m`, 4, 22);
     };
@@ -456,7 +456,7 @@
     const draw = () => {
       const c = P.ctx; c.fillStyle = '#d8c79a'; c.fillRect(0, 0, 320, 120);
       c.fillStyle = 'rgba(91,179,160,.45)'; c.fillRect(LINE - 12, 20, 22, 80); c.fillStyle = '#e0475f'; c.fillRect(LINE + 18, 16, 6, 88);
-      c.save(); c.translate(s.x, 60); Emo.draw(c, '🚚', -26, 0, 52); c.restore();
+      c.save(); c.translate(s.x, 60); Emo.draw(c, st.truck || '🚚', -26, 0, 52); c.restore();
       if (s.man) Emo.draw(c, '🚶', s.man.x, s.man.y, 24);
       Emo.draw(c, '🦺', 300, 104, 20);
     };
