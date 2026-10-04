@@ -8,18 +8,29 @@
    - Keamanan: filter kata kasar, link/nomor HP/email disembunyikan,
      batas 120 huruf, jeda kirim, bisukan pemain (tersimpan di HP)
    Catatan: broker publik tidak terenkripsi end-to-end dan bisa dibaca
-   siapa saja, jadi jangan kirim data pribadi. Tanpa riwayat: hanya
-   pesan yang masuk selama kamu online yang terlihat.
+   siapa saja, jadi jangan kirim data pribadi.
+   Riwayat (log) tidak hilang:
+   - disimpan di HP (localStorage terpisah dari data game), jadi tetap
+     ada walau halaman dimuat ulang, aplikasi ditutup, atau game di-reset
+   - salinan riwayat bersama disimpan di broker sebagai pesan "retained"
+     (topik /log). Pemain yang baru masuk langsung melihat pesan lama
+     walaupun saat itu tidak ada pemain lain yang online.
    ========================================================= */
 const Chat = (() => {
   const BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
   const ROOT = 'nihongo-gakkou/jlpt/v1';
-  const T_CHAT = ROOT + '/chat', T_HERE = ROOT + '/here', T_PRES = ROOT + '/presence';
-  const MAX = 120, GAP = 2500, KEEP = 80;
+  const T_CHAT = ROOT + '/chat', T_HERE = ROOT + '/here', T_PRES = ROOT + '/presence', T_LOG = ROOT + '/log';
+  const MAX = 120, GAP = 2500, KEEP = 200, SHARE = 80, LOG_KEY = 'nihongo-gakkou-chatlog';
   const S = () => Save.d;
   const set = () => S().settings;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const myId = () => (S().chatId = S().chatId || 'p' + Math.random().toString(36).slice(2, 10));
+  // id pemain disimpan juga di luar data game supaya pesan sendiri tetap dikenali setelah reset
+  const myId = () => {
+    if (!S().chatId) { try { S().chatId = localStorage.getItem('nihongo-gakkou-chatid') || ''; } catch (e) {} }
+    if (!S().chatId) S().chatId = 'p' + Math.random().toString(36).slice(2, 10);
+    try { localStorage.setItem('nihongo-gakkou-chatid', S().chatId); } catch (e) {}
+    return S().chatId;
+  };
   const muted = () => (S().chatMuted = S().chatMuted || []);
 
   /* ---------- penyaring ---------- */
@@ -66,7 +77,7 @@ const Chat = (() => {
     ws.onclose = () => { clearInterval(ping); h.close(up); up = false; };
     ws.onerror = () => {};
     return {
-      pub(topic, s) { if (up && ws.readyState === 1) ws.send(pkt(0x30, [...str(topic), ...enc.encode(s)])); },
+      pub(topic, s, retain) { if (up && ws.readyState === 1) ws.send(pkt(retain ? 0x31 : 0x30, [...str(topic), ...enc.encode(s)])); },
       close() { up = false; clearInterval(ping); try { ws.send(new Uint8Array([0xe0, 0])); ws.close(); } catch (e) {} },
       get up() { return up; },
     };
@@ -83,7 +94,7 @@ const Chat = (() => {
     const url = brokers()[bi % brokers().length];
     setStatus('connecting');
     cli = mqtt(url, 'ngk_' + myId() + '_' + Math.random().toString(36).slice(2, 6), {
-      topics: [T_CHAT, T_HERE, T_PRES],
+      topics: [T_CHAT, T_HERE, T_PRES, T_LOG],
       open() { retry = 0; setStatus('on'); presence(); clearInterval(presT); presT = setInterval(presence, 45000); },
       msg: onMsg,
       close(wasUp) {
@@ -100,21 +111,51 @@ const Chat = (() => {
   function presence() { if (cli) cli.pub(T_PRES, JSON.stringify({ v: 1, id: myId(), n: cleanName(S().name), m: where() })); }
   function active() { const now = Date.now(); let n = 0; seen.forEach(s => { if (now - s.at < 120000) n++; }); return n; }
 
+  /* ---------- riwayat (log) ---------- */
+  // Satu pesan: { k (kunci unik), id, n, t, map, ch, at }
+  function entry(d, ch) {
+    if (!d || typeof d.id !== 'string' || d.id.length > 20 || typeof d.t !== 'string' || !d.t.trim()) return null;
+    const at = Math.min(Number(d.ts || d.at) || Date.now(), Date.now() + 60000);
+    const t = clean(d.t); if (!t) return null;
+    return { k: String(d.k || d.id + '-' + at).slice(0, 40), id: d.id, n: cleanName(d.n), t, map: String(d.m || d.map || '').slice(0, 20), ch: (ch || d.ch) === 'here' ? 'here' : 'all', at };
+  }
+  let saveT = 0;
+  const persist = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(LOG_KEY, JSON.stringify(msgs.map(({ me, ...m }) => m))); } catch (e) {} }, 300); };
+  // Tambah pesan (tanpa dobel), urut waktu, simpan. true = pesan baru.
+  function add(m) {
+    if (!m || msgs.some(x => x.k === m.k)) return false;
+    m.me = m.id === myId();
+    let i = msgs.length; while (i > 0 && msgs[i - 1].at > m.at) i--;
+    msgs.splice(i, 0, m);
+    if (msgs.length > KEEP) msgs.splice(0, msgs.length - KEEP);
+    persist(); return true;
+  }
+  function loadLog() {
+    try { const l = JSON.parse(localStorage.getItem(LOG_KEY) || '[]'); if (Array.isArray(l)) l.forEach(x => add(entry(x))); } catch (e) {}
+  }
+  // Salinan riwayat bersama di broker (retained): ditulis pengirim setiap kirim pesan
+  function share() {
+    if (!cli) return;
+    const l = msgs.slice(-SHARE).map(m => ({ k: m.k, id: m.id, n: m.n, t: m.t, m: m.map, ch: m.ch, ts: m.at }));
+    cli.pub(T_LOG, JSON.stringify({ v: 1, l }), true);
+  }
+
   function onMsg(topic, raw) {
     let d; try { d = JSON.parse(raw); } catch (e) { return; }
+    if (topic === T_LOG) {
+      if (!d || d.v !== 1 || !Array.isArray(d.l)) return;
+      let n = 0; d.l.slice(-SHARE).forEach(x => { if (add(entry(x))) n++; });
+      if (n) refresh();
+      return;
+    }
     if (!d || d.v !== 1 || typeof d.id !== 'string' || d.id.length > 20) return;
     seen.set(d.id, { n: cleanName(d.n), m: String(d.m || '').slice(0, 20), at: Date.now() });
     if (topic === T_PRES) return refresh();
     if (typeof d.t !== 'string' || !d.t.trim()) return;
-    if (muted().includes(d.id)) return;
-    const m = { id: d.id, n: cleanName(d.n), t: clean(d.t), map: String(d.m || '').slice(0, 20), ch: topic === T_HERE ? 'here' : 'all', at: Date.now(), me: d.id === myId() };
-    if (m.ch === 'here' && m.map !== where()) return;
-    if (!m.me && msgs.some(x => x.id === m.id && x.t === m.t && m.at - x.at < 3000)) return;   // dobel
-    msgs.push(m); if (msgs.length > KEEP) msgs.shift();
-    if (!m.me) {
-      if (!open) { unread++; UI.toast(`💬 <b>${esc(m.n)}</b>: ${esc(m.t.slice(0, 40))}`); }
-      if (m.map === where() && window.World && World.sayOther) { /* avatar online memakai id lain; cukup notifikasi */ }
-    }
+    if (!d.k) d.ts = Date.now();                // pesan versi lama tanpa kunci/waktu
+    const m = entry(d, topic === T_HERE ? 'here' : 'all');
+    if (!m || !add(m)) return;
+    if (!m.me && !muted().includes(m.id) && (m.ch === 'all' || m.map === where()) && !open) { unread++; UI.toast(`💬 <b>${esc(m.n)}</b>: ${esc(m.t.slice(0, 40))}`); }
     refresh();
   }
 
@@ -124,7 +165,9 @@ const Chat = (() => {
     if (Date.now() - lastSent < GAP) return 'slow';
     if (!cli || !cli.up) return 'off';
     lastSent = Date.now();
-    cli.pub(ch === 'here' ? T_HERE : T_CHAT, JSON.stringify({ v: 1, id: myId(), n: cleanName(S().name), m: where(), t }));
+    const d = { v: 1, k: myId() + '-' + lastSent.toString(36), ts: lastSent, id: myId(), n: cleanName(S().name), m: where(), t };
+    cli.pub(ch === 'here' ? T_HERE : T_CHAT, JSON.stringify(d));
+    add(entry(d, ch)); share(); refresh();
     return 'ok';
   }
 
@@ -137,6 +180,7 @@ const Chat = (() => {
     if (hud) { hud.style.display = set().chat === false ? 'none' : ''; hud.querySelector('b').textContent = unread ? unread : status === 'on' ? '●' : '…'; hud.classList.toggle('new', unread > 0); }
     listeners.forEach(f => f());
   }
+  const stamp = at => { const d = new Date(at), hm = d.toTimeString().slice(0, 5); return d.toDateString() === new Date().toDateString() ? hm : `${d.getDate()}/${d.getMonth() + 1} ${hm}`; };
   function panel() {
     open = true; unread = 0;
     if (set().chat === false) { set().chat = true; Save.write(); }
@@ -154,9 +198,9 @@ const Chat = (() => {
       if (!list.isConnected) return;
       p.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
       st.textContent = status === 'on' ? `· ${Math.max(1, active())} pemain aktif` : status === 'connecting' ? '· menghubungkan…' : '· offline';
-      const show = msgs.filter(m => m.ch === tab && !muted().includes(m.id));
+      const show = msgs.filter(m => m.ch === tab && !muted().includes(m.id) && (tab === 'all' || m.map === where()));
       const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
-      list.innerHTML = show.length ? show.map(m => `<div class="cm ${m.me ? 'me' : ''}"><button type="button" class="cm-n" data-id="${esc(m.id)}" data-n="${esc(m.n)}">${esc(m.n)}</button><span class="cm-t">${esc(m.t)}</span><small>${new Date(m.at).toTimeString().slice(0, 5)}${tab === 'all' && m.map ? ' · ' + esc(MAPNAME(m.map)) : ''}</small></div>`).join('')
+      list.innerHTML = show.length ? show.map(m => `<div class="cm ${m.me ? 'me' : ''}"><button type="button" class="cm-n" data-id="${esc(m.id)}" data-n="${esc(m.n)}">${esc(m.n)}</button><span class="cm-t">${esc(m.t)}</span><small>${stamp(m.at)}${tab === 'all' && m.map ? ' · ' + esc(MAPNAME(m.map)) : ''}</small></div>`).join('')
         : `<p class="muted small chat-empty">${status === 'on' ? (tab === 'here' ? `Belum ada pesan di ${esc(MAPNAME(where()))}.` : 'Belum ada pesan. Sapa pemain lain, yuk!') : 'Menghubungkan ke chat…'}</p>`;
       if (atBottom) list.scrollTop = list.scrollHeight;
       list.querySelectorAll('.cm-n').forEach(b => b.onclick = () => {
@@ -188,7 +232,7 @@ const Chat = (() => {
     row.insertBefore(b, row.firstChild);
     refresh();
   }
-  function start() { mountHud(); if (set().chat !== false) connect(); }
+  function start() { loadLog(); mountHud(); if (set().chat !== false) connect(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(start, 0)); else setTimeout(start, 0);
 
   return { panel, connect, disconnect, send, clean, get status() { return status; }, get messages() { return msgs.slice(); }, _onMsg: onMsg, _mqtt: mqtt };

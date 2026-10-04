@@ -20,32 +20,33 @@ def player(br, name):
         else: break
     return pg
 
-with sync_playwright() as p:
-    br = p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
-    a, b = player(br, 'Rizki'), player(br, 'Sari')
-    for pg in (a, b): pg.wait_for_function("Chat.status === 'on'", timeout=15000)
-    print('status:', a.evaluate('Chat.status'), b.evaluate('Chat.status'))
-    a.evaluate("setTimeout(() => Chat.panel()); 0"); b.evaluate("setTimeout(() => Chat.panel()); 0"); a.wait_for_timeout(600)
-    a.fill('.chat-form input', 'Halo Sari! こんにちは'); a.click('.chat-form button'); a.wait_for_timeout(800)
-    print('Sari menerima:', b.locator('.chat-list .cm-t').all_inner_texts())
-    b.wait_for_timeout(2600); b.click('.cq >> nth=1'); b.wait_for_timeout(800)
-    a.wait_for_timeout(2600); a.fill('.chat-form input', 'wa aku 081234567890 anjing'); a.click('.chat-form button'); a.wait_for_timeout(800)
-    print('Rizki melihat:', a.locator('.chat-list .cm-t').all_inner_texts())
-    print('Sari melihat :', b.locator('.chat-list .cm-t').all_inner_texts())
-    print('jumlah aktif (Sari):', b.locator('.chat-st').inner_text())
-    b.screenshot(path=f'{OUT}/chat_sari.png')
-    # kanal "Di sini": Sari pindah peta → pesan Di sini dari Rizki tidak tampil
-    b.click('[data-tab=here]'); a.click('[data-tab=here]')
-    b.evaluate("setTimeout(() => Game.h.goTo('umi', 5, 5, 'down')); 0"); b.wait_for_timeout(1500); print('peta Sari:', b.evaluate('World.map'))
-    a.wait_for_timeout(2600); a.fill('.chat-form input', 'ada yang di kota?'); a.click('.chat-form button'); a.wait_for_timeout(800)
-    print('pesan Di sini yang diterima Sari:', b.evaluate("Chat.messages.filter(m => m.ch === 'here').map(m => m.t)"))
-    print('Di sini — Rizki:', a.locator('.chat-list .cm-t').all_inner_texts(), '| Sari (di pantai):', b.locator('.chat-list .cm-t').all_inner_texts())
-    # bisukan: Sari membisukan Rizki
-    b.click('[data-tab=all]'); b.once('dialog', lambda d: d.accept())
-    b.locator('.cm-n', has_text='Rizki').first.click(); b.wait_for_timeout(300)
-    a.click('[data-tab=all]'); a.wait_for_timeout(2600); a.fill('.chat-form input', 'pesan setelah dibisukan'); a.click('.chat-form button'); a.wait_for_timeout(800)
-    print('Sari setelah membisukan Rizki:', b.locator('.chat-list .cm-t').all_inner_texts())
-    # pad tetap bisa: B menutup panel chat
-    b.locator('.pad [data-btn=b]').dispatch_event('pointerdown'); b.wait_for_timeout(300)
-    print('B menutup chat:', b.locator('.chat').count() == 0)
-    print('ERRORS:', H.errors or 'none')
+if __name__ == '__main__':
+  with sync_playwright() as p:
+        br = p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
+        a, b = player(br, 'Rizki'), player(br, 'Sari')
+        for pg in (a, b): pg.wait_for_function("Chat.status === 'on'", timeout=15000)
+        print('status:', a.evaluate('Chat.status'), b.evaluate('Chat.status'))
+        a.evaluate("setTimeout(() => Chat.panel()); 0"); b.evaluate("setTimeout(() => Chat.panel()); 0"); a.wait_for_timeout(600)
+        a.fill('.chat-form input', 'Halo Sari! こんにちは'); a.click('.chat-form button'); a.wait_for_timeout(800)
+        print('Sari menerima:', b.locator('.chat-list .cm-t').all_inner_texts())
+        b.wait_for_timeout(2600); b.click('.cq >> nth=1'); b.wait_for_timeout(800)
+        a.wait_for_timeout(2600); a.fill('.chat-form input', 'wa aku 081234567890 anjing'); a.click('.chat-form button'); a.wait_for_timeout(800)
+        print('Rizki melihat:', a.locator('.chat-list .cm-t').all_inner_texts())
+        print('Sari melihat :', b.locator('.chat-list .cm-t').all_inner_texts())
+        print('jumlah aktif (Sari):', b.locator('.chat-st').inner_text())
+        b.screenshot(path=f'{OUT}/chat_sari.png')
+        # kanal "Di sini": Sari pindah peta → pesan Di sini dari Rizki tidak tampil
+        b.click('[data-tab=here]'); a.click('[data-tab=here]')
+        b.evaluate("setTimeout(() => Game.h.goTo('umi', 5, 5, 'down')); 0"); b.wait_for_timeout(1500); print('peta Sari:', b.evaluate('World.map'))
+        a.wait_for_timeout(2600); a.fill('.chat-form input', 'ada yang di kota?'); a.click('.chat-form button'); a.wait_for_timeout(800)
+        print('pesan Di sini yang diterima Sari:', b.evaluate("Chat.messages.filter(m => m.ch === 'here').map(m => m.t)"))
+        print('Di sini — Rizki:', a.locator('.chat-list .cm-t').all_inner_texts(), '| Sari (di pantai):', b.locator('.chat-list .cm-t').all_inner_texts())
+        # bisukan: Sari membisukan Rizki
+        b.click('[data-tab=all]'); b.once('dialog', lambda d: d.accept())
+        b.locator('.cm-n', has_text='Rizki').first.click(); b.wait_for_timeout(300)
+        a.click('[data-tab=all]'); a.wait_for_timeout(2600); a.fill('.chat-form input', 'pesan setelah dibisukan'); a.click('.chat-form button'); a.wait_for_timeout(800)
+        print('Sari setelah membisukan Rizki:', b.locator('.chat-list .cm-t').all_inner_texts())
+        # pad tetap bisa: B menutup panel chat
+        b.locator('.pad [data-btn=b]').dispatch_event('pointerdown'); b.wait_for_timeout(300)
+        print('B menutup chat:', b.locator('.chat').count() == 0)
+        print('ERRORS:', H.errors or 'none')

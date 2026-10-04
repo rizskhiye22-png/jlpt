@@ -27,7 +27,7 @@ Simulasi kerja kini punya **cerita panjang 15 hari** di setiap tempat kerja, buk
 Ngobrol dengan pemain lain secara langsung, **tanpa server game sendiri**: pesan dikirim lewat broker MQTT publik gratis (EMQX, cadangan HiveMQ) langsung dari browser. Buka lewat tombol **🗨️ di HUD** atau **Menu → Chat**.
 - Kanal **🌏 Semua** dan **📍 Di sini** (hanya pemain di peta yang sama), jumlah pemain aktif, dan tombol frasa Jepang siap kirim (こんにちは！, いっしょに べんきょう しよう！…).
 - Keamanan: filter kata kasar (Indonesia, Inggris, Jepang), link / nomor HP / email / akun medsos otomatis disembunyikan, maksimal 120 huruf, jeda 2,5 detik antar-pesan, dan **ketuk nama pemain untuk membisukan** (tersimpan di HP).
-- Bisa dimatikan di **Pengaturan → Chat semua pemain**. Broker publik bisa dibaca siapa saja dan tidak menyimpan riwayat, jadi jangan bagikan data pribadi.
+- Bisa dimatikan di **Pengaturan → Chat semua pemain**. Riwayat chat tidak hilang: disimpan di HP (tetap ada setelah muat ulang atau reset game) dan salinan bersama disimpan di broker (pesan *retained*), jadi pemain baru langsung melihat pesan lama. Broker publik bisa dibaca siapa saja, jadi jangan bagikan data pribadi.
 
 ## Baru: ▶ Video sensei asli (YouTube)
 Pelajaran kini memutar video guru sungguhan dari YouTube (J-Class: [hiragana](https://youtu.be/icK6kVTegDA), [katakana](https://youtu.be/5lC9rhjrHxU)), dan **hanya bagian yang dipelajari hari itu**, dari penjelasan tiap huruf sampai latihan baca:
