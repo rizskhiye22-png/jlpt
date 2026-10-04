@@ -212,13 +212,38 @@ Keterangan di layar: angka hanya contoh. Upah, potongan, dan asrama tergantung k
 
 ---
 
+## 4b. Aksi nyata tambahan · kaigo & genba (`kerja-aksi.js`)
+
+Banyak hari kaigo & genba sebelumnya berupa kuis. Sekarang diganti atau ditambah **aksi langsung** berdasarkan kasus nyata: materi 介護技能評価試験 / 初任者研修 dan aturan keselamatan konstruksi Jepang.
+
+| Aksi | Bidang | Interaksi | Kasus nyata yang dilatih |
+|---|---|---|---|
+| 🩺 Tanda vital (`vital`) | kaigo | こえかけ → pilih alat (termometer, tensimeter, jam, oksimeter) → tahan/pompa/ketuk denyut → isi tabel 正常/要報告 → lapor perawat | Demam 38,2℃, tensi 176/98, SpO2 90% |
+| 👕 Ganti baju (`dress`) | kaigo | Persiapan privasi → pilih lengan yang dilepas & dipakai duluan → kancing | 脱健着患, 自立支援 |
+| 🛏 Ubah posisi & cek kulit (`skin`) | kaigo | Usap untuk memiringkan → ketuk kemerahan di tonjolan tulang → bantal & lapor | 褥瘡 (仙骨・かかと・肩甲骨) |
+| 💊 Bagikan obat (`meds`) | kaigo | Ketuk bungkus, baca nama (hiragana) & waktu → berikan ke orang yang tepat / kembalikan yang salah waktu → penghuni menolak obat | 3つの確認, 誤薬 |
+| 💬 Percakapan (`talk`) | kaigo & genba | Meter perasaan 😠→😊, 2–3 giliran, tiap jawaban punya akibat & penjelasan | 帰宅願望 (demensia ingin pulang), menolak makan, keluhan keluarga, ditegur mandor, senpai menyuruh tanpa kait, rekan pusing karena panas |
+| 🗑 Pilah (`bins`) | kaigo & genba | Satu barang muncul → ketuk tempat yang benar | Cucian tercemar (norovirus); limbah konstruksi もくくず・きんぞくくず・はいプラ・がれき |
+| 🏗 Aba-aba crane (`crane`) | genba | ゴーヘイ / スラー / ひだり / みぎ / ストップ / たいひ！ secara real-time | 地切り, 吊り荷の下に入るな, lewati penghalang, mendarat tepat |
+| 🪝 Harness 2 kait (`harness`) | genba | Pasang kait A/B di tiang, lepas kait lama, maju | 2丁掛け, ノーフック禁止 |
+| 🚚 Pandu truk (`yudo`) | genba | Ketuk オーライ berulang, ストップ di zona hijau, berhenti saat orang lewat | 誘導員, truk molen saat pengecoran |
+| 🔩 Ikat besi (`rebar`) | genba | Tahan di setiap persilangan (ハッカー) → cek ピッチ @200 & tunjuk batang yang salah | 鉄筋結束, 配筋検査 |
+| 🛠 Aksi alat+gerakan (`act`) | kaigo | Kasus baru: 口腔ケア, おむつ交換, 歩行介助 (sisi lumpuh, tongkat → kaki lumpuh → kaki sehat) | |
+
+**🎮 Latihan aksi**: tombol baru di kartu setiap bidang. Isinya semua aksi fisik dari shift latihan dan 15 hari (kaigo 21, genba 20), bisa dimainkan satu per satu tanpa menjalani satu hari penuh. Latihan ini tidak mengubah rekor karier.
+
+**Pengaturan → Umum** (dulu "Belajar") berisi opsi belajar & kerja: *Mode santai* (tanpa batas waktu di permainan & tugas kerja) dan *Arti perintah kerja* (terjemahan Indonesia di bawah perintah atasan; matikan untuk latihan mendengar).
+
+---
+
 ## 5. Implementasi
 
 | Bagian | File |
 |---|---|
 | Mesin simulasi, tugas fisik umum, evaluasi, peta しごとまち | `public/js/kerja.js` |
 | Bidang pertanian & peternakan (ruangan, tugas baru) | `public/js/kerja-tani.js` |
+| Aksi nyata tambahan kaigo & genba (vital, dress, skin, meds, talk, bins, crane, harness, yudo, rebar) | `public/js/kerja-aksi.js` |
 | Isi 15 hari untuk 6 bidang, slip gaji, sertifikat | `public/js/kerja-hari.js` |
-| Uji otomatis | `tests/kerja_sim.py`, `tests/kerja_hari.py`, `scripts/cek-kerja.mjs` (validasi 90 hari) |
+| Uji otomatis | `tests/kerja_sim.py`, `tests/kerja_hari.py`, `tests/kerja_aksi.py`, `scripts/cek-kerja.mjs` (validasi 90 hari) |
 
 Data simpanan: `Save.d.kerja[id] = { best, plays, stars, day (hari berikutnya 1–16), days: { n: rank } }`.

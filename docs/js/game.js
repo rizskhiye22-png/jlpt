@@ -928,9 +928,10 @@ const Game = (() => {
     const p = UI.panel(`
       <div class="win settings">
         <div class="w-title">Pengaturan</div>
-        <div class="sec-h">Belajar</div>
+        <div class="sec-h">Umum <small class="muted">· belajar & simulasi kerja</small></div>
         <div class="set col"><span>Romaji<small>Otomatis = romaji hilang sendiri kalau semua hurufnya sudah kamu pelajari (ketuk Aa untuk mengintip)</small></span><div class="seg">${[['auto', 'Otomatis'], ['on', 'Selalu'], ['off', 'Mati']].map(([v, l]) => `<button type="button" class="${(s.romaji === 'auto' ? 'auto' : s.romaji ? 'on' : 'off') === v ? 'on' : ''}" data-ro="${v}">${l}</button>`).join('')}</div></div>
-        ${tog('relax', 'Mode santai', 'Tanpa batas waktu di permainan')}
+        ${tog('relax', 'Mode santai', 'Tanpa batas waktu di permainan dan di tugas simulasi kerja')}
+        ${tog('kjTrans', 'Arti perintah kerja', 'Tampilkan terjemahan Indonesia di bawah perintah atasan saat simulasi kerja (matikan untuk latihan mendengar bahasa Jepang saja)')}
         ${tog('skipOffer', 'Tawarkan lewati materi', 'Kalau sudah bisa, materi pelajaran boleh dilewati setelah lulus tes cepat (≥80%)')}
         ${seg('text', 'Kecepatan teks', [['slow', 'Pelan'], ['fast', 'Cepat'], ['instant', 'Langsung']])}
         <div class="sec-h">Suara</div>

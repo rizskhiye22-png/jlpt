@@ -765,6 +765,7 @@ const Kerja = (() => {
         hot = null;
         if (UNIFORM[job.id].at === key && UNIFORM[job.id].after == null && !api._worn) { api._worn = true; await api.wear(); }
       },
+      has: k => actors.has(k),
       react(ok) {
         if (ok) { emote('boss', '👍'); bubble('boss', `<b class="jp">${esc(shuffle(['いいね！', 'そう そう！', 'じょうず！', 'ばっちり！'])[0])}</b>`); emote('you', '⭕'); }
         else { emote('boss', '💦'); bubble('boss', `<b class="jp">${esc(shuffle(['ちがう よ…', 'おしい！', 'ちょっと まって！'])[0])}</b>`); emote('you', '❌'); }
@@ -1189,7 +1190,7 @@ const Kerja = (() => {
     for (let i = 0; i < st.steps.length; i++) {
       const s = st.steps[i], [need, needN] = s.tool;
       const m = /^taps:(\d+)$/.exec(s.how || 'tap'), kind = m ? 'taps' : (s.how || 'tap'), times = m ? +m[1] : 1;
-      cmd.innerHTML = `<b class="jp">「${esc(s.jp)}」</b>`; hid.hidden = true; hid.textContent = s.id || '';
+      cmd.innerHTML = `<b class="jp">「${esc(s.jp)}」</b>`; hid.hidden = S().settings.kjTrans === false; hid.textContent = s.id || '';
       cnt.textContent = `Langkah ${i + 1}/${st.steps.length}`; how.textContent = ''; bar.style.width = 0; tg.classList.remove('ready');
       W.bubble('boss', `<b class="jp">${esc(s.jp)}</b>`); speak(s.jp);
       B.dataset.tool = needN; B.dataset.how = kind; B.dataset.times = times;
@@ -1264,6 +1265,7 @@ const Kerja = (() => {
   }
 
   /* ---------- menjalankan satu shift ---------- */
+  const HEAVY = ['spot', 'belt', 'wash', 'thermo', 'harvest', 'sort', 'act', 'hunt'];   // tugas fisik: bobot nilai 2×
   const TASKS = { quiz: taskQuiz, order: taskOrder, pick: taskPick, spot: taskSpot, wash: taskWash, roller: taskRoller, belt: taskBelt, thermo: taskThermo, dial: taskDial, feed: taskFeed, cash: taskCash, shisa: taskShisa, act: taskAct, hunt: taskHunt };
   const TASK_START = { spot: 'はじめ！', belt: 'ライン スタート！', order: 'じゅんばん に やって みて。', pick: 'えらんで ください。', wash: 'てあらい スタート！', roller: 'ローラー を かけて。', thermo: 'おんど を はかって。', dial: 'おゆ の おんど を みて。', feed: 'ゆっくり ね。', cash: 'おつり を おねがい。', shisa: 'しさこしょう！', act: 'いっしょ に やって みよう。', hunt: 'きけん を さがして！' };
   // Kategori 評価シート
@@ -1317,7 +1319,7 @@ const Kerja = (() => {
         W.bubble('boss', `<b class="jp">${esc(TASK_START[st.t] || 'どう する？')}</b>`);
         const t0 = performance.now();
         const r = await TASKS[st.t](W, st);
-        const secs = (performance.now() - t0) / 1000, wgt = ['spot', 'belt', 'wash', 'thermo', 'harvest', 'sort', 'act', 'hunt'].includes(st.t) ? 2 : 1;
+        const secs = (performance.now() - t0) / 1000, wgt = HEAVY.includes(st.t) ? 2 : 1;
         got += r * wgt; max += wgt; W.score(Math.round(got * 10));
         tally[catOf(job, st)].push(r);
         tally.speed.push(r <= 0 ? 0 : Math.max(.2, Math.min(1, (st.t === 'quiz' ? 14 : 45) / Math.max(secs, 1))));
@@ -1333,6 +1335,11 @@ const Kerja = (() => {
     W.close();
     const pct = max ? Math.round(got / max * 100) : 100, rank = rankOf(pct);
     const stars = Object.fromEntries(CATS.map(([k]) => { const a = tally[k]; return [k, a.length ? Math.max(1, Math.round(1 + 4 * a.reduce((x, y) => x + y, 0) / a.length)) : null]; }));
+    if (opts.practice) {   // latihan aksi: tidak mengubah rekor karier
+      await result(job, pct, rank, false, stars, opts);
+      const pp = Math.round(pct / 20); if (pp) H().addPoints(pp, 'latihan aksi');
+      return;
+    }
     const Rr = rec(), r0 = Object.assign({ best: null, plays: 0, last: 0, day: 1, days: {} }, Rr[job.id] || {});
     r0.days = r0.days || {}; r0.day = r0.day || 1;
     const firstToday = r0.last !== S().day;
@@ -1531,6 +1538,42 @@ const Kerja = (() => {
     await UI.wait(d => { p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); UI.closePanel(); d(); }; });
   }
 
+  /* ---------- 🎮 Latihan aksi: pilih satu aksi nyata dan mainkan langsung ---------- */
+  const ACTS = {};             // aksi tambahan per bidang (diisi kerja-hari.js / kerja-aksi.js)
+  const NOT_ACT = ['say', 'clock', 'quiz', 'order', 'pick'];
+  const ACT_ICON = { act: '🛠', hunt: '🔎', spot: '👀', belt: '🍙', wash: '🧼', roller: '🌀', thermo: '🌡️', dial: '🎛', feed: '🥄', cash: '💴', shisa: '👉', harvest: '🍅', scale: '⚖️', sort: '📦', vital: '🩺', talk: '💬', dress: '👕', skin: '🛏', meds: '💊', crane: '🏗', harness: '🪝', yudo: '🚚', bins: '🗑', rebar: '🔩' };
+  function actsFor(job) {
+    const seen = new Set(), out = [];
+    const add = st => { if (!st || NOT_ACT.includes(st.t) || !TASKS[st.t]) return; const key = st.t + '|' + (st.title || st.q || ''); if (seen.has(key)) return; seen.add(key); out.push(st); };
+    (ACTS[job.id] || []).forEach(add);
+    (DAYS[job.id] || []).forEach(d => (d.tasks || []).forEach(x => add(typeof x === 'string' ? null : x)));
+    job.steps.forEach((st, i) => add(st.at || ROOMS[job.id].at[i] ? { ...st, at: st.at || ROOMS[job.id].at[i] } : st));
+    return out;
+  }
+  const actName = st => st.title || ({ wash: 'Cuci tangan', roller: 'Rol perekat', belt: 'Lini produksi', thermo: 'Ukur suhu', dial: 'Atur suhu', feed: 'Suapi makan', cash: 'Kasir', shisa: 'Tunjuk & seru', vital: 'Tanda vital', meds: 'Bagikan obat', dress: 'Ganti baju', skin: 'Ubah posisi tidur', crane: 'Aba-aba crane', harness: 'Harness 2 kait', yudo: 'Pandu truk', rebar: 'Ikat besi' }[st.t] || st.t);
+  async function practice(job) {
+    for (;;) {
+      const list = actsFor(job);
+      const p = UI.panel(`<div class="win kj">
+        <div class="w-title">🎮 ${job.icon} Latihan aksi · ${esc(job.name)}</div>
+        <p class="small muted">${list.length} aksi kerja nyata. Pilih satu untuk dimainkan langsung, tanpa menjalani satu hari penuh.</p>
+        <div class="kj-acts">${list.map((st, i) => `<button class="kj-actb" type="button" data-i="${i}"><b>${ACT_ICON[st.t] || '🛠'}</b><span>${esc(actName(st))}</span></button>`).join('')}</div>
+        <button class="btn block ghost" data-a="close" type="button">Kembali</button></div>`, 'scroll');
+      const i = await UI.wait(done => {
+        p.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { Sound.blip(); done(+b.dataset.i); });
+        p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); done(-1); };
+      });
+      UI.closePanel();
+      if (i < 0) return;
+      const st = list[i], R = ROOMS[job.id], home = Object.keys(R.st)[0];
+      await run(job, { practice: true, steps: [
+        { t: 'clock', time: '10:00', title: `🎮 ${actName(st)}`, at: st.at || home, cast: st.cast || (R.cast && R.cast[0]) || [] },
+        st,
+        { t: 'clock', time: '10:30', title: 'Selesai', at: st.at || home, end: '10:30' },
+      ] });
+    }
+  }
+
   async function open() {
     for (;;) {
       const R = rec();
@@ -1541,13 +1584,14 @@ const Kerja = (() => {
           <div class="kj-ic">${j.icon}</div>
           <div class="kj-jt"><b>${esc(j.name)}</b> <span class="jp muted small">${esc(j.k)}</span><br><small>${esc(j.desc)}</small>
             ${has ? `<div class="kj-prog"><i style="width:${Math.min(15, d - 1) / 15 * 100}%"></i></div><small class="kj-best">${d > 15 ? '🎓 Lulus 15 hari' : `📅 Hari ${d}/15 · ${esc(DAYS[j.id][d - 1].title)}`}${R[j.id] && R[j.id].best ? ` · terbaik <b class="r${R[j.id].best}">${R[j.id].best}</b>` : ''}</small>` : ''}</div>
-          <div class="kj-jb">${has ? `<button class="btn small" data-day="${j.id}" type="button">${d > 15 ? '📅 Pilih hari' : `▶ Hari ${d}`}</button>` : ''}<button class="btn ghost small" data-go="${j.id}" type="button">🔁 Latihan</button><button class="btn ghost small" data-info="${j.id}" type="button">ℹ Info</button><button class="btn ghost small" data-kotoba="${j.id}" type="button">📚 Kata</button>${has && d <= 15 ? `<button class="btn ghost small" data-list="${j.id}" type="button">📅 Pilih hari</button>` : ''}</div>
+          <div class="kj-jb">${has ? `<button class="btn small" data-day="${j.id}" type="button">${d > 15 ? '📅 Pilih hari' : `▶ Hari ${d}`}</button>` : ''}<button class="btn ghost small" data-act="${j.id}" type="button">🎮 Aksi</button><button class="btn ghost small" data-go="${j.id}" type="button">🔁 Latihan</button><button class="btn ghost small" data-info="${j.id}" type="button">ℹ Info</button><button class="btn ghost small" data-kotoba="${j.id}" type="button">📚 Kata</button>${has && d <= 15 ? `<button class="btn ghost small" data-list="${j.id}" type="button">📅 Pilih hari</button>` : ''}</div>
         </div>`; }).join('')}</div>
         <button class="btn block ghost" data-a="close" type="button">Tutup</button></div>`, 'scroll');
       const a = await UI.wait(done => {
         p.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { Sound.blip(); done({ day: b.dataset.day }); });
         p.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { Sound.blip(); done({ list: b.dataset.list }); });
         p.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { Sound.blip(); done({ go: b.dataset.go }); });
+        p.querySelectorAll('[data-act]').forEach(b => b.onclick = () => { Sound.blip(); done({ act: b.dataset.act }); });
         p.querySelectorAll('[data-info]').forEach(b => b.onclick = () => { Sound.blip(); done({ info: b.dataset.info }); });
         p.querySelectorAll('[data-kotoba]').forEach(b => b.onclick = () => { Sound.blip(); done({ kotoba: b.dataset.kotoba }); });
         p.querySelector('[data-a=close]').onclick = () => { Sound.blip(); done(null); };
@@ -1557,6 +1601,7 @@ const Kerja = (() => {
       if (a.kotoba) { await kotoba(BY[a.kotoba]); continue; }
       if (a.info) { if (await info(BY[a.info])) await run(BY[a.info]); continue; }
       if (a.go) { await run(BY[a.go]); continue; }
+      if (a.act) { await practice(BY[a.act]); continue; }
       const id = a.day || a.list, job = BY[id];
       let n = careerDay(id);
       if (a.list || n > 15) { n = await dayList(job); if (!n) continue; }
@@ -1670,7 +1715,7 @@ const Kerja = (() => {
     ROOMS[job.id] = room; BOSS[job.id] = o.boss; UNIFORM[job.id] = o.uniform; GREET[job.id] = o.greet;
   }
   return {
-    open, enter, register, runDay, kotoba, JOBS, ROOMS, BOSS, DAYS, TASKS, TASK_START, TASK_CAT, GLOSS,
+    open, enter, register, runDay, kotoba, practice, JOBS, ROOMS, BOSS, DAYS, TASKS, TASK_START, TASK_CAT, GLOSS, HEAVY, ACTS,
     run: (id, o) => run(BY[id], o), day: (id, n) => runDay(BY[id], n),
     setDayBuilder: f => { dayBuilder = f; },
     kit: { pad, sleep, speak, esc, shuffle, ro, taskQuiz, done1 },

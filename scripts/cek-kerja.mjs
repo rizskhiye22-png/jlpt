@@ -15,7 +15,7 @@ const ctx = {
   document: { createElement: () => ({ getContext: () => ({}) }) },
 };
 vm.createContext(ctx);
-for (const f of ['kerja.js', 'kerja-tani.js', 'kerja-hari.js']) vm.runInContext(fs.readFileSync(`public/js/${f}`, 'utf8') + (f === 'kerja.js' ? '\nglobalThis.Kerja = Kerja;' : ''), ctx, { filename: f });
+for (const f of ['kerja.js', 'kerja-tani.js', 'kerja-aksi.js', 'kerja-hari.js']) vm.runInContext(fs.readFileSync(`public/js/${f}`, 'utf8') + (f === 'kerja.js' ? '\nglobalThis.Kerja = Kerja;' : ''), ctx, { filename: f });
 const K = ctx.Kerja;
 const errs = [];
 let days = 0, steps = 0, vocab = 0;
@@ -29,6 +29,8 @@ const check = (job, room, list, where) => {
     if (st.t === 'quiz' && (!st.opts || st.opts.length < 2 || !st.q)) errs.push(`${tag}: kuis tidak lengkap`);
     if (st.t === 'act') st.steps.forEach((a, j) => { if (!a.tool || !a.jp || !/^(tap|hold|swipe|taps:\d+)$/.test(a.how || 'tap')) errs.push(`${tag}: langkah aksi ${j} tidak valid`); });
     if (st.t === 'hunt' && !st.items.some(x => !x.ok)) errs.push(`${tag}: tidak ada bahaya`);
+    if (st.t === 'talk') st.turns.forEach((t, j) => { if (!t.jp || !t.opts || t.opts.length < 2 || !t.opts.some(o => o.d > 0)) errs.push(`${tag}: giliran bicara ${j} tidak valid`); });
+    if (st.t === 'bins') st.items.forEach(([e, jp, id, k]) => { if (!st.bins.some(b => b[0] === k)) errs.push(`${tag}: "${jp}" tidak punya tempat "${k}"`); });
     (st.cast || []).forEach(c => { if (c.id && !ctx.CHARACTERS[c.id]) errs.push(`${tag}: pemeran "${c.id}" tidak ada`); });
   });
 };

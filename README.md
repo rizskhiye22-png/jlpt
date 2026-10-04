@@ -15,6 +15,13 @@ Setiap hari kamu sekolah, berteman, jajan, memancing, dan pelan-pelan jadi lanca
 ## Baru: ⏭ Lewati materi yang sudah dikuasai
 Sudah bisa hiragana/katakana? Sebelum pelajaran, sensei menawarkan **⏭ Saya sudah bisa**. Cukup lulus **tes cepat (≥80%)**, video & latihan menulis hari itu dilewati, dan latihan soal pelajaran kedua otomatis selesai. Kalau belum lulus, materi diajarkan seperti biasa. Latihan mini-game juga bisa dilewati. Saklar: **Pengaturan → Tawarkan lewati materi**. Di karier kerja, **semua hari terbuka**, jadi bisa langsung pilih hari mana pun.
 
+## Baru: 🎮 Aksi kerja nyata kaigo & genba
+Kuis di hari-hari kaigo & konstruksi kini diganti atau ditambah **aksi langsung** dari kasus nyata ([rincian](design/16-KARIER-15-HARI.md#4b-aksi-nyata-tambahan--kaigo--genba-kerja-aksijs)):
+- 🧓 **Kaigo**: ukur **tanda vital** lalu isi tabel & lapor perawat, **ganti baju 脱健着患**, **ubah posisi & cek luka tekan**, **bagikan obat** (baca nama, 3 cek), **sikat gigi & gigi palsu**, **ganti popok**, **bantu jalan dengan tongkat**, pilah cucian tercemar, dan **percakapan dengan meter perasaan** (nenek demensia ingin pulang, menolak makan, keluhan keluarga).
+- 🏗 **Genba**: pandu **crane** dengan aba-aba ゴーヘイ・スラー・ストップ (dan teriak たいひ！ kalau ada orang di bawah beban), jalan di perancah dengan **harness 2 kait**, **pandu truk mundur** (オーライ/ストップ), **ikat besi & cek jarak**, **pilah limbah**, ditegur mandor, menolak perintah tidak aman, menolong rekan yang pusing karena panas.
+- **🎮 Latihan aksi**: di kartu setiap bidang, pilih satu aksi dan langsung main (kaigo 21 aksi, genba 20 aksi).
+- **Pengaturan → Umum**: opsi belajar & kerja jadi satu, termasuk *Arti perintah kerja* (terjemahan Indonesia bisa dimatikan untuk latihan mendengar).
+
 ## Baru: 📅 Karier 15 hari di 6 bidang kerja (+ 🌱 Pertanian & 🐄 Peternakan)
 Simulasi kerja kini punya **cerita panjang 15 hari** di setiap tempat kerja, bukan shift yang itu-itu saja. Rancangan lengkap: [design/16-KARIER-15-HARI.md](design/16-KARIER-15-HARI.md).
 - **6 bidang**: 🍙 pabrik makanan, 🧓 kaigo, 🏗 konstruksi, 🍶 izakaya, dan yang baru 🌱 **pertanian** (rumah kaca tomat & stroberi) serta 🐄 **peternakan** (sapi perah & ayam). Semuanya ada sebagai bangunan di **しごとまち**.

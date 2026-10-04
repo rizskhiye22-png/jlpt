@@ -99,22 +99,28 @@ def do_shisa(pg):
         p.first.click(); b = pg.locator('.kj-yoshi').bounding_box()
         pg.mouse.move(b['x'] + 20, b['y'] + 10); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up(); pg.wait_for_timeout(200)
 
+def gest(pg, how, times=1):
+    b = pg.locator('.ws-box .kj-target').bounding_box(); cx, cy = b['x'] + b['width'] / 2, b['y'] + b['height'] / 2
+    if how and how.startswith('taps:'): how, times = 'taps', int(how.split(':')[1])
+    if how == 'hold': pg.mouse.move(cx, cy); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up()
+    elif how == 'swipe':
+        pg.mouse.move(cx - 50, cy); pg.mouse.down()
+        for i in range(6): pg.mouse.move(cx + (50 if i % 2 == 0 else -50), cy, steps=4)
+        pg.mouse.up()
+    else:
+        for i in range(times or 1): pg.mouse.click(cx, cy); pg.wait_for_timeout(60)
+
 def do_act(pg):
-    for _ in range(12):
+    """Aksi 'act' dan alat+gerakan di tugas lain (mis. バイタル): pilih alat yang diminta, lalu lakukan gerakannya."""
+    for _ in range(14):
         if not pg.locator('.ws-box .kj-target').count(): return
-        d = pg.evaluate("(() => { const b = document.querySelector('.ws-box'); return [b.dataset.tool, b.dataset.how, +b.dataset.times]; })()")
-        tool, how, times = d
-        pg.locator('.kj-tool2').filter(has=pg.locator(f'span:text-is("{tool}")')).first.click()
-        pg.wait_for_timeout(150)
-        b = pg.locator('.kj-target').bounding_box(); cx, cy = b['x'] + b['width'] / 2, b['y'] + b['height'] / 2
-        if how == 'hold': pg.mouse.move(cx, cy); pg.mouse.down(); pg.wait_for_timeout(1100); pg.mouse.up()
-        elif how == 'swipe':
-            pg.mouse.move(cx - 50, cy); pg.mouse.down()
-            for i in range(6): pg.mouse.move(cx + (50 if i % 2 == 0 else -50), cy, steps=4)
-            pg.mouse.up()
-        else:
-            for i in range(times or 1): pg.mouse.click(cx, cy); pg.wait_for_timeout(60)
-        pg.wait_for_timeout(650)
+        if pg.locator('.ws-box .kj-target.ready').count():
+            how, times = pg.evaluate("(() => { const t = document.querySelector('.ws-box .kj-target'), b = document.querySelector('.ws-box'); return [t.dataset.how || b.dataset.how, +b.dataset.times || 1]; })()")
+            gest(pg, how, times); pg.wait_for_timeout(700); continue
+        if pg.locator('.ws-box .kj-tool2').count() and not pg.locator('.ws-box .kj-tool2.sel').count():
+            tool = pg.evaluate("document.querySelector('.ws-box').dataset.tool")
+            pg.locator('.kj-tool2').filter(has=pg.locator(f'span:text-is("{tool}")')).first.click(); pg.wait_for_timeout(200); continue
+        return
 
 def do_hunt(pg):
     its = pg.evaluate("JSON.parse(document.querySelector('.kj-pad.hunt').dataset.items)")
@@ -149,6 +155,74 @@ def do_sort(pg):
 PHYS = [('.kj-target', do_act, 'aksi'), ('.kj-pad.hunt', do_hunt, 'cari-bahaya'), ('.kj-pad.farm', do_harvest, 'panen'), ('.kj-scale', do_scale, 'timbang'), ('.kj-bins', do_sort, 'sortir'),
         ('.kj-tool', do_wash, 'cuci'), ('.kj-pad[data-specks]', do_roller, 'rol'), ('.kj-pad.belt', do_belt, 'conveyor'), ('.kj-zone.mid', do_thermo, 'termometer'),
         ('.kj-dial', do_dial, 'dial'), ('.kj-say:not([disabled])', do_feed, 'suap'), ('.kj-drawer', do_cash, 'kasir'), ('.kj-points', do_shisa, 'shisa')]
+
+
+# ---------- aksi nyata tambahan (kerja-aksi.js) ----------
+def do_okopt(pg):
+    tap(pg, '.ws-box .ws-o[data-ok="1"]'); pg.wait_for_timeout(300)
+
+def do_talk(pg):
+    for _ in range(6):
+        if not pg.locator('.ws-box .kj-talk').count(): return
+        if pg.locator('.ws-box .ws-o:not([disabled])').count():
+            ds = [int(pg.locator('.ws-box .ws-o').nth(i).get_attribute('data-d')) for i in range(pg.locator('.ws-box .ws-o').count())]
+            pg.locator('.ws-box .ws-o').nth(ds.index(max(ds))).click(); pg.wait_for_timeout(300)
+        tap(pg, '.ws-box .kj-next'); pg.wait_for_timeout(300)
+
+def do_vtable(pg):
+    abn = pg.evaluate("document.querySelector('.ws-box').dataset.abn")
+    for k in ['temp', 'bp', 'pulse', 'spo2']: tap(pg, f'.kj-vt tr[data-k="{k}"] [data-j="{"ng" if k == abn else "ok"}"]')
+    tap(pg, '.ws-box .kj-next'); pg.wait_for_timeout(1100)
+
+def do_dress(pg):
+    if pg.locator('.ws-box .kj-prep').count():
+        for i in range(pg.locator('.kj-prep .kj-pt[data-ok="1"]').count()): pg.locator('.kj-prep .kj-pt[data-ok="1"]').nth(i).click()
+        tap(pg, '.ws-box .kj-next'); pg.wait_for_timeout(300); return
+    mahi = pg.evaluate("document.querySelector('.ws-box').dataset.mahi")
+    off = 'ぬぐ' in pg.locator('.ws-box .ws-q').inner_text()
+    want = ({'R': 'L', 'L': 'R'}[mahi]) if off else mahi
+    tap(pg, f'.kj-arm[data-s="{want}"]'); pg.wait_for_timeout(300); tap(pg, '.ws-box .kj-next'); pg.wait_for_timeout(300)
+
+def do_skin(pg):
+    its = pg.evaluate("JSON.parse(document.querySelector('.kj-pad.skin').dataset.items)")
+    for (x, y, red) in its:
+        if red and pg.locator('.kj-pad.skin').count(): pg.mouse.click(*canvas_pt(pg, '.kj-pad.skin', x, y, 320, 110)); pg.wait_for_timeout(150)
+    pg.wait_for_timeout(900)
+    if pg.locator('.kj-pad.skin').count(): tap(pg, '.ws-box .btn.ghost')
+
+def do_meds(pg):
+    for _ in range(6):
+        p = pg.locator('.kj-pack:not(.done)')
+        if not p.count(): break
+        to = p.first.get_attribute('data-to'); p.first.click(); pg.wait_for_timeout(150)
+        tap(pg, f'.kj-seat[data-p="{to}"]'); pg.wait_for_timeout(200)
+    pg.wait_for_timeout(900)
+
+def do_auto(pg):
+    pg.evaluate("document.querySelector('.ws-box')._auto && document.querySelector('.ws-box')._auto(); 0")
+    for _ in range(400):
+        pg.wait_for_timeout(100)
+        if not pg.locator('.ws-box .kj-crane, .ws-box .kj-scaf, .ws-box .kj-yudo').count(): return
+
+def do_bins(pg):
+    for _ in range(12):
+        if not pg.locator('.ws-box .kj-binrow').count(): return
+        ans = pg.evaluate("document.querySelector('.ws-box').dataset.ans")
+        tap(pg, f'.kj-bin[data-b="{ans}"]'); pg.wait_for_timeout(800)
+
+def do_rebar(pg):
+    pts = pg.evaluate("JSON.parse(document.querySelector('.kj-pad.rebar').dataset.pts)")
+    for (x, y) in pts[:2]:   # dua ikatan pertama dengan tahan sungguhan, sisanya cepat
+        pg.mouse.move(*canvas_pt(pg, '.kj-pad.rebar', x, y, 320, 140)); pg.mouse.down(); pg.wait_for_timeout(600); pg.mouse.up(); pg.wait_for_timeout(100)
+    pg.evaluate("document.querySelector('.ws-box')._tieAll(); 0"); pg.wait_for_timeout(600)
+    off = int(pg.evaluate("document.querySelector('.ws-box').dataset.off"))
+    x = pg.evaluate(f"JSON.parse(document.querySelector('.kj-pad.rebar').dataset.pts)[{off} * 3][0]")
+    pg.mouse.click(*canvas_pt(pg, '.kj-pad.rebar', x, 50, 320, 140)); pg.wait_for_timeout(300)
+    tap(pg, '.ws-box .kj-next')
+
+PHYS = [('.kj-talk', do_talk, 'bicara'), ('.kj-vt', do_vtable, 'vital-catat'), ('.kj-prep', do_dress, 'ganti-baju'), ('.kj-arm', do_dress, 'ganti-baju'),
+        ('.kj-pad.skin', do_skin, 'kulit'), ('.kj-meds', do_meds, 'obat'), ('.kj-crane', do_auto, 'crane'), ('.kj-scaf', do_auto, 'harness'),
+        ('.kj-yudo', do_auto, 'yudo'), ('.kj-binrow', do_bins, 'pilah'), ('.kj-pad.rebar', do_rebar, 'besi'), ('.ws-o[data-ok="1"]', do_okopt, 'kalimat')] + PHYS
 
 def play(pg, tag, keep=False):
     shots = set()

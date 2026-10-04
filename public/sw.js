@@ -1,9 +1,9 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v26';
+const CACHE = 'nihongo-gakkou-v27';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
   'js/data.js', 'js/data2.js', 'js/data3.js', 'js/strokes.js', 'js/strokes3.js', 'js/data4.js', 'js/strokes4.js', 'js/data5.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
-  'js/save.js', 'js/audio.js', 'js/music.js', 'js/emoji-list.js', 'js/emoji.js', 'js/ui.js', 'js/lesson.js', 'js/games.js', 'js/ytvideo.js', 'js/video.js', 'js/extras.js', 'js/relax.js', 'js/online.js', 'js/chat.js', 'js/places.js', 'js/places2.js', 'js/konbini.js', 'js/kerja.js', 'js/kerja-tani.js', 'js/kerja-hari.js', 'js/kerja-kotoba.js',
+  'js/save.js', 'js/audio.js', 'js/music.js', 'js/emoji-list.js', 'js/emoji.js', 'js/ui.js', 'js/lesson.js', 'js/games.js', 'js/ytvideo.js', 'js/video.js', 'js/extras.js', 'js/relax.js', 'js/online.js', 'js/chat.js', 'js/places.js', 'js/places2.js', 'js/konbini.js', 'js/kerja.js', 'js/kerja-tani.js', 'js/kerja-aksi.js', 'js/kerja-hari.js', 'js/kerja-kotoba.js',
   'js/world.js', 'js/game.js', 'js/main.js',
 ];
 

@@ -970,6 +970,183 @@
       vocab: V(['寂しい', 'さびしい', 'sabishii', 'kesepian / rindu'], ['動物', 'どうぶつ', 'doubutsu', 'hewan'], ['お世話になりました', 'おせわになりました', 'osewa ni narimashita', 'terima kasih atas bimbingannya']) },
   ];
 
+  /* =========================================================
+     AKSI NYATA TAMBAHAN · KAIGO & GENBA (kerja-aksi.js)
+     Kasus nyata dimasukkan ke hari-hari karier: banyak kuis diganti
+     atau ditambah aksi langsung (ukur, ganti baju, obat, crane, dll).
+     ========================================================= */
+  const TK = (w, jp, ro, id, opts, x = {}) => ({ jp, ro, id, opts: opts.map(([jp2, d, fb, ro2]) => ({ jp: jp2, ro: ro2 || '', d, fb })), w, ...x });
+  const KA = {
+    vitalN: { t: 'vital', case: 'normal', at: 'room', title: 'バイタル チェック · Pemeriksaan pagi Nenek Kimura', why: 'Tanda vital diukur setiap pagi. Angka normal pun tetap dicatat, karena perubahan kecil dari biasanya adalah tanda awal sakit.' },
+    vitalF: { t: 'vital', case: 'fever', at: 'room', title: 'バイタル · Kakek Tanaka demam', why: 'Lansia dengan suhu ≥37,5℃ dianggap demam (発熱). Catat angka tepat dan laporkan segera ke perawat: siapa · apa · berapa.' },
+    vitalX: { t: 'vital', at: 'room', title: 'バイタル チェック · Pemeriksaan pagi', why: 'Pekerja kaigo tidak mendiagnosis. Tugasmu: ukur dengan benar, catat jujur, dan laporkan angka yang tidak biasa.' },
+    dress: { t: 'dress', at: 'room', title: 'こうい かいじょ · Bantu ganti baju', why: '脱健着患 (だっけん ちゃっかん): lepas dari sisi sehat, pakai dari sisi lumpuh. Jaga privasi dan biarkan penghuni melakukan yang masih bisa (自立支援).' },
+    skin: { t: 'skin', at: 'room', title: 'たいい へんかん · Ubah posisi & cek kulit', why: 'Ubah posisi tiap ±2 jam. Kemerahan di tonjolan tulang (仙骨・かかと・肩甲骨) adalah tanda awal 褥瘡 (luka tekan). Jangan dipijat, kurangi tekanan & lapor.' },
+    meds: { t: 'meds', at: 'dining', title: 'ふくやく かいじょ · Bagikan obat siang', why: '3 cek sebelum memberi obat: nama, tanggal, waktu minum. Obat yang bukan waktunya dikembalikan ke perawat. Salah obat (誤薬) adalah kecelakaan serius.' },
+    kitaku: { t: 'talk', k: 'r', face: '👵', at: 'hall', mood: 25, title: 'きたく がんぼう · Nenek ingin pulang', hint: 'Nenek Kimura (demensia) gelisah di lorong sore hari dan ingin pulang. Tenangkan beliau.',
+      turns: [
+        TK('riyosha', 'いえ に かえらなきゃ。こども が まってる の。', 'ie ni kaeranakya. kodomo ga matteru no.', 'Aku harus pulang. Anak-anak menunggu.', [
+          ['おこさん が まってる んですね。しんぱい です よね。', 30, 'Terima dulu perasaannya (受容・共感). Jangan langsung membantah.'],
+          ['ここ が いえ ですよ。こども は もう おとな です。', -20, 'Membantah kenyataan membuat beliau makin cemas & marah.'],
+          ['だめ です。すわって ください。', -30, 'Melarang dengan keras terasa seperti dikurung. Beliau merasa tidak dihargai.']]),
+        TK('riyosha', 'でも、もう くらく なる から…', 'demo, mou kuraku naru kara…', 'Tapi sebentar lagi gelap…', [
+          ['そう ですね。じゃあ、おちゃ を のんで から いっしょ に かんがえましょう か。', 30, 'Alihkan perhatian dengan lembut (気分転換) sambil tetap menemani.'],
+          ['（むし して しごと を つづける）', -25, 'Kalau diabaikan, beliau bisa keluar sendiri: risiko tersesat (徘徊) & jatuh.'],
+          ['じゃあ、ひとり で かえって ください。', -30, 'Sangat berbahaya: lansia demensia bisa hilang di luar.']]),
+        TK('riyosha', 'あなた、やさしい ね。…むすこ は げんき かしら。', 'anata, yasashii ne. musuko wa genki kashira.', 'Kamu baik, ya. …Apa kabar anakku, ya.', [
+          ['むすこさん の おはなし、きかせて ください。', 25, 'Ajak bercerita tentang hal yang beliau sukai (回想). Perasaannya tenang kembali.'],
+          ['しりません。', -15, 'Jawaban dingin memutus hubungan.'],
+          ['いそがしい から あと で。', -10, 'Kalau harus pergi, katakan kapan kembali dan minta rekan menemani.']]),
+      ], why: 'Kasus nyata 帰宅願望: terima perasaan, jangan membantah atau mengurung, alihkan dengan teh/cerita, lalu catat jam kejadian & laporkan supaya tim melihat polanya.' },
+    kyohi: { t: 'talk', k: 'r', face: '👵', at: 'dining', mood: 35, title: 'しょくじ きょひ · Nenek tidak mau makan', hint: 'Nenek Kimura mendorong piringnya. Cari tahu alasannya.',
+      turns: [
+        TK('riyosha', 'いらない。おいしく ない。', 'iranai. oishiku nai.', 'Tidak mau. Tidak enak.', [
+          ['そう ですか。きょう は たべたく ない きぶん ですか？', 25, 'Tanyakan alasannya dulu dengan tenang.'],
+          ['たべない と だめ ですよ！', -25, 'Memaksa membuat stres dan berisiko tersedak.'],
+          ['じゃあ、さげます ね。', -10, 'Langsung menyerah: gizi kurang. Cari tahu sebabnya dulu.']]),
+        TK('riyosha', 'は が いたくて…', 'ha ga itakute…', 'Gigiku sakit…', [
+          ['は が いたい んですね。やわらかい もの に できる か、かんごし に そうだん します ね。', 30, 'Sebabnya ketemu. Lapor perawat; bentuk makanan bisa diubah (きざみ食・ソフト食).'],
+          ['がまん して ください。', -25, 'Rasa sakit harus dilaporkan, bukan ditahan.'],
+          ['じゃあ、ジュース だけ。', -5, 'Mengganti menu sendiri tanpa konsultasi tidak tepat.']]),
+      ], why: 'Menolak makan selalu ada sebabnya: sakit gigi, gigi palsu longgar, sembelit, sedih, rasa makanan. Tanyakan, catat jumlah makan, laporkan.' },
+    family: { t: 'talk', k: 'boss', face: '👩', at: 'staff', mood: 20, title: 'Keluhan keluarga', hint: 'Putri Nenek Kimura terlihat kesal. Dengarkan dengan sopan (keigo).',
+      turns: [
+        TK(null, 'はは の うで に あざ が あります。どうして ですか？', 'haha no ude ni aza ga arimasu. doushite desu ka?', 'Ada memar di lengan ibu saya. Kenapa?', [
+          ['ごしんぱい を おかけ して もうしわけ ありません。すぐ かくにん して、ごほうこく します。', 30, 'Terima kekhawatirannya, minta maaf atas kekhawatiran itu, dan janjikan pengecekan.'],
+          ['わたし の せい じゃ ありません。', -30, 'Membela diri membuat keluarga makin tidak percaya.'],
+          ['たぶん ころんだ んでしょう。', -20, 'Jangan menebak. Yang belum pasti dicek dulu dan dilaporkan.']]),
+        TK(null, 'ちゃんと みて くれて います か？', 'chanto mite kurete imasu ka?', 'Apa ibu saya benar-benar diperhatikan?', [
+          ['はい。きろく を かくにん して、リーダー から ごれんらく いたします。', 25, 'Jawab dengan tindakan konkret dan serahkan ke leader.'],
+          ['いそがしい ので ぜんぶ は むり です。', -25, 'Keluarga butuh rasa aman, bukan alasan.'],
+          ['…（だまる）', -15, 'Diam terasa seperti menyembunyikan sesuatu.']]),
+      ], why: 'Keluhan keluarga: dengarkan sampai selesai, minta maaf atas kekhawatirannya, jangan menebak atau membela diri, cek catatan, dan laporkan ke leader.' },
+    oral: { t: 'act', at: 'bath', title: 'こうくう ケア · Sikat gigi & gigi palsu', target: '👄', targetLabel: 'Nenek Kimura di wastafel', steps: [
+      { tool: ['🗣️', 'こえかけ'], jp: 'はみがき を しましょう ね。', id: 'ajak menyikat gigi', how: 'tap', after: '😊' },
+      { tool: ['🪑', 'まえかがみ'], jp: 'すこし まえかがみ に すわって ください。', id: 'duduk agak menunduk (cegah tersedak air)', how: 'hold', after: '🪑 ✓' },
+      { tool: ['🦷', 'いれば'], jp: 'いれば を はずして、ながし で あらって。', id: 'lepas & cuci gigi palsu', how: 'swipe', after: '🦷 ✨' },
+      { tool: ['🪥', 'はブラシ'], jp: 'はぐき も やさしく みがいて。', id: 'sikat gigi & gusi dengan lembut', how: 'swipe', after: '🪥 ✓' },
+      { tool: ['🥤', 'うがい'], jp: 'くち を ゆすいで ください。', id: 'kumur', how: 'taps:2', after: '💧' },
+    ], extras: [['🧴', 'シャンプー'], ['🍬', 'あめ']], why: 'Mulut bersih mencegah pneumonia aspirasi (誤嚥性肺炎), penyebab kematian yang sering pada lansia. Posisi agak menunduk supaya air tidak masuk ke saluran napas.' },
+    diaper: { t: 'act', at: 'room', title: 'おむつ こうかん · Ganti popok', target: '🛏️', targetLabel: 'Kakek Tanaka', steps: [
+      { tool: ['🚪', 'カーテン'], jp: 'カーテン を しめます ね。', id: 'tutup tirai (privasi)', how: 'tap', after: '🚪 ✓' },
+      { tool: ['🧤', 'てぶくろ'], jp: 'てぶくろ と エプロン を して。', id: 'sarung tangan & celemek', how: 'tap', after: '🧤 ✓' },
+      { tool: ['🧻', 'おしりふき'], jp: 'まえ から うしろ へ ふいて。', id: 'lap dari depan ke belakang (cegah infeksi)', how: 'swipe', after: '🧻 ✓' },
+      { tool: ['👀', 'ひふ チェック'], jp: 'ひふ の あかみ を みて。', id: 'cek kemerahan kulit', how: 'hold', after: '👀 OK' },
+      { tool: ['🩲', 'あたらしい おむつ'], jp: 'しわ が ない ように あてて。', id: 'pasang popok tanpa kerutan', how: 'swipe', after: '🩲 ✓' },
+      { tool: ['🗑️', 'ビニールぶくろ'], jp: 'よごれた もの は ふくろ に いれて すてて。', id: 'buang ke kantong tertutup', how: 'tap', after: '🗑️ ✓' },
+    ], extras: [['📱', 'スマホ'], ['🍵', 'おちゃ']], why: 'Privasi dulu, APD, lap depan → belakang (terutama perempuan, cegah infeksi saluran kemih), cek kulit, popok tanpa kerutan supaya tidak lecet.' },
+    walk: { t: 'act', at: 'hall', title: 'ほこう かいじょ · Bantu berjalan dengan tongkat', target: '🚶', targetLabel: 'Kakek Tanaka (lumpuh kanan)', steps: [
+      { tool: ['🗣️', 'こえかけ'], jp: 'いっしょ に あるきましょう。', id: 'ajak berjalan', how: 'tap', after: '😊' },
+      { tool: ['👟', 'くつ'], jp: 'くつ の かかと まで ちゃんと はいて。', id: 'sepatu dipakai sampai tumit (cegah tersandung)', how: 'hold', after: '👟 ✓' },
+      { tool: ['🧍', 'みぎ うしろ'], jp: 'まひ の ある みぎ がわ の、すこし うしろ に たって。', id: 'berdiri di sisi lumpuh, agak di belakang', how: 'tap', after: '🧍 ✓' },
+      { tool: ['🦯', 'つえ'], jp: 'つえ、まひ の あし、けんそく の あし の じゅん に。', id: 'urutan: tongkat → kaki lumpuh → kaki sehat', how: 'taps:3', after: '🦯👣👣' },
+    ], extras: [['🧍‍♂️', 'ひだり まえ'], ['🏃', 'ひっぱる']], why: 'Berdiri di sisi lumpuh agak ke belakang supaya bisa menahan kalau oleng. Jalan 3 langkah: tongkat → kaki lumpuh → kaki sehat.' },
+    linen: { t: 'bins', at: 'bath', title: 'リネン の ぶんべつ · Pilah cucian & sampah', hint: 'Cucian yang terkena muntahan/feses bisa menular (norovirus). Pisahkan!',
+      bins: [['normal', '🧺', 'ふつう の せんたく', 'cucian biasa'], ['osen', '☣️', 'おせん リネン', 'cucian tercemar (kantong khusus)'], ['gomi', '🗑️', 'もえる ごみ', 'sampah dibakar']],
+      items: [['🛏️', 'シーツ (よごれ なし)', 'seprai bekas pakai', 'normal'], ['🤮', 'おうと で よごれた タオル', 'handuk kena muntahan', 'osen', 'Masukkan kantong tertutup, cuci terpisah dengan klorin.'], ['👕', 'パジャマ', 'piyama', 'normal'], ['🧻', 'つかった おしりふき', 'tisu basah bekas', 'gomi'], ['🩲', 'べん で よごれた ズボン', 'celana kena feses', 'osen', 'Pakai sarung tangan & celemek, kantong khusus.'], ['🧤', 'つかいすて てぶくろ', 'sarung tangan sekali pakai', 'gomi']],
+      why: 'Cucian tercemar dipisah supaya penyakit tidak menyebar ke penghuni lain. Sesudahnya cuci tangan (1ケア1手洗い).' },
+  };
+  const GA = {
+    harness: { t: 'harness', at: 'scaffold', title: 'フルハーネス · 2 kait di perancah', why: '2丁掛け: pasang kait baru dulu, baru lepas kait lama, supaya selalu ada yang menahan. ノーフック (tanpa kait) di ketinggian = penyebab kematian nomor satu di konstruksi.' },
+    crane: { t: 'crane', at: 'scaffold', title: 'たまかけ あいず · Pandu crane', why: 'ゴーヘイ (naik), スラー (turun), ストップ. Angkat sedikit lalu berhenti (地切り) untuk cek keseimbangan. 吊り荷の下に入るな: tidak boleh ada orang di bawah beban.' },
+    yudo: { t: 'yudo', at: 'gate', title: 'ゆうどう · Pandu truk material mundur', why: 'Pemandu berdiri di tempat yang terlihat sopir. 「オーライ」 = terus, 「ストップ！」 = berhenti. Kalau ada orang di jalur, hentikan segera.' },
+    rebar: { t: 'rebar', at: 'scaffold', title: 'てっきん けっそく · Ikat besi & cek ピッチ', why: 'Semua persilangan diikat kuat supaya besi tidak bergeser saat dicor. Jarak (ピッチ) dicek dengan meteran sesuai gambar kerja sebelum pemeriksaan (配筋検査).' },
+    bins: { t: 'bins', at: 'material', title: 'さんぱい の ぶんべつ · Pilah limbah konstruksi', hint: 'Di Jepang limbah konstruksi wajib dipilah (建設リサイクル法).',
+      bins: [['moku', '🪵', 'もくくず', 'sisa kayu'], ['kinzoku', '🔩', 'きんぞくくず', 'sisa logam'], ['pura', '🛍️', 'はいプラ', 'sampah plastik'], ['gara', '🧱', 'がれき', 'puing beton'], ['ippan', '🍱', 'いっぱん ごみ', 'sampah umum']],
+      items: [['🪵', 'かたわく の はざい', 'potongan kayu bekisting', 'moku'], ['🔩', 'てっきん の きれはし', 'potongan besi tulangan', 'kinzoku', 'Besi didaur ulang: jangan dicampur.'], ['🛍️', 'ざいりょう の ビニール', 'plastik pembungkus material', 'pura'], ['🧱', 'コンクリート の かけら', 'pecahan beton', 'gara'], ['🍱', 'おべんとう の から', 'bekas bekal makan', 'ippan', 'Sampah makan pekerja bukan limbah industri.'], ['🥫', 'ペンキ の あきかん (からっぽ)', 'kaleng cat kosong', 'kinzoku'], ['🪚', 'おがくず', 'serbuk gergaji', 'moku']],
+      why: 'Salah memilah = biaya buang lebih mahal dan genba dinilai buruk saat patroli. Kalau ragu, tanya: 「これ は どこ に すてますか？」' },
+    tegur: { t: 'talk', k: 'boss', face: '👷', at: 'ppe', mood: 15, title: 'Ditegur mandor', hint: 'Pak Kondo marah karena tali dagu helmmu tidak terkunci.', happy: '😤', calm: '😐', sad: '😠', angry: '🤬',
+      turns: [
+        TK('oyakata', 'おい！あごひも は どうした！', 'oi! agohimo wa doushita!', 'Hei! Tali dagumu mana!', [
+          ['すみません！すぐ しめます！', 30, 'Langsung minta maaf & perbaiki di tempat.'],
+          ['あつい から ちょっと…', -25, 'Alasan tidak diterima: helm tanpa tali dagu lepas saat jatuh.'],
+          ['（だまって にらむ）', -30, 'Teguran keselamatan bukan serangan pribadi.']]),
+        TK('oyakata', 'なんで あごひも が だいじ か わかる か？', 'nande agohimo ga daiji ka wakaru ka?', 'Tahu kenapa tali dagu itu penting?', [
+          ['ころんだ とき に ヘルメット が とれない ため です。', 30, 'Paham alasannya = tidak akan mengulang.'],
+          ['しょくちょう が おこる から です。', -15, 'Aturan bukan supaya tidak dimarahi, tapi untuk nyawamu.'],
+          ['わかりません。', -5, 'Kalau tidak tahu, tanyakan. Lalu hafalkan alasannya.']]),
+        TK('oyakata', 'よし。つぎ から きを つけろ。', 'yoshi. tsugi kara ki wo tsukero.', 'Oke. Mulai sekarang hati-hati.', [
+          ['はい！ありがとう ございます。きを つけます。', 25, 'Berterima kasih atas teguran keselamatan menunjukkan sikap baik.'],
+          ['はーい。', -10, 'Jawaban malas terdengar tidak serius.'],
+          ['もう いい です か？', -15, 'Terdengar tidak menghargai.']]),
+      ], why: 'Ditegur → minta maaf, perbaiki segera, pahami alasannya, dan berterima kasih. Mandor menegur supaya tidak ada yang celaka.' },
+    unsafe: { t: 'talk', k: 'w1', face: '🧑‍🔧', at: 'ladder', mood: 50, title: 'Senpai menyuruh tanpa kait', hint: 'Ryo-san menyuruhmu naik sebentar tanpa memasang kait harness. Kamu…', cast: [{ k: 'w1', id: 'ryo', x: 9, y: 3, dir: 'up' }],
+      turns: [
+        TK('ryo', 'ちょっと だけ だから、フック かけなくて いい よ。', 'chotto dake dakara, fukku kakenakute ii yo.', 'Cuma sebentar, tidak usah pasang kait.', [
+          ['すみません、あぶない ので フック を かけて から やります。', 30, 'Menolak perintah tidak aman dengan sopan adalah hakmu. Keselamatan > kecepatan.'],
+          ['わかりました、かけません。', -30, 'Banyak kecelakaan jatuh terjadi pada pekerjaan "sebentar saja".'],
+          ['（だまって やめる）', -10, 'Jelaskan alasannya, jangan hanya diam.']]),
+        TK('ryo', 'えー、おそく なる よ。', 'ee, osoku naru yo.', 'Yah, jadi lama dong.', [
+          ['30びょう で かけられます。あんぜん だいいち です。', 30, 'Tunjukkan bahwa aman tidak berarti lambat.'],
+          ['じゃあ、しょくちょう に いいます よ！', -5, 'Lapor itu boleh, tapi coba bicara baik-baik dulu.'],
+          ['…わかりました、かけません。', -25, 'Jangan menyerah pada tekanan untuk bekerja tidak aman.']]),
+      ], why: 'Kalau disuruh bekerja tidak aman, tolak dengan sopan dan beri alasan. Kalau tetap dipaksa, laporkan ke mandor (報告).' },
+    heatTalk: { t: 'talk', k: 'w1', face: '🧑‍🔧', at: 'tent', mood: 40, title: 'Ryo-san pusing di tengah panas', hint: 'Ryo-san terlihat pucat dan berkeringat banyak.', happy: '😌', calm: '😮‍💨', sad: '🥵', angry: '😵', cast: [{ k: 'w1', id: 'ryo', x: 7, y: 6, dir: 'left' }],
+      turns: [
+        TK('ryo', 'なんか… あたま が くらくら する…', 'nanka… atama ga kurakura suru…', 'Kepalaku… pusing…', [
+          ['すぐ ひかげ で やすみましょう。しょくちょう に つたえます！', 30, 'Gejala heat stroke (めまい). Pindah ke tempat teduh dan lapor.'],
+          ['がんばって！もう すこし で おわる よ。', -30, 'Menahan saat pusing bisa berakibat fatal.'],
+          ['コーヒー のむ？', -15, 'Kafein bukan pengganti air & garam.']]),
+        TK('ryo', 'みず… のめる…', 'mizu… nomeru…', 'Air… aku masih bisa minum…', [
+          ['はい、けいこう ほすいえき です。ゆっくり のんで。くび と わき を ひやします ね。', 30, 'Minum cairan elektrolit, dinginkan leher, ketiak, dan pangkal paha.'],
+          ['じゃあ ひとり で やすんで て。', -20, 'Jangan tinggalkan sendirian: kondisinya bisa memburuk.'],
+          ['あつい の は みんな いっしょ。', -25, 'Meremehkan gejala adalah awal kecelakaan.']]),
+      ], why: 'Heat stroke: teduh → dinginkan → minum elektrolit → jangan ditinggal → lapor. Kalau tidak bisa minum sendiri atau bicara kacau, panggil ambulans (119).' },
+  };
+  // sisipkan tugas ke hari tertentu: { after: 'nama tugas' } atau indeks, atau ganti kuis yang cocok
+  function addTasks(id, n, list, where = 'end') {
+    const t = DAYS[id][n - 1].tasks;
+    let i = t.length;
+    if (typeof where === 'number') i = where;
+    else if (where && where.after) { const j = t.lastIndexOf(where.after); i = j < 0 ? t.length : j + 1; }
+    else if (where && where.before) { const j = t.indexOf(where.before); i = j < 0 ? t.length : j; }
+    else if (where && where.replace instanceof RegExp) { const j = t.findIndex(x => typeof x === 'object' && where.replace.test(x.q || x.title || '')); if (j >= 0) { t.splice(j, 1, ...list); return; } }
+    t.splice(i, 0, ...list);
+  }
+  const more = (id, n, learn, vocab) => { const d = DAYS[id][n - 1]; if (learn) d.learn += ' ' + learn; if (vocab) d.vocab = [...(d.vocab || []), ...vocab]; };
+  // KAIGO
+  addTasks('kaigo', 1, [KA.vitalN], { after: 'temp' });
+  more('kaigo', 1, 'Tanda vital: suhu, tekanan darah, nadi, SpO2.', V(['バイタル', 'バイタル', 'baitaru', 'tanda vital'], ['血圧', 'けつあつ', 'ketsuatsu', 'tekanan darah']));
+  addTasks('kaigo', 2, [KA.kyohi], { before: 'feed' }); addTasks('kaigo', 2, [KA.oral]);
+  more('kaigo', 2, 'Menolak makan → tanya alasannya. 口腔ケア mencegah pneumonia aspirasi.', V(['口腔ケア', 'こうくうケア', 'koukuu kea', 'perawatan mulut'], ['入れ歯', 'いれば', 'ireba', 'gigi palsu']));
+  addTasks('kaigo', 3, [KA.walk, KA.kitaku], { after: 'transfer' });
+  more('kaigo', 3, 'Bantu jalan: di sisi lumpuh agak belakang. 帰宅願望: terima perasaan, jangan membantah.', V(['帰宅願望', 'きたくがんぼう', 'kitaku ganbou', 'keinginan pulang (demensia)'], ['杖', 'つえ', 'tsue', 'tongkat']));
+  DAYS.kaigo[4].tasks = ['curtain', KA.vitalX, KA.dress, 'feed', KA.meds, 'report'];
+  more('kaigo', 5, '脱健着患 saat ganti baju. Obat: cek nama, tanggal, waktu.', V(['服薬', 'ふくやく', 'fukuyaku', 'minum obat'], ['脱健着患', 'だっけんちゃっかん', 'dakken chakkan', 'lepas sisi sehat, pakai sisi lumpuh']));
+  addTasks('kaigo', 6, [KA.skin]);
+  more('kaigo', 6, 'Setelah mandi cek kulit; kemerahan di tonjolan tulang = awal luka tekan.', V(['褥瘡', 'じょくそう', 'jokusou', 'luka tekan (dekubitus)'], ['発赤', 'ほっせき', 'hosseki', 'kemerahan kulit']));
+  addTasks('kaigo', 7, [KA.walk], { before: 'feed' });
+  addTasks('kaigo', 8, [KA.diaper, KA.linen], { before: 'report' });
+  more('kaigo', 8, 'Ganti popok: privasi, APD, lap depan ke belakang. Cucian tercemar dipisah.', V(['おむつ交換', 'おむつこうかん', 'omutsu koukan', 'ganti popok'], ['汚染', 'おせん', 'osen', 'tercemar']));
+  addTasks('kaigo', 9, [KA.linen], { before: 'bath' });
+  addTasks('kaigo', 11, [KA.family], { before: 'feed' });
+  more('kaigo', 11, 'Keluhan keluarga: dengarkan, minta maaf atas kekhawatirannya, jangan menebak.', V(['痣', 'あざ', 'aza', 'memar'], ['心配', 'しんぱい', 'shinpai', 'khawatir']));
+  { const t = DAYS.kaigo[11].tasks, j = t.indexOf('temp'); if (j >= 0) t.splice(j, 1, KA.vitalF, KA.linen); }
+  addTasks('kaigo', 13, [KA.skin, KA.oral]);
+  addTasks('kaigo', 14, [KA.dress, KA.vitalX, KA.meds], { replace: /はいせつ/ });
+  DAYS.kaigo[14].tasks = ['curtain', KA.vitalX, 'feed', KA.meds, 'transfer', KA.kitaku, 'bath', KA.diaper, 'report', 'bye'];
+  // GENBA
+  addTasks('genba', 1, [GA.harness], { after: 'chin' });
+  more('genba', 1, 'Harness: selalu 1 kait terpasang (2丁掛け).', V(['フルハーネス', 'フルハーネス', 'furu haanesu', 'harness tipe full-body'], ['墜落', 'ついらく', 'tsuiraku', 'jatuh dari ketinggian']));
+  addTasks('genba', 3, [GA.bins]);
+  more('genba', 3, 'Limbah dipilah: もくくず・きんぞくくず・はいプラ・がれき.', V(['産業廃棄物', 'さんぎょうはいきぶつ', 'sangyou haikibutsu', 'limbah industri'], ['分別', 'ぶんべつ', 'bunbetsu', 'memilah']));
+  addTasks('genba', 4, [GA.tegur], { replace: /Kamu ditegur/ });
+  addTasks('genba', 5, [GA.yudo], { before: 'patrol' });
+  more('genba', 5, 'Pandu truk: オーライ = terus, ストップ = berhenti.', V(['誘導', 'ゆうどう', 'yuudou', 'memandu kendaraan'], ['バック', 'バック', 'bakku', 'mundur']));
+  addTasks('genba', 6, [GA.harness, GA.unsafe], { before: 'patrol' });
+  more('genba', 6, 'Perintah tidak aman ditolak dengan sopan + alasan.', V(['安全第一', 'あんぜんだいいち', 'anzen daiichi', 'keselamatan nomor satu']));
+  addTasks('genba', 7, [GA.heatTalk]);
+  more('genba', 7, 'Rekan pusing → teduh, dinginkan, elektrolit, jangan ditinggal, lapor.', V(['めまい', 'めまい', 'memai', 'pusing'], ['経口補水液', 'けいこうほすいえき', 'keikou hosuieki', 'cairan elektrolit (oralit)']));
+  addTasks('genba', 8, [GA.rebar, { ...GA.yudo, title: 'ゆうどう · Pandu truk molen (ミキサー車)' }], { replace: /ストップ/ });
+  more('genba', 8, 'Sebelum cor: semua persilangan besi diikat & ピッチ dicek.', V(['鉄筋', 'てっきん', 'tekkin', 'besi tulangan'], ['結束', 'けっそく', 'kessoku', 'mengikat (besi)']));
+  addTasks('genba', 9, [GA.crane], { before: 'patrol' });
+  more('genba', 9, 'Crane: ゴーヘイ・スラー・ストップ, 地切り, jangan ada orang di bawah beban.', V(['玉掛け', 'たまかけ', 'tamakake', 'mengaitkan beban ke crane'], ['吊り荷', 'つりに', 'tsurini', 'beban yang digantung']));
+  addTasks('genba', 11, [GA.bins], { before: 'patrol' });
+  addTasks('genba', 12, [GA.harness], 0);
+  addTasks('genba', 13, [GA.harness], { before: 'shisa' });
+  addTasks('genba', 14, [GA.crane, GA.rebar], { before: 'patrol' });
+  DAYS.genba[14].tasks = ['goanzen', 'ppe', 'chin', 'ky', GA.harness, GA.crane, 'patrol', GA.yudo, 'heat', GA.bins, 'otsukare'];
+
   /* ---------- daftarkan ---------- */
   Object.assign(Kerja.DAYS, DAYS);
   Kerja.setDayBuilder(build);
