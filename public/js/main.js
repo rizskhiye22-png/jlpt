@@ -89,6 +89,9 @@
 
   // Mode offline (bisa dipasang di layar utama HP)
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => r.update && r.update()).catch(() => {}));
+    // versi baru terpasang → muat ulang sekali supaya CSS/JS lama tidak tercampur
+    const hadController = !!navigator.serviceWorker.controller; let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
   }
 })();

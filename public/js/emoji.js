@@ -17,7 +17,8 @@ const Emo = (() => {
     return HAVE.has(a) ? a : HAVE.has(b) ? b : null;
   }
   const src = n => `assets/emoji/${n}.svg`;
-  const img = e => { const n = file(e); return n ? `<img class="emo" src="${src(n)}" alt="${e}" draggable="false">` : e; };
+  const STYLE = 'height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.2em;display:inline-block';
+  const img = e => { const n = file(e); return n ? `<img class="emo" src="${src(n)}" alt="${e}" draggable="false" style="${STYLE}">` : e; };
 
   /* ---------- HTML ---------- */
   const SKIP = /^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT|OPTION|CANVAS|IMG|svg)$/;
@@ -36,7 +37,7 @@ const Emo = (() => {
       const n = file(m[0]); if (!n) continue;
       hit = true;
       if (m.index > last) frag.appendChild(document.createTextNode(s.slice(last, m.index)));
-      const im = document.createElement('img'); im.className = 'emo'; im.src = src(n); im.alt = m[0]; im.draggable = false;
+      const im = document.createElement('img'); im.className = 'emo'; im.src = src(n); im.alt = m[0]; im.draggable = false; im.setAttribute('style', STYLE);
       frag.appendChild(im); last = m.index + m[0].length;
     }
     if (!hit) return;

@@ -1,5 +1,5 @@
 /* Mode offline: file game disimpan di HP setelah dibuka sekali. */
-const CACHE = 'nihongo-gakkou-v25';
+const CACHE = 'nihongo-gakkou-v26';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest', 'icon.svg',
   'js/data.js', 'js/data2.js', 'js/data3.js', 'js/strokes.js', 'js/strokes3.js', 'js/data4.js', 'js/strokes4.js', 'js/data5.js', 'js/portrait.js', 'js/pixel.js', 'js/maps.js',
@@ -8,7 +8,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -27,8 +27,8 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin && !font) return;
   const heavy = font || url.pathname.includes('/assets/');
   e.respondWith(caches.open(CACHE).then(async cache => {
-    const cached = await cache.match(req);
-    const net = fetch(req).then(res => {
+    const cached = await cache.match(req, { ignoreSearch: !heavy });
+    const net = fetch(req, heavy ? {} : { cache: 'no-cache' }).then(res => {
       if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
       return res;
     });

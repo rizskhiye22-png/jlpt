@@ -1,0 +1,13 @@
+# Cloudflare Pages: file game selalu dicek ulang supaya update langsung terpakai
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/css/*
+  Cache-Control: no-cache
+/js/*
+  Cache-Control: no-cache
+/assets/emoji/*
+  Cache-Control: public, max-age=604800
